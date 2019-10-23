@@ -1,13 +1,42 @@
 import React from 'react';
-import logo from './logo.svg';
+import {BrowserRouter as Router} from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+
 import './App.css';
+import './reset.css';
 
-function App() {
-  return (
-    <div className="App">
+import Main from './Components/main.js';
+import Login from './Components/login.js';
+import Footer from './Components/footer.js';
 
-    </div>
-  );
+let HomePage = () => <Main page="home"/>;
+let MainPage = () => <Main page="second"/>;
+let ExtraPage = () => <Login page="login Page"/>;
+
+class App extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+    
+    }
+  }
+
+  render() {
+    return (
+      <Router>
+        <div className="App">
+          <div className="header"></div>
+          <Switch>
+              <Route path="/second" component={MainPage} />
+              <Route path="/login" component={ExtraPage} />
+              <Route path="/" component={HomePage} />
+          </Switch>
+          <Footer/>
+        </div>
+      </Router>
+    );
+  }
 }
+
 
 export default App;

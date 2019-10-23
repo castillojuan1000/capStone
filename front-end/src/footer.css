@@ -1,0 +1,110 @@
+* {
+    font-family: fantasy;
+}
+
+
+.footer {
+    background: #050808;
+    height: 10vh;
+    width: 100%;
+    border: 1px solid;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .song-img {
+    margin-left: 2%;
+    max-height: 100%;
+    max-width: 5vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .song-img img {
+    border-radius: 10px;
+    max-height: 100%;
+    max-width: 5vw;
+    object-fit: contain;
+  }
+
+  .player-section {
+      margin-right: 1%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: white;
+      height: 100%;
+  }
+
+ .action-icon, .play-holder {
+     cursor: pointer;
+     transition: all 1s;
+ }
+
+ .action-icon:hover, .play-holder:hover{
+    color: rgba(219, 174, 235, 1);
+    transition: all 1s;
+}
+
+.action-icon:active {
+    transform: scale(1.05);
+    color: rgb(162, 23, 212);
+}
+
+.slider-container{
+    cursor: pointer;
+    margint-top: .25%;
+    color: white;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.vol-holder {
+    margin-top: 1%;
+    margin-left: 3%;
+}
+
+.slider-holder {
+    height: 30%;
+    margin-left: 1%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+}
+
+.slider-holder p {
+    color: white;
+    font-size: 1.4em;
+}
+
+.slider-holder .label {
+    padding: 2%;
+}
+  
+
+.slider-section-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: .3%;
+}
+
+.slider-section-container h3 {
+    font-size: 1.6em;
+    color: white;
+    padding: .6%;
+}
+
+
+.player-section {
+    padding-left: 2%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    height: 100%;
+}
