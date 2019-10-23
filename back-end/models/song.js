@@ -1,9 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const song = sequelize.define(
-		'songs',
+		'song',
 		{
-			id: DataTypes.INTEGER,
 			roomId: DataTypes.INTEGER,
 			order: DataTypes.INTEGER,
 			spotifyId: DataTypes.STRING,
@@ -13,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
 		{}
 	);
 	song.associate = function(models) {
+		song.belongsTo(models.room);
+		song.hasMany(models.like);
 		// associations can be defined here
 	};
 	return song;

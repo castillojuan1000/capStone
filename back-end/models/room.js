@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const room = sequelize.define(
-		'rooms',
+		'room',
 		{
 			hostId: DataTypes.INTEGER,
 			roomName: DataTypes.STRING
@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
 	room.associate = function(models) {
 		// associations can be defined here
 		room.hasMany(models.song);
-		room.belongsTo(models.user);
 	};
 	return room;
 };

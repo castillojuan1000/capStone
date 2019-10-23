@@ -4,8 +4,8 @@
 		"password": null,
 		"database": "spotcloud",
 		"host": "127.0.0.1",
-		"dialect": "postgresql",
-		"operatorsAliases": false
+		"dialect": "postgres",
+		"logging": false
 	},
 	"test": {
 		"username": "root",
