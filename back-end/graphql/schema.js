@@ -34,6 +34,7 @@ const typDefs = gql`
 	}
 	type Query {
 		getUser(id: Int!): User!
+		getUserByEmail(email: String!): User!
 		getRoom(id: Int!): Room!
 		getUserRooms(id: Int!): [Room!]
 		getUserMessages(id: Int!): [Message!]

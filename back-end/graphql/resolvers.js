@@ -5,6 +5,9 @@ const resolvers = {
 		async getUser(root, { id }, { models }) {
 			return models.user.findByPk(id);
 		},
+		async getUserByEmail(root, { email }, models) {
+			return models.user.findAll({ where: { email: email } });
+		},
 		async getUserRooms(root, { id }, { models }) {
 			return models.room.findAll({
 				where: {
