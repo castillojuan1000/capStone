@@ -289,6 +289,20 @@ export const PlayPrevious = (spotify=null) => {
     return spotify.POST(url, 'Post Play Previous Song')
 }
 
+export const RestartSong = (spotify=null) => {
+    spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')): spotify
+    let url = `https://api.spotify.com/v1/me/player/seek?position_ms=1000`
+    return spotify.PUT(url, 'Start song over')
+}
+
+export const TransferPlayback = (device_id, play=true, spotify) => {
+    console.log(device_id)
+    spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')) : spotify;
+    let url = `https://api.spotify.com/v1/me/player`;
+    let data = {device_ids: [device_id], play: true};
+    return spotify.PUTBodyParamter(url, data, 'Transfer Playback')
+}
+
 export const getMyProfile = (spotify=null) => {
     spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')): spotify
     let url = `https://api.spotify.com/v1/me`
@@ -307,12 +321,13 @@ export const getTrack = (track_id, spotify=null) => {
     return spotify.GET(url, 'got track by id')
 }
 
-export const Search = (query, type, limit=100, offset=0, spotify=null) => {
+export const Search = (query, type, limit=50, offset=0, spotify=null) => {
     spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')): spotify
+    query = query.replace(' ', '%20') + '*'
     let url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&q=${query}&limit=${limit}&offset=${offset}`
+    console.log(url)
     return spotify.GET(url, 'Search Spotify')
 }
-
 
 export const AddSongToPlaylist = (playlist_id, uris, position=null, spotify=null) => {
     spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')): spotify
@@ -368,6 +383,7 @@ export const GetPlaylistTracks = (playlist_id, spotify=null, limit=100, offset=0
     let url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?limit=${limit}&offset=${offset}`
     return spotify.GET(url, 'Get Playlist Tracks')
 }
+
 /* 
 export const DeleteSongFromPlaylist = (ids, spotify=null) => {
     spotify = (spotify==null) ? new Spotify(localStorage.getItem('token')): spotify

@@ -1,39 +1,54 @@
 * {
-    font-family: fantasy;
+    font-family: 'Roboto', sans-serif;
 }
 
 
 .footer {
-    background: #050808;
-    height: 10vh;
+    background: linear-gradient(#0b1313 25%, #000000 75%);
     width: 100%;
-    border: 1px solid;
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
+    position: fixed;
+    bottom: 0%;
+    height: 10vh;
+  }
+
+  .song-info {
+      width: 25%;
+      display: flex;
+      flex-direction: row;
+
   }
   
   .song-img {
-    margin-left: 2%;
+    margin-left: 3vw;
     max-height: 100%;
-    max-width: 5vw;
+    max-width: 10vw;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  
+
+
   .song-img img {
-    border-radius: 10px;
+    border-radius: 5px;
     max-height: 100%;
     max-width: 5vw;
     object-fit: contain;
+    box-shadow: -2px 4px 10px 1px rgba(255,255,255, 0.1)
   }
 
   .player-section {
+      height: 4vh !important;
       margin-right: 1%;
+      margin-top: -.5%;
       display: flex;
       flex-direction: row;
       align-items: center;
+      align-content: center;
+      justify-content: center;
       color: white;
       height: 100%;
   }
@@ -53,23 +68,14 @@
     color: rgb(162, 23, 212);
 }
 
-.slider-container{
-    cursor: pointer;
-    margint-top: .25%;
-    color: white;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-}
-
 .vol-holder {
-    margin-top: 1%;
+    margin-top: .35%;
     margin-left: 3%;
 }
 
 .slider-holder {
+    width: 58vw;
     height: 30%;
-    margin-left: 1%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -90,21 +96,42 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-top: .3%;
+    padding-top: 1%;
 }
 
-.slider-section-container h3 {
-    font-size: 1.6em;
+.title-holder {
+    margin-left: 3%;
+    width: 80%;
+    text-align: left;
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
     color: white;
-    padding: .6%;
+}
+
+h6 {
+    color: rgba(255,255,255, 0.6);
+    font-weight: 100;
+    letter-spacing: 2px;
+}
+
+.title-holder h3 {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: 200;
+    letter-spacing: 3px;
+    margin-bottom: 1%;
+    font-size: 1.1em;
+    color: white;
 }
 
 
 .player-section {
-    padding-left: 2%;
+    padding-left: 0%;
     display: flex;
     flex-direction: row;
     align-items: center;
     color: white;
-    height: 100%;
+    height: 50%;
 }
