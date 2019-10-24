@@ -38,7 +38,6 @@ export const setupSpotify = () => {
 		'user-read-email',
 		'user-library-read'
 	].join(' ');
-
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;
 };
@@ -60,6 +59,8 @@ export const SpotifyLogout = () => {
 	);
 	setTimeout(() => spotifyLogoutWindow.close(), 3000);
 };
+//!! All of these functions can be moved inside of the class as methods.
+//!! Instead of having to use spotify as a param we can target it using 'this'.
 
 export const getAlbum = (id, spotify = null) => {
 	spotify =
