@@ -10,6 +10,7 @@ module.exports = {
 			},
 			userId: {
 				type: Sequelize.INTEGER,
+				allowNull: false,
 				references: {
 					model: 'user',
 					key: 'id'
@@ -17,6 +18,7 @@ module.exports = {
 			},
 			roomId: {
 				type: Sequelize.INTEGER,
+				allowNull: false,
 				references: {
 					model: 'room',
 					key: 'id'

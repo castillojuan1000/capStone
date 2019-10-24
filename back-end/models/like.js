@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 		// associations can be defined here
 		like.belongsTo(models.user);
 		like.belongsTo(models.song);
+		like.belongsTo(models.room);
 	};
 	return like;
 };

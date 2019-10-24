@@ -9,10 +9,16 @@ module.exports = {
 				type: Sequelize.INTEGER
 			},
 			userId: {
-				type: Sequelize.INTEGER
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'user',
+					key: 'id'
+				}
 			},
 			roomId: {
 				type: Sequelize.INTEGER,
+				allowNull: false,
 				references: {
 					model: 'room',
 					key: 'id'
@@ -20,10 +26,7 @@ module.exports = {
 			},
 			songId: {
 				type: Sequelize.INTEGER,
-				references: {
-					model: 'song',
-					key: 'id'
-				}
+				allowNull: false
 			},
 			createdAt: {
 				allowNull: false,
