@@ -2,7 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 // const io = require('socketio');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
 const createData = require('./fakerData');
@@ -24,6 +26,9 @@ const apolloServ = new ApolloServer({
 apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+let refreshTokens = [];
 app.use(
 	session({
 		secret: 'mySecret',
@@ -36,26 +41,32 @@ myStore.sync();
 
 if (process.env.NODE_ENV == 'development') {
 	app.use(function(req, res, next) {
-		console.log(req.body);
-		if (req.session.userId !== undefined) {
-			next();
-		} else if (req.path == '/api/login' || req.path == '/api/signup') {
-			next();
-		} else {
-			res.status(400);
-			res.send('Bad Request');
+		const authHeader = req.headers['authorization'];
+		const token = authHeader && authHeader.split(' ')[1];
+		if (
+			req.path === '/api/login' ||
+			req.path === '/api/signup' ||
+			req.path === '/api/token'
+		) {
+			return next();
 		}
+		if (token === null) {
+			return res.sendStatus(401);
+		}
+		jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+			if (err) return res.sendStatus(403);
+			req.user = user;
+			next();
+		});
 	});
 }
-
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(4000, () => {
 	console.log('Server running! \nhttp://localhost:4000');
 });
 
 //*** GET ROUTES
-app.get('/', (req, res, next) => {
+app.get('/api/hello', (req, res, next) => {
 	res.send('Hello World');
 });
 
@@ -63,42 +74,56 @@ app.get('/api/createUsers', (req, res, next) => {
 	createData(db);
 });
 
-app.get('/api/signout', (req, res) => {
+app.delete('/api/signout', (req, res) => {
 	req.session.destroy();
+	const refreshToken = null;
+	refreshTokens = refreshTokens.filter(token => token !== req.body.token);
 	res.status(200);
 	res.send({ data: 'Successfully logged out' });
 });
 
 //*** POST ROUTES
 app.post('/api/login', (req, res) => {
-	console.log(req.body);
+	console.log(req.session);
 	// res.send({ data: 'Hello' });
-	const email = req.body.email.toLowerCase();
-	const password = req.body.password;
-	db.user
-		.findOne({
-			where: {
-				email: email
-			}
-		})
-		.then(user => {
-			if (user === null) {
-				res.send({ error: 'User not found!' });
-			}
-			bcrypt.compare(password, user.password, (err, matched) => {
-				if (err) {
-					console.error(err);
-					res.status(400);
-				} else if (matched) {
-					req.session.userId = user.id;
-					res.status(200);
-					res.send({ data: 'Success!' });
-				} else {
-					res.status(400);
-					res.send({ error: 'Bad Password!' });
+	const { email, password } = req.body;
+	if (email && password) {
+		return db.user
+			.findOne({
+				where: {
+					email: email.toLowerCase()
 				}
+			})
+			.then(user => {
+				if (user === null) {
+					return res.send({ error: 'User not found!' });
+				}
+				bcrypt.compare(password, user.password, (err, matched) => {
+					if (err) {
+						console.error(err);
+						return res.status(500);
+					} else if (matched) {
+						const accessUser = {
+							email: user.email,
+							id: user.id
+						};
+						const accessToken = jwt.sign(
+							accessUser,
+							process.env.ACCESS_TOKEN_SECRET,
+							{ expiresIn: 60 * 60 * 1 }
+						);
+						const refreshToken = jwt.sign(
+							accessUser,
+							process.env.REFRESH_TOKEN_SECRET
+						);
+						refreshTokens.push(refreshToken);
+						return res.status(200).json({ accessToken, refreshToken });
+					} else {
+						return res.status(400).send({ error: 'Bad Password!' });
+					}
+				});
 			});
-		});
+	}
 });
 
 app.post('/api/signup', (req, res) => {
@@ -108,10 +133,23 @@ app.post('/api/signup', (req, res) => {
 	db.user
 		.create({ email, password: passwordHash })
 		.then(user => {
-			req.session.userId = user.id;
+			const accessUser = {
+				email: user.email,
+				id: user.id
+			};
+			const refreshToken = jwt.sign(
+				accessUser,
+				process.env.REFRESH_TOKEN_SECRET
+			);
+			refreshTokens.push(refreshToken);
+			const accessToken = jwt.sign(
+				accessUser,
+				process.env.ACCESS_TOKEN_SECRET,
+				{ expiresIn: 60 * 60 * 1 }
+			);
 			res.status(200);
 			res.send({
-				data: 'Success'
+				token: accessToken
 			});
 		})
 		.catch(e => {
@@ -120,4 +158,27 @@ app.post('/api/signup', (req, res) => {
 				error_message: 'Could not create Account'
 			});
 		});
+});
+
+app.post('/api/token', (req, res) => {
+	console.log(req.body);
+	const refreshToken = req.body.refreshToken || req.query.refreshToken;
+	if (refreshToken === null)
+		return res.sendStatus(401).json({ message: 'Must pass a token' });
+	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+		if (err) console.error(err);
+		db.user.findByPk(user.id).then(dbUser => {
+			if (dbUser === null) {
+				return res.sendStatus(401);
+			}
+			const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+				expiresIn: 60 * 60 * 0.5
+			});
+
+			res.json({
+				accessToken,
+				refreshToken
+			});
+		});
+	});
 });

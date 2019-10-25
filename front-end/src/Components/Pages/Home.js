@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -58,27 +58,62 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignInSide() {
 	const classes = useStyles();
-	const [password, setPassword] = useState('');
-	const [email, setEmail] = useState('');
+	const [state, setState] = useState({
+		email: '',
+		password: ''
+	});
+	const [isRedirected, setIsRedirected] = useState(false);
+	const [error, setError] = useState('');
+	const onChange = e => {
+		return setState({ ...state, [e.target.name]: e.target.value });
+	};
 
-	const handleSubmit = async e => {
-		e.preventDefault();
-		const formData = new Request('/api/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: JSON.stringify({
-				email,
-				password
-			})
-		});
+	useEffect(() => {
+		const tokens = sessionStorage.getItem('jwtTokens') || null;
+		const abort = new AbortController();
+		let loginWithToken;
 		debugger;
-		fetch(formData)
-			.then(res => res.json())
-			.then(console.log);
-		setPassword('');
-		setEmail('');
+		if (tokens) {
+			loginWithToken = fetch('/api/token', {
+				method: 'POST',
+				body: tokens,
+				headers: { 'Content-Type': 'application/json' }
+			})
+				.then(res => res.json())
+				.then(console.log);
+		}
+		return () => {
+			abort(loginWithToken);
+		};
+	}, []);
+	const handleSubmit = e => {
+		e.preventDefault();
+		setError('');
+		const formData = JSON.stringify(state);
+		debugger;
+		fetch('/api/login', {
+			method: 'POST',
+			body: formData,
+			headers: { 'Content-Type': 'application/json' }
+		})
+			.then(res => {
+				if (res.status === 200) {
+					return res.json();
+				} else {
+					setError('Please check user name & password!');
+					return 'Error';
+				}
+			})
+			.then(data => {
+				console.log(data);
+				if (data.accessToken) {
+					const { accessToken, refreshToken } = data;
+					sessionStorage.setItem(
+						'jwtTokens',
+						JSON.stringify({ accessToken, refreshToken })
+					);
+				}
+			});
 		e.target.reset();
 	};
 	return (
@@ -93,6 +128,7 @@ export default function SignInSide() {
 					<Typography component='h1' variant='h5'>
 						Sign in
 					</Typography>
+					{error && <p style={{ color: 'red' }}>{error}</p>}
 					<form className={classes.form} onSubmit={handleSubmit} noValidate>
 						<TextField
 							variant='outlined'
@@ -104,8 +140,8 @@ export default function SignInSide() {
 							name='email'
 							autoComplete='email'
 							autoFocus
-							value={email}
-							onChange={e => setEmail(e.target.value)}
+							value={state.email}
+							onChange={onChange}
 						/>
 						<TextField
 							variant='outlined'
@@ -116,11 +152,9 @@ export default function SignInSide() {
 							label='Password'
 							type='password'
 							id='password'
-							value={password}
+							value={state.password}
+							onChange={onChange}
 							autoComplete='current-password'
-							onChange={e => {
-								setPassword(e.target.value);
-							}}
 						/>
 						<FormControlLabel
 							control={<Checkbox value='remember' color='primary' />}
