@@ -1,14 +1,13 @@
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const io = require('socketio');
+// const io = require('socketio');
 const bodyParser = require('body-parser');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const jsonParser = bodyParser.json();
 const db = require('./models');
 const createData = require('./fakerData');
 const app = express();
-
+const env = process.env.NODE_ENV;
 const myStore = new SequelizeStore({
 	db: db.sequelize
 });
@@ -23,7 +22,8 @@ const apolloServ = new ApolloServer({
 	context: { models: db }
 });
 apolloServ.applyMiddleware({ app });
-myStore.sync();
+
+// *** Attaching middleware for Express
 app.use(
 	session({
 		secret: 'mySecret',
@@ -32,10 +32,11 @@ app.use(
 		store: myStore
 	})
 );
+myStore.sync();
 
 if (process.env.NODE_ENV == 'development') {
 	app.use(function(req, res, next) {
-		console.log(req.session);
+		console.log(req.body);
 		if (req.session.userId !== undefined) {
 			next();
 		} else if (req.path == '/api/login' || req.path == '/api/signup') {
@@ -49,9 +50,9 @@ if (process.env.NODE_ENV == 'development') {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.listen(4000, () => {
-// 	console.log('Server running! \nhttp://localhost:4000');
-// });
+app.listen(4000, () => {
+	console.log('Server running! \nhttp://localhost:4000');
+});
 
 //*** GET ROUTES
 app.get('/', (req, res, next) => {
@@ -71,6 +72,7 @@ app.get('/api/signout', (req, res) => {
 //*** POST ROUTES
 app.post('/api/login', (req, res) => {
 	console.log(req.body);
+	// res.send({ data: 'Hello' });
 	const email = req.body.email.toLowerCase();
 	const password = req.body.password;
 	db.user

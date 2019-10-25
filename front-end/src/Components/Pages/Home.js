@@ -58,21 +58,28 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignInSide() {
 	const classes = useStyles();
-	const [state, setState] = useState({
-		email: '',
-		password: ''
-	});
+	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
 
 	const handleSubmit = async e => {
 		e.preventDefault();
-		const formData = {
+		const formData = new Request('/api/login', {
 			method: 'POST',
-			body: {
-				...state
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
 			},
-			headers: new Headers()
-		};
-		fetch('/api/login', formData).then();
+			body: JSON.stringify({
+				email,
+				password
+			})
+		});
+		debugger;
+		fetch(formData)
+			.then(res => res.json())
+			.then(console.log);
+		setPassword('');
+		setEmail('');
+		e.target.reset();
 	};
 	return (
 		<Grid container component='main' className={classes.root}>
@@ -97,7 +104,8 @@ export default function SignInSide() {
 							name='email'
 							autoComplete='email'
 							autoFocus
-							onChange={e => setState({ [e.target.name]: e.target.value })}
+							value={email}
+							onChange={e => setEmail(e.target.value)}
 						/>
 						<TextField
 							variant='outlined'
@@ -108,9 +116,10 @@ export default function SignInSide() {
 							label='Password'
 							type='password'
 							id='password'
+							value={password}
 							autoComplete='current-password'
 							onChange={e => {
-								setState({ [e.target.name]: e.target.value });
+								setPassword(e.target.value);
 							}}
 						/>
 						<FormControlLabel
