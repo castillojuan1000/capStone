@@ -72,7 +72,6 @@ export default function SignInSide() {
 		const tokens = sessionStorage.getItem('jwtTokens') || null;
 		const abort = new AbortController();
 		let loginWithToken;
-		debugger;
 		if (tokens) {
 			loginWithToken = fetch('/api/token', {
 				method: 'POST',

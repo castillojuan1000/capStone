@@ -18,6 +18,7 @@ export const StoreAPIToken = () => {
 			hashMap[chunkSplit[0]] = chunkSplit[1];
 		});
 	}
+	debugger;
 	if (hashMap.access_token) {
 		console.log('token retreived from url');
 		return hashMap.access_token;
