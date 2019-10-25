@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 // const io = require('socketio');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
@@ -28,6 +29,7 @@ apolloServ.applyMiddleware({ app });
 // *** Attaching middleware for Express
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
 let refreshTokens = [];
 app.use(
 	session({
@@ -42,6 +44,7 @@ myStore.sync();
 if (process.env.NODE_ENV == 'development') {
 	app.use(function(req, res, next) {
 		const authHeader = req.headers['authorization'];
+		console.log(req.cookies['jwtAuth']);
 		const token = authHeader && authHeader.split(' ')[1];
 		if (
 			req.path === '/api/login' ||
@@ -109,15 +112,23 @@ app.post('/api/login', (req, res) => {
 						};
 						const accessToken = jwt.sign(
 							accessUser,
-							process.env.ACCESS_TOKEN_SECRET,
-							{ expiresIn: 60 * 60 * 1 }
+							process.env.ACCESS_TOKEN_SECRET
 						);
 						const refreshToken = jwt.sign(
 							accessUser,
 							process.env.REFRESH_TOKEN_SECRET
 						);
 						refreshTokens.push(refreshToken);
-						return res.status(200).json({ accessToken, refreshToken });
+						let options = {
+							maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+							httpOnly: true, // The cookie only accessible by the web server
+							signed: true // Indicates if the cookie should be signed
+						};
+						res.cookie('jwtAuth', { accessToken, refreshToken }, options);
+						return res.status(200).json({
+							tokens: { accessToken, refreshToken },
+							data: accessUser
+						});
 					} else {
 						return res.status(400).send({ error: 'Bad Password!' });
 					}
@@ -160,7 +171,7 @@ app.post('/api/signup', (req, res) => {
 		});
 });
 
-app.post('/api/token', (req, res) => {
+app.post('/api/refreshtoken', (req, res) => {
 	console.log(req.body);
 	const refreshToken = req.body.refreshToken || req.query.refreshToken;
 	if (refreshToken === null)
@@ -174,7 +185,6 @@ app.post('/api/token', (req, res) => {
 			const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
 				expiresIn: 60 * 60 * 0.5
 			});
-
 			res.json({
 				accessToken,
 				refreshToken

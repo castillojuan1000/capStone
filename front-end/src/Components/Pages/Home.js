@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export default function SignInSide() {
+export default function SignInSide(props) {
 	const classes = useStyles();
 	const [state, setState] = useState({
 		email: '',
@@ -105,13 +105,14 @@ export default function SignInSide() {
 			})
 			.then(data => {
 				console.log(data);
-				if (data.accessToken) {
-					const { accessToken, refreshToken } = data;
+				if (data.tokens) {
+					const { accessToken, refreshToken } = data.tokens;
 					sessionStorage.setItem(
 						'jwtTokens',
 						JSON.stringify({ accessToken, refreshToken })
 					);
 				}
+				props.authUser({ ...data.data, isLoggedIn: true });
 			});
 		e.target.reset();
 	};

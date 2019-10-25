@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom';
 //import '../index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
-import { Provider,  } from 'react-redux';
+import { Provider } from 'react-redux';
+import store from './Store';
 import App from './App.js';
 import * as serviceWorker from './serviceWorker';
-
 
 ReactDOM.render(
 	<CookiesProvider>
 		<BrowserRouter>
-			<Provider>
+			<Provider store={store}>
 				<App />
 			</Provider>
 		</BrowserRouter>

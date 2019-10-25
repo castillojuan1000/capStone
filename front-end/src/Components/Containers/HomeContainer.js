@@ -7,7 +7,14 @@ const mapStateToProps = (state, ownProps) => {
 	};
 };
 
+const mapDispatchToProps = dispatch => {
+	return {
+		authUser: payload => {
+			dispatch({ type: 'LOGIN', payload });
+		}
+	};
+};
 export const HomeContainer = connect(
 	mapStateToProps,
-	null
+	mapDispatchToProps
 )(SignInSide);
