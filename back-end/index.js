@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const io = require('socketio');
 const bodyParser = require('body-parser');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -13,31 +13,6 @@ const myStore = new SequelizeStore({
 	db: db.sequelize
 });
 
-app.use(
-	session({
-		secret: 'mySecret',
-		resave: false,
-		saveUninitialized: true
-		// store: myStore
-	})
-);
-
-myStore.sync();
-
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.get('/', (req, res, next) => {
-	res.send('Hello World');
-});
-
-app.get('/createUsers', (req, res, next) => {
-	createData(db);
-});
-
-app.listen(3001, () => {
-	console.log('Server running! \n http://localhost:3001');
-});
-
 //! Apollo set up
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./graphql/schema');
@@ -48,3 +23,99 @@ const apolloServ = new ApolloServer({
 	context: { models: db }
 });
 apolloServ.applyMiddleware({ app });
+myStore.sync();
+app.use(
+	session({
+		secret: 'mySecret',
+		resave: false,
+		saveUninitialized: true,
+		store: myStore
+	})
+);
+
+if (process.env.NODE_ENV == 'development') {
+	app.use(function(req, res, next) {
+		console.log(req.session);
+		if (req.session.userId !== undefined) {
+			next();
+		} else if (req.path == '/api/login' || req.path == '/api/signup') {
+			next();
+		} else {
+			res.status(400);
+			res.send('Bad Request');
+		}
+	});
+}
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// app.listen(4000, () => {
+// 	console.log('Server running! \nhttp://localhost:4000');
+// });
+
+//*** GET ROUTES
+app.get('/', (req, res, next) => {
+	res.send('Hello World');
+});
+
+app.get('/api/createUsers', (req, res, next) => {
+	createData(db);
+});
+
+app.get('/api/signout', (req, res) => {
+	req.session.destroy();
+	res.status(200);
+	res.send({ data: 'Successfully logged out' });
+});
+
+//*** POST ROUTES
+app.post('/api/login', (req, res) => {
+	console.log(req.body);
+	const email = req.body.email.toLowerCase();
+	const password = req.body.password;
+	db.user
+		.findOne({
+			where: {
+				email: email
+			}
+		})
+		.then(user => {
+			if (user === null) {
+				res.send({ error: 'User not found!' });
+			}
+			bcrypt.compare(password, user.password, (err, matched) => {
+				if (err) {
+					console.error(err);
+					res.status(400);
+				} else if (matched) {
+					req.session.userId = user.id;
+					res.status(200);
+					res.send({ data: 'Success!' });
+				} else {
+					res.status(400);
+					res.send({ error: 'Bad Password!' });
+				}
+			});
+		});
+});
+
+app.post('/api/signup', (req, res) => {
+	const email = req.body.email.toLowerCase();
+	const password = req.body.password;
+	const passwordHash = bcrypt.hashSync(password, 10);
+	db.user
+		.create({ email, password: passwordHash })
+		.then(user => {
+			req.session.userId = user.id;
+			res.status(200);
+			res.send({
+				data: 'Success'
+			});
+		})
+		.catch(e => {
+			res.status(500);
+			res.send({
+				error_message: 'Could not create Account'
+			});
+		});
+});
