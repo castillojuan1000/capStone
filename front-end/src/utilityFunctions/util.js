@@ -29,17 +29,17 @@ export const StoreAPIToken = () => {
 export const setupSpotify = () => {
 	var client_id = '42c128e85c9c4eddad1930a129937c94';
 	var response_type = 'token';
-	var redirect_uri = 'http://127.0.0.1:3003/';
+	var redirect_uri = 'http://127.0.0.1:4000/auth/spotify';
 	var scope = [
 		'user-read-playback-state',
 		'streaming',
 		'user-read-private',
 		'user-read-currently-playing',
-		'user-modify-playback-state',
-		'user-read-birthdate',
-		'user-read-email',
-		'user-library-read',
-        'user-library-modify'
+		'user-modify-playback-state'
+		// 'user-read-birthdate'
+		// 'user-read-email',
+		// 'user-library-read',
+		// 'user-library-modify'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 		room.hasMany(models.song);
 		room.hasMany(models.like);
 		room.hasMany(models.message);
-		room.belongsTo(models.user, { through: 'hostId', as: 'host' });
+		room.belongsTo(models.user, { foreignKey: 'hostId', as: 'host' });
 	};
 	return room;
 };

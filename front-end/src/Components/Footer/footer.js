@@ -32,39 +32,57 @@ let BoxDemo = (url) => {
     return <div style={divStyle} ></div>
 } */
 
+let VolumeOn = ({ Muted, onClick }) => {
+	let iconStyle = { fontSize: '2em' };
+	return Muted ? (
+		<VolumeOffRoundedIcon onClick={onClick} style={iconStyle} />
+	) : (
+		<VolumeUpRoundedIcon onClick={onClick} style={iconStyle} />
+	);
+};
 
-let Playing = ({IsPlaying}) => {
-    let iconStyle = {fontSize: '2em'}
-    return (IsPlaying) ? <PauseRoundedIcon style={iconStyle}/> : <PlayArrowRoundedIcon style={iconStyle}/>
-}
-
-let VolumeOn = ({Muted, onClick}) => {
-    let iconStyle = {fontSize: '2em'}
-    return (Muted) ? <VolumeOffRoundedIcon onClick={onClick} style={iconStyle}/> : <VolumeUpRoundedIcon onClick={onClick} style={iconStyle}/>
-}
-
-let LikeTrack = ({liked, onClick}) => {
-    let iconStyle = {fontSize: '1.6em', paddingRight: '5%'}
-    return (liked) ? <FavoriteRoundedIcon onClick={onClick} style={iconStyle}/> : <FavoriteBorderRoundedIcon onClick={onClick} style={iconStyle}/>
-}
+let LikeTrack = ({ liked, onClick }) => {
+	let iconStyle = { fontSize: '1.6em', paddingRight: '5%' };
+	return liked ? (
+		<FavoriteRoundedIcon onClick={onClick} style={iconStyle} />
+	) : (
+		<FavoriteBorderRoundedIcon onClick={onClick} style={iconStyle} />
+	);
+};
 
 class Footer extends React.Component {
-    constructor(props){
-      super(props)
-      this.state = {
-        playing: false,
-        muted: false,
-        liked: false,
-        currentTime: 0,
-        songLength: 321,
-        vibrant: 'green',
-      }
+	constructor(props) {
+		super(props);
+		this.state = {
+			playing: false,
+			muted: false,
+			liked: false,
+			currentTime: 0,
+			songLength: 321
+		};
 
-    this.toggleSound = this.toggleSound.bind(this)
-    this.toggleLike = this.toggleLike.bind(this)
-    this.playNext = this.playNext.bind(this)
-    this.setColor = this.setColor.bind(this)
-    }
+		this.toggleSound = this.toggleSound.bind(this);
+		this.toggleLike = this.toggleLike.bind(this);
+		this.playNext = this.playNext.bind(this);
+	}
+
+// class Footer extends React.Component {
+//     constructor(props){
+//       super(props)
+//       this.state = {
+//         playing: false,
+//         muted: false,
+//         liked: false,
+//         currentTime: 0,
+//         songLength: 321,
+//         vibrant: 'green',
+//       }
+
+//     this.toggleSound = this.toggleSound.bind(this)
+//     this.toggleLike = this.toggleLike.bind(this)
+//     this.playNext = this.playNext.bind(this)
+//     this.setColor = this.setColor.bind(this)
+//     }
 
     startTimer(currentTime=0) {
         this.setState({
@@ -226,7 +244,7 @@ class Footer extends React.Component {
                     </div>
                     <ArrowLeftRoundedIcon onClick={() => this.playNext(false)}  className="action-icon" style={iconStyle}/>
                     <div className="play-holder" style={{border: '1px solid rgba(255,255,255, 0.4)', borderRadius: '50px', width: '2.15em', padding: '.1em', height: '2.15em'}} onClick={this.togglePlay}>
-                        <Playing className="action-icon" IsPlaying={this.state.playing}/>
+                        {/* <Playing className="action-icon" IsPlaying={this.state.playing}/> */}
                     </div>
                     <ArrowRightRoundedIcon onClick={() => this.playNext(true)} className="action-icon" style={iconStyle}/>
                      <div>
