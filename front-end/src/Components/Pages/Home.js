@@ -122,7 +122,7 @@ export default function SignInSide(props) {
 				if (tokens && state.remember) {
 					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
-				props.authUser({ ...data.data, isLoggedIn: true });
+				props.authUser({ ...data, isLoggedIn: true });
 			});
 		e.target.reset();
 	};

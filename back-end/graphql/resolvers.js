@@ -1,4 +1,3 @@
-const { ApolloServer, gql } = require('apollo-server-express');
 const bcrypt = require('bcrypt');
 const resolvers = {
 	Query: {
@@ -11,7 +10,7 @@ const resolvers = {
 		async getUserRooms(root, { id }, { models }) {
 			return models.room.findAll({
 				where: {
-					userId: id
+					hostId: id
 				}
 			});
 		},
@@ -30,9 +29,7 @@ const resolvers = {
 			});
 		},
 		async getRoom(root, { id }, { models }) {
-			return models.room.findAll({
-				where: { id: id }
-			});
+			return models.room.findByPk(id);
 		},
 		async getRoomSongs(root, { id }, { models }) {
 			return models.song.findAll({
@@ -93,6 +90,10 @@ const resolvers = {
 		},
 		async messages(message) {
 			return message.getMessages();
+		},
+		async host(host) {
+			console.log(host.getHost());
+			return host.getHost();
 		}
 	}
 };
