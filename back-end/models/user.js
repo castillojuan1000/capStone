@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 		// associations can be defined here
 		user.hasMany(models.like);
 		user.hasMany(models.message);
+		user.hasOne(models.room, { foreignKey: 'hostId' });
 	};
 	return user;
 };

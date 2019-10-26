@@ -22,7 +22,24 @@ const createData = db => {
 		times(10, () => ({
 			userId: random(1, 10),
 			roomId: random(1, 10),
-			message: faker.lorem.sentence(20)
+			message: faker.lorem.sentence(10)
+		}))
+	);
+	db.like.bulkCreate(
+		times(10, () => ({
+			userId: random(1, 10),
+			roomId: random(1, 10),
+			songId: random(1, 10)
+		}))
+	);
+	db.song.bulkCreate(
+		times(10, () => ({
+			userId: random(1, 10),
+			roomId: random(1, 10),
+			order: random(1, 10),
+			spotifyId: random(100, 999),
+			songImg: faker.image.imageUrl(50, 50),
+			songLength: random(150, 240)
 		}))
 	);
 };
