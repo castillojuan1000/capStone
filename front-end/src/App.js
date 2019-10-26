@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import history from './history';
@@ -62,6 +63,16 @@ class App extends React.Component {
 				</Router>
 		);
 	}
+=======
+import SignInSide from './Components/Pages/Home'
+
+function App() {
+  return (
+    <div className="App">
+      <SignInSide></SignInSide>
+    </div>
+  );
+>>>>>>> master
 }
 
 export default App;
