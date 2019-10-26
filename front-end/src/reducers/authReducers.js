@@ -2,13 +2,7 @@ const initialState = {
 	email: '',
 	id: '',
 	likes: [],
-	isLoggedIn: false,
-	spotifyLikes: {
-		songs: [],
-		artists: [],
-		albums: [],
-		playlists: []
-	}
+	isLoggedIn: false
 };
 
 const authReducer = (state = initialState, action) => {
