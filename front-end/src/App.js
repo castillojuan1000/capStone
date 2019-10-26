@@ -27,16 +27,16 @@ import Login from './Components/login';
 import Footer from './Components/Footer/footer';
 import SignInSide from './Components/Pages/Home';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
-let HomePage = () => <SearchSection/>;
-let MainPage = () => <SearchSection/>;
-let AlbumPage = () => <Album/>;
-let ArtistPage = () => <Artist/>;
-let ExtraPage = () => <Login/>;
-let SignIN = () => <SignInSide/>
+let HomePage = () => <SearchSection />;
+let MainPage = () => <SearchSection />;
+let AlbumPage = () => <Album />;
+let ArtistPage = () => <Artist />;
+let ExtraPage = () => <Login />;
+let SignIN = () => <SignInSide />
 
 
 function App() {
-  
+
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
   const style = {
@@ -63,33 +63,33 @@ function App() {
     backdrop = <Backdrop click={closeSideDrawerHandler} />;
   }
 
-	
-		return (
-				<Router history={history}>
-					<div className='App' style={{ height: '100vh' }}>
-            <Navbar draweronClick={drawerToggleClickHandler} />
-            <SideDrawer click={closeSideDrawerHandler} show={sideDrawerOpen} />;
+
+  return (
+    <Router history={history}>
+      <div className='App' style={{ height: '100vh' }}>
+        <Navbar draweronClick={drawerToggleClickHandler} />
+        <SideDrawer click={closeSideDrawerHandler} show={sideDrawerOpen} />;
             {backdrop}
-						<div className='header'></div>
-            
-            <main style={style}>
-              <Switch>
-                <Route path='/login' component={ExtraPage} />
-                <Route path='/login2' component={SignIN} />
-                <Route path='/album/:id' component={AlbumPage} />
-                <Route path='/artist/:id' component={ArtistPage} />
-                <Route path='/' component={HomePage} />
+        <div className='header'></div>
 
-						  </Switch>
-          
-            </main>
-						
-						<Footer />
-					</div>
-				</Router>
-		);
-	}
+        <main style={style}>
+          <Switch>
+            <Route path='/login' component={ExtraPage} />
+            <Route path='/login2' component={SignIN} />
+            <Route path='/album/:id' component={AlbumPage} />
+            <Route path='/artist/:id' component={ArtistPage} />
+            <Route path='/' component={HomePage} />
 
+          </Switch>
+
+        </main>
+
+        <Footer />
+      </div>
+    </Router>
+  );
 }
+
+
 
 export default App;
