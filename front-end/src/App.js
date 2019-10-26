@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import history from './history';
@@ -17,13 +16,15 @@ import Album from './pages/albumPage';
 import Artist from './pages/artistPage';
 import Login from './Components/login';
 import Footer from './Components/Footer/footer';
-
+import SignInSide from './Components/Pages/Home';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
 let HomePage = () => <SearchSection/>;
 let MainPage = () => <SearchSection/>;
 let AlbumPage = () => <Album/>;
 let ArtistPage = () => <Artist/>;
 let ExtraPage = () => <Login/>;
+let SignIN = () => <SignInSide/>
+
 
 class App extends React.Component {
 	constructor(props) {
@@ -45,6 +46,7 @@ class App extends React.Component {
 						<div className='header'></div>
 						<Switch>
 							<Route path='/login' component={ExtraPage} />
+              <Route path='/login2' component={SignIN} />
               <Route path='/album/:id' component={AlbumPage} />
               <Route path='/artist/:id' component={ArtistPage} />
 							<Route path='/' component={HomePage} />
@@ -63,16 +65,6 @@ class App extends React.Component {
 				</Router>
 		);
 	}
-=======
-import SignInSide from './Components/Pages/Home'
-
-function App() {
-  return (
-    <div className="App">
-      <SignInSide></SignInSide>
-    </div>
-  );
->>>>>>> master
 }
 
 export default App;
