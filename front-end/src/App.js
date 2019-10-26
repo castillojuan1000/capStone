@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import history from './history';
@@ -11,19 +10,20 @@ import './reset.css';
 import { SpotifyContext } from './utilityFunctions/SpotifyContext';
 import { Spotify } from './utilityFunctions/util';
 //
-
-import SearchSection from './pages/search';
-import Album from './pages/albumPage';
-import Artist from './pages/artistPage';
+import {
+	AlbumContainer as Album,
+	ArtistContainer as Artist,
+	FooterContainer as Footer,
+	SearchSectionContainer as SearchSection
+} from './Components/Containers/MainContainer';
 import Login from './Components/login';
-import Footer from './Components/Footer/footer';
 
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
-let HomePage = () => <SearchSection/>;
-let MainPage = () => <SearchSection/>;
-let AlbumPage = () => <Album/>;
-let ArtistPage = () => <Artist/>;
-let ExtraPage = () => <Login/>;
+let HomePage = () => <SearchSection />;
+let MainPage = () => <SearchSection />;
+let AlbumPage = () => <Album />;
+let ArtistPage = () => <Artist />;
+let ExtraPage = () => <Login />;
 
 class App extends React.Component {
 	constructor(props) {
@@ -33,21 +33,20 @@ class App extends React.Component {
 		};
 	}
 
-  
 	render() {
-		const {token} = this.props
+		const { token } = this.props;
 		return (
-      // *** Wrapping the entire app with the Spotify Context Provider
-      //! Antony we need to handle the token generating within react so we can pass an instance
-	  //! Of the spotify class using the context API. I need a token to for the constructor
-				<Router history={history}>
-					<div className='App'>
-						<div className='header'></div>
-						<Switch>
-							<Route path='/login' component={ExtraPage} />
-              <Route path='/album/:id' component={AlbumPage} />
-              <Route path='/artist/:id' component={ArtistPage} />
-							<Route path='/' component={HomePage} />
+			// *** Wrapping the entire app with the Spotify Context Provider
+			//! Antony we need to handle the token generating within react so we can pass an instance
+			//! Of the spotify class using the context API. I need a token to for the constructor
+			<Router history={history}>
+				<div className='App'>
+					<div className='header'></div>
+					<Switch>
+						<Route path='/login' component={ExtraPage} />
+						<Route path='/album/:id' component={AlbumPage} />
+						<Route path='/artist/:id' component={ArtistPage} />
+						<Route path='/' component={HomePage} />
 
 						{/* 	<Route path='/second' render={() =>{
 								{token !== null ?
@@ -57,22 +56,12 @@ class App extends React.Component {
 								<Redirect to='/login' />
 								}
 							}} /> */}
-						</Switch>
-						<Footer />
-					</div>
-				</Router>
+					</Switch>
+					<Footer />
+				</div>
+			</Router>
 		);
 	}
-=======
-import SignInSide from './Components/Pages/Home'
-
-function App() {
-  return (
-    <div className="App">
-      <SignInSide></SignInSide>
-    </div>
-  );
->>>>>>> master
 }
 
 export default App;
