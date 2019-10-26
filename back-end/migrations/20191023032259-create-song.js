@@ -9,11 +9,7 @@ module.exports = {
 				type: Sequelize.INTEGER
 			},
 			roomId: {
-				type: Sequelize.INTEGER,
-				references: {
-					model: 'room',
-					key: 'id'
-				}
+				type: Sequelize.INTEGER
 			},
 			order: {
 				type: Sequelize.INTEGER

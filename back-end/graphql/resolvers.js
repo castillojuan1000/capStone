@@ -92,7 +92,6 @@ const resolvers = {
 			return message.getMessages();
 		},
 		async host(host) {
-			console.log(host.getHost());
 			return host.getHost();
 		}
 	}

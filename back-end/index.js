@@ -76,6 +76,12 @@ app.get('/api/hello', (req, res, next) => {
 
 app.get('/api/createUsers', (req, res, next) => {
 	createData(db);
+	res.send('Done!');
+});
+app.get('/api/getRoom', (req, res, next) => {
+	db.room.findByPk(1).then(response => {
+		res.send(response.getHost());
+	});
 });
 
 app.delete('/api/signout', (req, res) => {
@@ -170,8 +176,9 @@ app.post('/api/signup', (req, res) => {
 				data: accessUser,
 				secret: 'ACCESS'
 			});
-			res.status(200);
-			res.send({
+			req.session.jwtToken = { accessToken, refreshToken };
+			res.status(200).send({
+				data: { ...accessUser },
 				token: accessToken
 			});
 		})
