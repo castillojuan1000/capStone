@@ -10,7 +10,7 @@ import { withTheme } from '@material-ui/styles';
 
 const PrettoSlider = withStyles({
     root: {
-      color: '#52af77',
+      color: 'green',
       height: 4,
       width: '50vw',
     },
@@ -45,7 +45,7 @@ const PrettoSlider = withStyles({
   })(Slider);
   
 
-  export default function ProgressSlider( {max, current}) {
+  export default function ProgressSlider( {max, current, color}) {
 
   
     return (
@@ -53,7 +53,7 @@ const PrettoSlider = withStyles({
             <div className="label current-label">
                 <p>{getSongSeconds(current)}</p>
             </div>
-            <PrettoSlider valueLabelDisplay="hidden" aria-label="pretto slider" value={current} max={max} defaultValue={current} />
+            <PrettoSlider aria-label="pretto slider" style={{color: color}}value={current} max={max} defaultValue={current} />
             <div className="label song-length">
                 <p>{getSongSeconds(max)}</p>
             </div>

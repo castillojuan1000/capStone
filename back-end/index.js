@@ -44,12 +44,13 @@ myStore.sync();
 
 if (process.env.NODE_ENV == 'development') {
 	app.use(function(req, res, next) {
-		const authHeader = req.headers['authorization'];
-		const token = authHeader && authHeader.split(' ')[1];
+		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
+		console.log(token);
 		if (
 			req.path === '/api/login' ||
 			req.path === '/api/signup' ||
-			req.path === '/api/token'
+			req.path === '/api/token' ||
+			req.path === '/auth/spotify'
 		) {
 			return next();
 		}
@@ -85,9 +86,20 @@ app.delete('/api/signout', (req, res) => {
 	res.send({ data: 'Successfully logged out' });
 });
 
+app.get('/auth/:provider', (req, res) => {
+	console.log(req);
+	res.redirect('http://127.0.0.1:3000/login');
+});
+
+app.get('/getToken', (req, res) => {
+	console.log(req);
+	res.redirect(
+		'https://accounts.spotify.com/authorize?client_id=9fbcf6fdda254c04b4c8406f1f540040&redirect_uri=127.0.0.1:4000/api/auth/spotify&scope=user-read-playback-state%20streaming%20user-read-private%20user-read-currently-playing%20user-modify-playback-state%20user-library-read%20user-library-modify&response_type=token'
+	);
+});
+
 //*** POST ROUTES
 app.post('/api/login', (req, res) => {
-	console.log(req.session);
 	// res.send({ data: 'Hello' });
 	const { email, password } = req.body;
 	if (email && password) {
@@ -118,6 +130,7 @@ app.post('/api/login', (req, res) => {
 							data: accessUser,
 							secret: 'REFRESH'
 						});
+						req.session.jwtToken = { accessToken, refreshToken };
 						refreshTokens.push(refreshToken);
 						// let options = {
 						// 	maxAge: 1000 * 60 * 15, // would expire after 15 minutes
