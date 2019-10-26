@@ -49,10 +49,31 @@ body {
 .search-input {
   width: 50%;
   background: rgba(0,0,0, 0.6);
-  border: 2px solid transparent;
+  border: 1px solid transparent;
+  border-top: 1px solid green;
+  border-bottom: 1px solid green;
   padding: 1em;
   color: rgba(255,255,255,0.4);
   transition: 1.3s all;
+}
+
+.album-link {
+  text-decoration: none;
+}
+
+.album-link:hover {
+  text-shadow: 2px 1px rgba(0, 255,0, .4);
+}
+
+.album-link:focus {
+  text-decoration: none;
+  border: 0px solid transparent;
+  outline: 0px solid transparent;
+}
+
+.album-link:active{
+  transform: scale(1.02);
+  letter-spacing: 4px;
 }
 
 .search-input:focus {
@@ -68,10 +89,15 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  animation-name: huerotate;
+  animation-duration: 15s;
+  animation-iteration-count: infinite;
 }
 
 
 .search-icon {
+  border: 1px solid green;
+  border-right: 0px solid transparent;
   padding-left: 1%;
   display: flex;
   flex-direction: column;
@@ -81,10 +107,16 @@ body {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   cursor: pointer;
+  margin-right: -.2%;
 }
+
 
 .cancel-icon {
   cursor: pointer;
+  border: 1px solid green;
+  border-left: 0px solid transparent;
+  cursor: pointer;
+  margin-left: -.1%;
   padding-right: 1%;
   display: flex;
   flex-direction: column;
@@ -101,7 +133,7 @@ body {
   padding-top: 2%;
   width: 90vw;
   margin: 1% 5vw 0 5vw;
-  height: 70vh;
+  height: 60vh;
   overflow-y: scroll;
   display: flex;
   flex-direction: row;
@@ -109,7 +141,11 @@ body {
   align-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255, 0.3) #080707;
 }
+
+
 
 .artist-block {
   display: flex;
@@ -123,25 +159,187 @@ body {
 }
 
 .artist-block h3 {
+  line-height: 170%;
   color: white;
   font-weight: 100;
   letter-spacing: 3px;
   margin-top: 1%;
+  text-overflow: wrap;
+  max-width: 10em;
 }
 
 
 .artist-img {
-  height: 11vw;
-  width: 11vw;
+  height: 11em;
+  width: 11em;
   background-size: cover;      
   background-repeat: no-repeat;
   background-position: center center; 
   max-width: 100%;
   max-height: 100%;
-  border-radius: 50%;
   margin-bottom: 5%;
+  border-radius: 50%;
 }
 
+.artist-block:hover .artist-img {
+  filter: hue-rotate(270deg) ;
+  transition: all 5s;
+}
+
+.artist-block .artist-hover-state {
+  opacity: 0;
+  transition: all .6s;
+}
+
+.artist-block:hover .artist-hover-state {
+  opacity: 1;
+}
+
+.artist-icon-holder {
+  transition: all .3s;
+  width: .8025em;
+  height: .825em;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+.artist-icon-holder:active {
+  transform: scale(1.05);
+  color: green;
+  border: 1px solid green;
+  transition: all .3s;
+}
+
+.artist-hover-state {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  font-size: 4em;
+  color: rgba(255,255,255,0.75);
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0, 0.5);
+  transition: all .6s;
+  border-radius: 50%;
+}
+
+
+.album-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 4%;
+}
+
+.album-description {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.album-block h3 {
+  width: 100%;
+  line-height: 170%;
+  color: rgba(255,255,255,0.8);
+  font-weight: 100;
+  font-size: .8em;
+  letter-spacing: 3px;
+  margin-top: 1%;
+  text-overflow: wrap;
+  width: 14em;
+  max-width: 14em;
+  text-align: center;
+}
+
+.album-block h5 {
+  line-height: 120%;
+  color: rgba(255,255,255,0.5);
+  font-weight: 100;
+  font-size: .6em;
+  letter-spacing: 2px;
+  margin-top: 1%;
+  text-overflow: wrap;
+  width: 14em;
+  max-width: 14em;
+  text-align: center;
+}
+
+
+.album-img {
+  height: 11em;
+  width: 11em;
+  background-size: cover;      
+  background-repeat: no-repeat;
+  background-position: center center; 
+  max-width: 100%;
+  max-height: 100%;
+  margin-bottom: 5%;
+  border-radius: 5px;
+}
+
+.album-block:hover .artist-img {
+  filter: hue-rotate(270deg) !important;
+  transition: all 5s;
+}
+
+.album-block .album-hover-state {
+  opacity: 0;
+  transition: all .6s;
+}
+
+.album-block:hover .album-hover-state {
+  opacity: 1;
+}
+
+.album-icon-holder {
+  transition: all .3s;
+  width: .8025em;
+  height: .825em;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+.album-icon-holder:active {
+  transform: scale(1.1);
+  color: green;
+  border: 1px solid green;
+  transition: all .3s;
+}
+
+.album-icon-holder:hover {
+  transform: scale(1.05);
+  transition: all .3s;
+}
+
+.album-hover-state {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  font-size: 4em;
+  color: rgba(255,255,255,0.75);
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0, 0.5);
+  transition: all .6s;
+  border-radius: 5px;
+}
 
 
 .search-filter {
@@ -153,6 +351,9 @@ body {
   height: 5vh;
   background: rgba(0,0,0, 0.0);
   border-radius: 10px;
+  animation-name: huerotate;
+  animation-duration: 15s;
+  animation-iteration-count: infinite;
 }
 
 .search-filter ul {
@@ -199,8 +400,7 @@ body {
   height: 4em;
 }
 .loader {
-  position: fixed;
-  top: 35%;
+  top: 10%;
   color: rgba(255,255,255,.2);
   text-indent: -9999em;
   margin: 88px auto;
@@ -249,4 +449,176 @@ body {
     box-shadow: 0 -2em;
     height: 5em;
   }
+}
+
+.songs-container {
+  margin-left: 10vw;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+
+.song-block {
+  padding: 1%;
+  padding-left: 1%;
+  padding-right: 0%;
+  width: 75vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 2%;
+  border-radius: 5px;
+  transition: all 1s;
+}
+
+.song-block:hover{
+  background: rgba(0,0,0, 0.5);
+  transition: all 1s;
+}
+
+.song-description {
+  width: 60%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: flex-start;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.song-block:hover .song-action {
+  opacity: 1;
+  transition: all 1s;
+}
+
+.song-duration {
+  padding-right: 2%;
+  height: 100%;
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: flex-end;
+  align-items: flex-end;
+}
+
+.song-duration h3 {
+  color: rgba(255,255,255, 0.5);
+}
+
+.song-action {
+  transition: all 1s;
+  opacity: 0;
+  color: rgba(255,255,255, 0.65);
+  height: 100%;
+  width: 15%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  align-content: center;
+  border-radius: 5px;
+}
+
+.song-block h3 {
+  width: 100%;
+  line-height: 250%;
+  color: rgba(255,255,255,0.8);
+  font-weight: 100;
+  font-size: 1.2em;
+  letter-spacing: 3px;
+  text-align: left;
+}
+
+.song-block h5 {
+  line-height: 120%;
+  color: rgba(255,255,255,0.5);
+  font-weight: 100;
+  font-size: 1em;
+  letter-spacing: 2px;
+  text-overflow: wrap;
+  text-align: left;
+}
+
+
+.song-img-item {
+  height: 5em;
+  width: 5em;
+  background-size: cover;      
+  background-repeat: no-repeat;
+  background-position: center center; 
+  max-width: 100%;
+  max-height: 100%;
+  margin-left: 0 !important;
+  margin-right: 2%;
+  border-radius: 5px;
+}
+
+.song-block:hover .song-img-item {
+  filter: hue-rotate(270deg) !important;
+  transition: all 5s;
+}
+.song-hover-state.active {
+  opacity: 1 !important;
+}
+
+.album-hover-state.active {
+  opacity: 1 !important;
+}
+
+.song-block .song-hover-state {
+  opacity: 0;
+  transition: all .6s;
+}
+
+.song-block:hover .song-hover-state {
+  opacity: 1;
+}
+
+.song-icon-holder {
+  transition: all .3s;
+  width: .8025em;
+  height: .825em;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+.song-icon-holder:active {
+  transform: scale(1.1);
+  color: green;
+  border: 1px solid green;
+  transition: all .3s;
+}
+
+.song-icon-holder:hover {
+  transform: scale(1.05);
+  transition: all .3s;
+}
+
+.song-hover-state {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  font-size: 4em;
+  color: rgba(255,255,255,0.75);
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0, 0.5);
+  transition: all .6s;
+  border-radius: 5px;
 }

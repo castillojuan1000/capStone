@@ -36,7 +36,8 @@ export const setupSpotify = () => {
 		'user-modify-playback-state',
 		'user-read-birthdate',
 		'user-read-email',
-		'user-library-read'
+		'user-library-read',
+        'user-library-modify'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;
@@ -46,7 +47,7 @@ export const playSong = (song, spotify) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/player/play`;
-	let data = `{"uris": ["${song}"]}`;
+	let data = `{"uris": ${song}}`;
 	return spotify.PUTBodyParamter(url, data, 'Play specific song');
 };
 
@@ -66,7 +67,7 @@ export const getAlbum = (id, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/albums/${id}`;
-	return spotify.Get(url, 'got albums');
+	return spotify.GET(url, 'got albums');
 };
 
 export const getAlbumTracks = (id, spotify = null) => {
@@ -87,11 +88,11 @@ export const getArtistAlbums = (
 	id,
 	spotify = null,
 	offset = 0,
-	limit = 100
+	limit = 50
 ) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
-	let url = `https://api.spotify.com/v1/artists/${id}/albums?offset=${offset}&limit=${limit}`;
+	let url = `https://api.spotify.com/v1/artists/${id}/albums?offset=${offset}&limit=${limit}&country=US`;
 	return spotify.GET(url, 'got artist Albums');
 };
 
@@ -99,11 +100,11 @@ export const getArtistTopTracks = (
 	id,
 	spotify = null,
 	offset = 0,
-	limit = 100
+	limit = 50
 ) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
-	let url = `https://api.spotify.com/v1/artists/${id}/top-tracks?offset=${offset}&limit=${limit}`;
+	let url = `https://api.spotify.com/v1/artists/${id}/top-tracks?offset=${offset}&limit=${limit}&country=US`;
 	return spotify.GET(url, 'got top tracks by artist');
 };
 
