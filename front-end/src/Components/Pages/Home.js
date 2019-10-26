@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { stat } from 'fs';
 
 function Copyright() {
 	return (
@@ -60,7 +61,8 @@ export default function SignInSide(props) {
 	const classes = useStyles();
 	const [state, setState] = useState({
 		email: '',
-		password: ''
+		password: '',
+		remember: false
 	});
 	const [isRedirected, setIsRedirected] = useState(false);
 	const [error, setError] = useState('');
@@ -79,7 +81,16 @@ export default function SignInSide(props) {
 				headers: { 'Content-Type': 'application/json' }
 			})
 				.then(res => res.json())
-				.then(console.log);
+				.then(response => {
+					if (response.error) {
+						sessionStorage.removeItem('jwtTokens');
+					}
+					const { data, tokens } = response;
+					if (tokens) {
+						sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+					}
+					props.authUser(data);
+				});
 		}
 		return () => {
 			abort(loginWithToken);
@@ -88,7 +99,10 @@ export default function SignInSide(props) {
 	const handleSubmit = e => {
 		e.preventDefault();
 		setError('');
-		const formData = JSON.stringify(state);
+		const formData = JSON.stringify({
+			email: state.email,
+			password: state.password
+		});
 		debugger;
 		fetch('/api/login', {
 			method: 'POST',
@@ -103,14 +117,10 @@ export default function SignInSide(props) {
 					return 'Error';
 				}
 			})
-			.then(data => {
-				console.log(data);
-				if (data.tokens) {
-					const { accessToken, refreshToken } = data.tokens;
-					sessionStorage.setItem(
-						'jwtTokens',
-						JSON.stringify({ accessToken, refreshToken })
-					);
+			.then(({ data, tokens }) => {
+				console.log(data, tokens);
+				if (tokens && state.remember) {
+					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data.data, isLoggedIn: true });
 			});
@@ -157,7 +167,15 @@ export default function SignInSide(props) {
 							autoComplete='current-password'
 						/>
 						<FormControlLabel
-							control={<Checkbox value='remember' color='primary' />}
+							control={
+								<Checkbox
+									onClick={() =>
+										setState({ ...state, remember: !state.remember })
+									}
+									value='remember'
+									color='primary'
+								/>
+							}
 							label='Remember me'
 						/>
 						<Button

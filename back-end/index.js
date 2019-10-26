@@ -14,6 +14,7 @@ const env = process.env.NODE_ENV;
 const myStore = new SequelizeStore({
 	db: db.sequelize
 });
+const { createToken, verifyToken } = require('./utils');
 
 //! Apollo set up
 const { ApolloServer } = require('apollo-server-express');
@@ -44,7 +45,6 @@ myStore.sync();
 if (process.env.NODE_ENV == 'development') {
 	app.use(function(req, res, next) {
 		const authHeader = req.headers['authorization'];
-		console.log(req.cookies['jwtAuth']);
 		const token = authHeader && authHeader.split(' ')[1];
 		if (
 			req.path === '/api/login' ||
@@ -110,21 +110,21 @@ app.post('/api/login', (req, res) => {
 							email: user.email,
 							id: user.id
 						};
-						const accessToken = jwt.sign(
-							accessUser,
-							process.env.ACCESS_TOKEN_SECRET
-						);
-						const refreshToken = jwt.sign(
-							accessUser,
-							process.env.REFRESH_TOKEN_SECRET
-						);
+						const accessToken = createToken({
+							data: accessUser,
+							secret: 'ACCESS'
+						});
+						const refreshToken = createToken({
+							data: accessUser,
+							secret: 'REFRESH'
+						});
 						refreshTokens.push(refreshToken);
-						let options = {
-							maxAge: 1000 * 60 * 15, // would expire after 15 minutes
-							httpOnly: true, // The cookie only accessible by the web server
-							signed: true // Indicates if the cookie should be signed
-						};
-						res.cookie('jwtAuth', { accessToken, refreshToken }, options);
+						// let options = {
+						// 	maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+						// 	httpOnly: true, // The cookie only accessible by the web server
+						// 	signed: true // Indicates if the cookie should be signed
+						// };
+						// res.cookie('jwtAuth', { accessToken, refreshToken }, options);
 						return res.status(200).json({
 							tokens: { accessToken, refreshToken },
 							data: accessUser
@@ -148,16 +148,15 @@ app.post('/api/signup', (req, res) => {
 				email: user.email,
 				id: user.id
 			};
-			const refreshToken = jwt.sign(
-				accessUser,
-				process.env.REFRESH_TOKEN_SECRET
-			);
+			const refreshToken = createToken({
+				data: accessUser,
+				secret: 'REFRESH'
+			});
 			refreshTokens.push(refreshToken);
-			const accessToken = jwt.sign(
-				accessUser,
-				process.env.ACCESS_TOKEN_SECRET,
-				{ expiresIn: 60 * 60 * 1 }
-			);
+			const accessToken = createToken({
+				data: accessUser,
+				secret: 'ACCESS'
+			});
 			res.status(200);
 			res.send({
 				token: accessToken
@@ -171,23 +170,40 @@ app.post('/api/signup', (req, res) => {
 		});
 });
 
-app.post('/api/refreshtoken', (req, res) => {
-	console.log(req.body);
+app.post('/api/token', (req, res) => {
 	const refreshToken = req.body.refreshToken || req.query.refreshToken;
-	if (refreshToken === null)
+	const accessToken = req.body.accessToken || req.query.accessToken;
+	if (refreshToken === null) {
 		return res.sendStatus(401).json({ message: 'Must pass a token' });
-	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-		if (err) console.error(err);
-		db.user.findByPk(user.id).then(dbUser => {
-			if (dbUser === null) {
+	}
+	verifyToken(refreshToken, 'REFRESH', (err, tokenRes) => {
+		if (err) return res.status(401).send({ error: 'token expired' });
+		if (tokenRes.expiredAt) {
+			// ***  Token is expired
+			console.log('Token Expired');
+			return res.status(401).send({ error: 'token expired' });
+		}
+		var actualTimeInSeconds = new Date().getTime() / 1000;
+		const current_time = Date.now().valueOf() / 1000;
+		const { id, iat, exp } = tokenRes;
+		db.user.findByPk(id).then(user => {
+			if (user === null) {
 				return res.sendStatus(401);
 			}
-			const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-				expiresIn: 60 * 60 * 0.5
+			const accessToken = createToken({
+				data: { email: user.email, id: user.id },
+				secret: 'ACCESS'
 			});
+			if (exp) {
+				const expTime = new Date(exp);
+				console.log(exp, current_time);
+			}
 			res.json({
-				accessToken,
-				refreshToken
+				tokens: {
+					accessToken,
+					refreshToken
+				},
+				data: { email: user.email, id: user.id }
 			});
 		});
 	});
