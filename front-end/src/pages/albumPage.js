@@ -43,6 +43,8 @@ class AlbumPage extends React.Component {
       }
       this.PlaySong = this.PlaySong.bind(this)
     }
+
+
     componentDidMount() {
         var albumId = window.location.pathname.split('/')[2];
         getAlbum(albumId).then(result => {

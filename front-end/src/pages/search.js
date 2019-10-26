@@ -3,10 +3,13 @@ import {StoreAPIToken, setupSpotify, getCategoriesList} from '../utilityFunction
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import {Search, playSong, StopPlayer, ResumePlayer, getAlbumTracks} from '../utilityFunctions/util.js';
+import { withRouter, Redirect, push } from 'react-router-dom';
 
 import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs';
+
+import history from '../history';
 
 import '../App.css';
 
@@ -26,9 +29,12 @@ let Loader = ({loading}) => {
 }
 
 
+
+
 class SearchSection extends React.Component {
     constructor(props){
       super(props)
+      console.log(this.state)
       this.state = {
         token: '',
         search: '',
@@ -43,14 +49,25 @@ class SearchSection extends React.Component {
       this.setSearchFilter = this.setSearchFilter.bind(this)
       this.PlaySong = this.PlaySong.bind(this)
     }
+
+   // componentWillMount() {
+   // }
+
+    componentWillUnmount() {
+
+    }
+  
     componentDidMount() {
+      if(this.props.location.state !== undefined) {
+        this.setState(this.props.location.state)
+        }
       document.getElementById('search-body').addEventListener('scroll', this.checkScroll);
         let token = StoreAPIToken();
         let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
         if (token !== undefined){
             localStorage.setItem('token', token);
             localStorage.setItem('expiration', expiration);
-
+            history.push('/')
         } else if ((((localStorage.getItem('expiration') - Date.now()) / 1000)) < 60) {
             localStorage.setItem('token', '');
             localStorage.setItem('expiration', 0);
@@ -59,12 +76,12 @@ class SearchSection extends React.Component {
         else {
             this.setState({
                 ...this.state,
-                token: localStorage.getItem('token')
+                token: localStorage.getItem('token'),
             })
         }
         //getCategoriesList().then(data => console.log(data)); 
-        }
-    
+    }
+  
     handleSearch({target}) {
       if (this.state.typingTimeout) {
         clearTimeout(this.state.typingTimeout);
@@ -298,4 +315,4 @@ class SearchSection extends React.Component {
     }
   }
 
-export default SearchSection
+export default withRouter(SearchSection)

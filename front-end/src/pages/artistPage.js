@@ -49,6 +49,7 @@ class artistPage extends React.Component {
         getArtist(artistId).then(result => {
             getArtistTopTracks(artistId).then(tracks => {
                 getArtistAlbums(artistId).then(albums => {
+                    console.log("logging albums")
                     console.log(albums)
                 this.setState({
                     ...this.state,
@@ -57,7 +58,8 @@ class artistPage extends React.Component {
                     artistImg: result.images[0].url,
                     followers: result.followers.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     loading: false,
-                    tracks: tracks.tracks
+                    tracks: tracks.tracks,
+                    albums: albums,
                 })
              this.setColor(tracks.tracks[0].album.images[0].url)
                 })
@@ -161,8 +163,9 @@ class artistPage extends React.Component {
 
     buildAlbums = () => {
       let albums = []
-      if (('albums' in this.state.result)){
-        this.state.result.albums.items.forEach((album, idx) => {
+      if ((this.state.albums)){
+        this.state.albums.items.forEach((album, idx) => {
+            console.log(album)
           let active = (this.state.currentSong === album.id) ? true : false;
           albums.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
         })
@@ -189,6 +192,8 @@ class artistPage extends React.Component {
         let vibrantStyle = {backgroundColor: "rgba(0,0,0, 0.75)", color: this.state.vibrant}
         let scrollStyle = {scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`}
         let tracks = this.buildTracks();
+        let albums = this.buildAlbums();
+        console.log(albums)
       return (
           <div className="artist-page" style={backStyle}>
             <div className="artist-top-section">
@@ -209,11 +214,18 @@ class artistPage extends React.Component {
                  </div>
             </div>
             <div>
+                <div>
                 <div className="album-songs" style={scrollStyle}>
                     <Loader loading={this.state.loading}/>
                         <h2>Top Tracks</h2>
-                        {tracks}
+                        <div>
+                            {tracks}
+                        </div>
+                </div>
+                    <div className="artist-albums-holder">
                         <h2>Albums</h2>
+                        {albums}
+                    </div>
                 </div>
             </div>
             </div>
