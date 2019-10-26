@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import photo from '../../style/images/card1.jpg';
 
 function Copyright() {
     return (
@@ -29,14 +30,14 @@ function Copyright() {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        height: '100hv',
+        height: '100vh',
         background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)',
 
     },
     image: {
-        backgroundImgae: 'url(http://127.0.0.1:5501/img/card1.jpg)',
+        backgroundImage: `url(${photo})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
+        backgroundSize: 'half',
         backgroundPosition: 'center',
     },
     paper: {
