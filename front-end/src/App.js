@@ -34,29 +34,6 @@ class App extends React.Component {
 	}
 
 	render() {
-<<<<<<< HEAD
-		// *** Wrapping the entire app with the Spotify Context Provider
-		return (
-			<div className='App'>
-				<div className='header'></div>
-				<Switch>
-					<Route
-						path='/login'
-						render={props => (
-							<HomeContainer
-								page='login Page'
-								{...props}
-								cookies={this.props.cookies}
-							/>
-						)}
-					/>
-					<Route path='/second' component={MainPage} />
-					<Route exact path='/' component={HomePage} />
-					<Route exact path='/auth/spotify' component={ReceiveSpotifyOAuth} />
-				</Switch>
-				<Footer />
-			</div>
-=======
 		const { token } = this.props;
 		return (
 			// *** Wrapping the entire app with the Spotify Context Provider
@@ -83,7 +60,6 @@ class App extends React.Component {
 					<Footer />
 				</div>
 			</Router>
->>>>>>> antony
 		);
 	}
 }
