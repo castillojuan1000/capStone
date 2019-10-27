@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import io from "socket.io-client"
-
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import { withRouter } from 'react-router-dom';
+import FormControl from '@material-ui/core/FormControl'
 
 
 class Chatroom extends Component {
@@ -46,45 +51,60 @@ class Chatroom extends Component {
         const addFeedback = data => {
             this.setState({ currentTyper: [...this.state.currentTyper, data] })
         }
+        const useStyles = makeStyles(theme => ({
+            root: {
+                flexGrow: '1'
+            },
+            paper: {
+                padding: theme.spacing(2),
+                textAlign: 'center',
+                color: theme.palette.text.secondary,
+            },
+            submit: {
+                margin: theme.spacing(3, 0, 2)
+            },
+        }));
+        const classes = useStyles();
     }
+
+
+
 
     render() {
 
-
-
         return (
 
-            <div className="container">
-                <div className="row">
-                    <div className="col-4">
-                        <div className="card">
-                            <div className="card-body">
+            <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs={6}>
+                        <Paper className={classes.paper}>xs=6>
                                 <div className="card-title">Global Chat</div>
-                                <hr />
-                                <div className="messages">
-                                    {this.state.messages.map(message => {
-                                        return (
-                                            <div>{message.author}: {message.message}</div>
-                                        )
-                                    })}
-                                </div>
+                            <hr />
+                            <div className="messages">
+                                {this.state.messages.map(message => {
+                                    return (
+                                        <div>{message.author}: {message.message}</div>
+                                    )
+                                })}
+                            </div>
 
-                            </div>
-                            <div className="card-footer">
-                                <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({ username: ev.target.value })} className="form-control" />
-                                <br />
-                                <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-                                <br />
-                                <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        </Paper>
+                        <FormControl>
+                            <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({ username: ev.target.value })} className="form-control" />
+                            <br />
+                            <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+                            <br />
+                            <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
+                        </FormControl>
+
+
+                    </Grid>
+                </Grid>
             </div>
 
-        )
+        );
     }
 }
 
 
-export default Chatroom
+export default withRouter(Chatroom)

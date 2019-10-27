@@ -6,7 +6,7 @@ import Navbar from './Components/Navbar/Navbar';
 import { connect } from 'react-redux';
 import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
-
+import Chatroom from './Components/Pages/Chatroom'
 import './App.css';
 import './reset.css';
 
@@ -65,9 +65,11 @@ function App(props) {
         <main style={style}>
           <Switch>
             {/* <Route path='/login' component={ExtraPage} /> */}
+
             <Route path='/login' component={SignIN} />
             <Route path='/album/:id' component={AlbumPage} />
             <Route path='/artist/:id' component={ArtistPage} />
+            <Route path='/chatroom' component={Chatroom} />
             <Route path='/' component={HomePage} />
           </Switch>
         </main>
