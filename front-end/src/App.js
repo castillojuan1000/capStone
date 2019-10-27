@@ -15,10 +15,10 @@ import { SpotifyContext } from './utilityFunctions/SpotifyContext';
 import { Spotify } from './utilityFunctions/util';
 //
 import {
-	AlbumContainer as Album,
-	ArtistContainer as Artist,
-	FooterContainer as Footer,
-	SearchSectionContainer as SearchSection
+  AlbumContainer as Album,
+  ArtistContainer as Artist,
+  FooterContainer as Footer,
+  SearchSectionContainer as SearchSection
 } from './Components/Containers/MainContainer';
 import { SignInContainer as SignInSide } from './Components/Containers/SignInContainer';
 import Login from './Components/login';
@@ -31,60 +31,60 @@ let ExtraPage = () => <Login />;
 let SignIN = () => <SignInSide />;
 
 function App(props) {
-	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
+  const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
-	const style = {
-		marginTop: '8vh',
-		color: 'black',
-		width: '100%'
-	};
+  const style = {
+    marginTop: '8vh',
+    color: 'black',
+    width: '100%'
+  };
 
-	const drawerToggleClickHandler = () => {
-		setSideDrawerOpen(prevState => {
-			return !sideDrawerOpen;
-		});
-	};
+  const drawerToggleClickHandler = () => {
+    setSideDrawerOpen(prevState => {
+      return !sideDrawerOpen;
+    });
+  };
 
-	const closeSideDrawerHandler = () => {
-		setSideDrawerOpen(false);
-	};
+  const closeSideDrawerHandler = () => {
+    setSideDrawerOpen(false);
+  };
 
-	let backdrop;
+  let backdrop;
 
-	if (sideDrawerOpen) {
-		backdrop = <Backdrop click={closeSideDrawerHandler} />;
-	}
+  if (sideDrawerOpen) {
+    backdrop = <Backdrop click={closeSideDrawerHandler} />;
+  }
 
-	return (
-		<Router history={history}>
-			<div className='App' style={{ height: '100vh' }}>
-				<Navbar draweronClick={drawerToggleClickHandler} />
-				<SideDrawer click={closeSideDrawerHandler} show={sideDrawerOpen} />;
+  return (
+    <Router history={history}>
+      <div className='App' style={{ height: '100vh' }}>
+        <Navbar draweronClick={drawerToggleClickHandler} />
+        <SideDrawer click={closeSideDrawerHandler} show={sideDrawerOpen} />;
 				{backdrop}
-				<div className='header'></div>
-				<main style={style}>
-					<Switch>
-						{/* <Route path='/login' component={ExtraPage} /> */}
-						<Route path='/login' component={SignIN} />
-						<Route path='/album/:id' component={AlbumPage} />
-						<Route path='/artist/:id' component={ArtistPage} />
-						<Route path='/' component={HomePage} />
-					</Switch>
-				</main>
-				{props.spotifyData.userToken && (
-					<>
-						<Footer />
-					</>
-				)}
-			</div>
-		</Router>
-	);
+        <div className='header'></div>
+        <main style={style}>
+          <Switch>
+            {/* <Route path='/login' component={ExtraPage} /> */}
+            <Route path='/login' component={SignIN} />
+            <Route path='/album/:id' component={AlbumPage} />
+            <Route path='/artist/:id' component={ArtistPage} />
+            <Route path='/' component={HomePage} />
+          </Switch>
+        </main>
+        {props.spotifyData.userToken && (
+          <>
+            <Footer />
+          </>
+        )}
+      </div>
+    </Router>
+  );
 }
 
 const mapStateToProps = state => {
-	return {
-		...state
-	};
+  return {
+    ...state
+  };
 };
 // 	const {token} = this.props
 // 	return (
@@ -116,6 +116,6 @@ const mapStateToProps = state => {
 // }
 
 export default connect(
-	mapStateToProps,
-	null
+  mapStateToProps,
+  null
 )(App);

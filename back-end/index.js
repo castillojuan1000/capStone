@@ -1,5 +1,7 @@
 const express = require('express');
 const session = require('express-session');
+const crypto = require('crypto');
+var socket = require('socket.io')
 const bcrypt = require('bcrypt');
 // const io = require('socketio');
 const jwt = require('jsonwebtoken');
@@ -43,7 +45,7 @@ app.use(
 myStore.sync();
 
 if (process.env.NODE_ENV == 'development') {
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		console.log(token);
 		if (
@@ -65,9 +67,10 @@ if (process.env.NODE_ENV == 'development') {
 	});
 }
 
-app.listen(4000, () => {
-	console.log('Server running! \nhttp://localhost:4000');
+var server = app.listen(4000, () => {
+	console.log('Server running on port 4000');
 });
+
 
 //*** GET ROUTES
 app.get('/api/hello', (req, res, next) => {
@@ -228,3 +231,26 @@ app.post('/api/token', (req, res) => {
 		});
 	});
 });
+
+//! CHARTROOM SERVER
+app.use(express.static('./src/Components/Pages'));
+var io = socket(server);
+
+io.on('connection', (socket) => {
+	console.log('made socket connection', socket.id)
+
+	//socket is waiting for that connection on the client side 
+	//once it get then "chat" message it will call the function
+	socket.on('SEND_MESSAGE', function (data) {
+
+		//then grabbing all the sockets and calling a event and then send the data
+		io.sockets.emit('RECEIVE_MESSAGE', data)
+
+	})
+
+	socket.on('typing', function (data) {
+
+		// this is broadcasting the message once a person is typing but not to the person typing the message
+		socket.broadcast.emit('typing', data)
+	})
+})
