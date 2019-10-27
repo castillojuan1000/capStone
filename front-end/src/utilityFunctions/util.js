@@ -9,7 +9,6 @@ export const getSongSeconds = seconds => {
 	return `${minutes}:${seconds}`;
 };
 
-
 export const StoreAPIToken = () => {
 	let hash = window.location.hash.substr(1).split('&');
 	let hashMap = [];
@@ -25,11 +24,10 @@ export const StoreAPIToken = () => {
 	}
 };
 
-
 export const setupSpotify = () => {
 	var client_id = '42c128e85c9c4eddad1930a129937c94';
 	var response_type = 'token';
-	var redirect_uri = 'http://127.0.0.1:4000/auth/spotify';
+	var redirect_uri = 'http://127.0.0.1:3000/login';
 	var scope = [
 		'user-read-playback-state',
 		'streaming',
@@ -45,7 +43,6 @@ export const setupSpotify = () => {
 	window.location = url;
 };
 
-
 export const playSong = (song, spotify) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
@@ -53,7 +50,6 @@ export const playSong = (song, spotify) => {
 	let data = `{"uris": ${song}}`;
 	return spotify.PUTBodyParamter(url, data, 'Play specific song');
 };
-
 
 export const SpotifyLogout = () => {
 	const url = 'https://www.spotify.com/logout/';
@@ -74,14 +70,12 @@ export const getAlbum = (id, spotify = null) => {
 	return spotify.GET(url, 'got albums');
 };
 
-
 export const getAlbumTracks = (id, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/albums/${id}/tracks?limit=50`;
 	return spotify.GET(url, 'got album track list');
 };
-
 
 export const getArtist = (id, spotify = null) => {
 	spotify =
@@ -90,19 +84,12 @@ export const getArtist = (id, spotify = null) => {
 	return spotify.GET(url, 'got artists');
 };
 
-
-export const getArtistAlbums = (
-	id,
-	spotify = null,
-	offset = 0,
-	limit = 50
-) => {
+export const getArtistAlbums = (id, spotify = null, offset = 0, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/artists/${id}/albums?offset=${offset}&limit=${limit}&country=US`;
 	return spotify.GET(url, 'got artist Albums');
 };
-
 
 export const getArtistTopTracks = (
 	id,
@@ -190,7 +177,6 @@ export const getRecommendations = (spotify = null, offset = 0, limit = 100) => {
 	return spotify.GET(url, 'got recommendations');
 };
 
-
 export const getFollowedArtists = (spotify = null, limit = 100) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
@@ -226,14 +212,12 @@ export const followPlaylist = (playlist_id, spotify = null) => {
 	return spotify.PUT(url, 'PUT Followed New Artist');
 };
 
-
 export const UnfollowArtist = (type, ids, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/following?type=${type}&ids=${ids}`;
 	return spotify.DELETE(url, 'DELETE Artist Removed');
 };
-
 
 export const UnfollowPlaylist = (playlist_id, spotify = null) => {
 	spotify =

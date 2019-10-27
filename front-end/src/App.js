@@ -1,14 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import history from './history';
-import Navbar from './components/Navbar/Navbar';
 import React, { useState } from 'react';
-import Navbar from './components/Navbar/Navbar';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Navbar from './Components/Navbar/Navbar';
 
-import SideDrawer from './components/Navbar/SideDrawer/SideDrawer';
-import Backdrop from './components/Navbar/Backdrop/Backdrop';
+import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
+import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 
 import './App.css';
 import './reset.css';
@@ -23,10 +20,8 @@ import {
 	FooterContainer as Footer,
 	SearchSectionContainer as SearchSection
 } from './Components/Containers/MainContainer';
-import { HomeContainer } from './Components/Containers/HomeContainer';
+import { SignInContainer as SignInSide } from './Components/Containers/SignInContainer';
 import Login from './Components/login';
-import Footer from './Components/Footer/footer';
-import SignInSide from './Components/Pages/Home';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
 let HomePage = () => <SearchSection />;
 let MainPage = () => <SearchSection />;
@@ -69,8 +64,8 @@ function App() {
 				<div className='header'></div>
 				<main style={style}>
 					<Switch>
-						<Route path='/login' component={ExtraPage} />
-						<Route path='/login2' component={SignIN} />
+						{/* <Route path='/login' component={ExtraPage} /> */}
+						<Route path='/login' component={SignIN} />
 						<Route path='/album/:id' component={AlbumPage} />
 						<Route path='/artist/:id' component={ArtistPage} />
 						<Route path='/' component={HomePage} />

@@ -12,7 +12,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { setupSpotify } from '../../utilityFunctions/util';
+import { setupSpotify, StoreAPIToken } from '../../utilityFunctions/util';
+import { Spotify } from '../../utilityFunctions/util2';
 import { withRouter } from 'react-router-dom';
 
 function Copyright() {
@@ -57,13 +58,14 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(3, 0, 2)
 	}
 }));
-
 function SignInSide(props) {
+	const SpotifyToken = StoreAPIToken();
 	const classes = useStyles();
 	const [state, setState] = useState({
 		email: '',
 		password: '',
-		remember: false
+		remember: false,
+		isLoggedIn: false
 	});
 	const [isRedirected, setIsRedirected] = useState(false);
 	const [error, setError] = useState('');
@@ -72,13 +74,13 @@ function SignInSide(props) {
 	};
 
 	useEffect(() => {
-		const tokens = sessionStorage.getItem('jwtTokens') || null;
-		const abort = new AbortController();
+		const authTokens = sessionStorage.getItem('jwtTokens') || null;
+		const abortController = new AbortController();
 		let loginWithToken;
-		if (tokens) {
+		if (authTokens && !props.user.isLoggedIn) {
 			loginWithToken = fetch('/api/token', {
 				method: 'POST',
-				body: tokens,
+				body: authTokens,
 				headers: { 'Content-Type': 'application/json' }
 			})
 				.then(res => res.json())
@@ -90,11 +92,28 @@ function SignInSide(props) {
 					if (tokens) {
 						sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 					}
-					props.authUser(data);
+					setState({ ...state, isLoggedIn: true });
+					return props.authUser({ ...data, isLoggedIn: true });
+				})
+				.then(() => {
+					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+					const expirationTS =
+						(localStorage.getItem('expiration') - Date.now()) / 1000;
+					if (SpotifyToken) {
+						localStorage.setItem('token', SpotifyToken);
+						localStorage.setItem('expiration', expiration);
+						props.spotifyToken(SpotifyToken);
+						props.initiatePlayer(new Spotify(SpotifyToken));
+						props.history.push('/');
+					} else if (expirationTS < 60 || !props.spotifyData.userToken) {
+						localStorage.setItem('token', '');
+						localStorage.setItem('expiration', 0);
+						setupSpotify();
+					}
 				});
 		}
 		return () => {
-			abort(loginWithToken);
+			abortController.abort(loginWithToken);
 		};
 	}, []);
 	const handleSubmit = e => {
@@ -124,6 +143,22 @@ function SignInSide(props) {
 					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data, isLoggedIn: true });
+			})
+			.then(() => {
+				let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+				const expirationTS =
+					(localStorage.getItem('expiration') - Date.now()) / 1000;
+				if (SpotifyToken) {
+					localStorage.setItem('token', SpotifyToken);
+					localStorage.setItem('expiration', expiration);
+					props.spotifyToken(SpotifyToken);
+					props.initiatePlayer(SpotifyToken);
+					props.history.push('/');
+				} else if (expirationTS < 60 || !props.spotifyData.userToken) {
+					localStorage.setItem('token', '');
+					localStorage.setItem('expiration', 0);
+					setupSpotify();
+				}
 			});
 		e.target.reset();
 	};

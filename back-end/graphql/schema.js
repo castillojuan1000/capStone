@@ -38,7 +38,7 @@ const typDefs = gql`
 		getUser(id: Int!): User!
 		getUserByEmail(email: String!): User!
 		getRoom(id: Int!): Room!
-		getSong(id: Int!): Song!
+		getSong(spotifyId: Int!): Song!
 		getAllSongs: [Song]
 	}
 	type Mutation {
