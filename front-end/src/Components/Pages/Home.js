@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,16 +12,17 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
-import photo from '../../style/images/card1.jpg';
+import { setupSpotify, StoreAPIToken } from '../../utilityFunctions/util';
+import { Spotify } from '../../utilityFunctions/util2';
+import { withRouter } from 'react-router-dom';
 
 function Copyright() {
     return (
-        <Typography variant="body2" color="textSecondary" align="center">
+        <Typography variant='body2' color='textSecondary' align='center'>
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
+            <Link color='inherit' href='https://material-ui.com/'>
                 Sound Good Music
-      </Link>{' '}
+			</Link>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -30,40 +31,139 @@ function Copyright() {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        height: '100vh',
-        background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)',
-
+        height: '100hv',
+        background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)'
     },
     image: {
-        backgroundImage: `url(${photo})`,
+        backgroundImgae: 'url(http://127.0.0.1:5501/img/card1.jpg)',
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'half',
-        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
     },
     paper: {
         margin: theme.spacing(8, 4),
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: theme.palette.secondary.main
     },
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(1)
     },
     submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
+        margin: theme.spacing(3, 0, 2)
+    }
 }));
-
-export default function SignInSide() {
+function SignInSide(props) {
+    const SpotifyToken = StoreAPIToken();
     const classes = useStyles();
+    const [state, setState] = useState({
+        email: '',
+        password: '',
+        remember: false,
+        isLoggedIn: false
+    });
+    const [isRedirected, setIsRedirected] = useState(false);
+    const [error, setError] = useState('');
+    const onChange = e => {
+        return setState({ ...state, [e.target.name]: e.target.value });
+    };
 
+    useEffect(() => {
+        const authTokens = sessionStorage.getItem('jwtTokens') || null;
+        const abortController = new AbortController();
+        let loginWithToken;
+        if (authTokens && !props.user.isLoggedIn) {
+            loginWithToken = fetch('/api/token', {
+                method: 'POST',
+                body: authTokens,
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(res => res.json())
+                .then(response => {
+                    if (response.error) {
+                        sessionStorage.removeItem('jwtTokens');
+                    }
+                    const { data, tokens } = response;
+                    if (tokens) {
+                        sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+                    }
+                    setState({ ...state, isLoggedIn: true });
+                    return props.authUser({ ...data, isLoggedIn: true });
+                })
+                .then(() => {
+                    let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+                    const expirationTS =
+                        (localStorage.getItem('expiration') - Date.now()) / 1000;
+                    if (SpotifyToken) {
+                        localStorage.setItem('token', SpotifyToken);
+                        localStorage.setItem('expiration', expiration);
+                        props.spotifyToken(SpotifyToken);
+                        props.initiatePlayer(new Spotify(SpotifyToken));
+                        props.history.push('/');
+                    } else if (expirationTS < 60 || !props.spotifyData.userToken) {
+                        localStorage.setItem('token', '');
+                        localStorage.setItem('expiration', 0);
+                        setupSpotify();
+                    }
+                });
+        }
+        return () => {
+            abortController.abort(loginWithToken);
+        };
+    }, []);
+    const handleSubmit = e => {
+        e.preventDefault();
+        setError('');
+        const formData = JSON.stringify({
+            email: state.email,
+            password: state.password
+        });
+        debugger;
+        fetch('/api/login', {
+            method: 'POST',
+            body: formData,
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    setError('Please check user name & password!');
+                    return 'Error';
+                }
+            })
+            .then(({ data, tokens }) => {
+                debugger;
+                if (tokens && state.remember) {
+                    sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+                }
+                props.authUser({ ...data, isLoggedIn: true });
+            })
+            .then(() => {
+                let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+                const expirationTS =
+                    (localStorage.getItem('expiration') - Date.now()) / 1000;
+                if (SpotifyToken) {
+                    localStorage.setItem('token', SpotifyToken);
+                    localStorage.setItem('expiration', expiration);
+                    props.spotifyToken(SpotifyToken);
+                    props.initiatePlayer(new Spotify(SpotifyToken));
+                    props.history.push('/');
+                } else if (expirationTS < 60 || !props.spotifyData.userToken) {
+                    localStorage.setItem('token', '');
+                    localStorage.setItem('expiration', 0);
+                    setupSpotify();
+                }
+            });
+        e.target.reset();
+    };
     return (
-        <Grid container component="main" className={classes.root}>
+        <Grid container component='main' className={classes.root}>
             <CssBaseline />
             <Grid item xs={false} sm={4} md={7} className={classes.image} />
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -71,53 +171,65 @@ export default function SignInSide() {
                     <Avatar className={classes.avatar}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography component='h1' variant='h5'>
                         Sign in
-            </Typography>
-                    <form className={classes.form} noValidate>
+					</Typography>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    <form className={classes.form} onSubmit={handleSubmit} noValidate>
                         <TextField
-                            variant="outlined"
-                            margin="normal"
+                            variant='outlined'
+                            margin='normal'
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
+                            id='email'
+                            label='Email Address'
+                            name='email'
+                            autoComplete='email'
                             autoFocus
+                            value={state.email}
+                            onChange={onChange}
                         />
                         <TextField
-                            variant="outlined"
-                            margin="normal"
+                            variant='outlined'
+                            margin='normal'
                             required
                             fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
+                            name='password'
+                            label='Password'
+                            type='password'
+                            id='password'
+                            value={state.password}
+                            onChange={onChange}
+                            autoComplete='current-password'
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
+                            control={
+                                <Checkbox
+                                    onClick={() =>
+                                        setState({ ...state, remember: !state.remember })
+                                    }
+                                    value='remember'
+                                    color='primary'
+                                />
+                            }
+                            label='Remember me'
                         />
                         <Button
-                            type="submit"
+                            type='submit'
                             fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
+                            variant='contained'
+                            color='primary'
+                            className={classes.submit}>
                             Sign In
-              </Button>
+						</Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
+                                <Link href='#' variant='body2'>
                                     Forgot password?
-                  </Link>
+								</Link>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href='#' variant='body2'>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
@@ -132,5 +244,4 @@ export default function SignInSide() {
     );
 }
 
-
-
+export default withRouter(SignInSide);
