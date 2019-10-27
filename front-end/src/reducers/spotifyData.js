@@ -3,7 +3,8 @@ const initialState = {
 	artists: [],
 	albums: [],
 	playlists: [],
-	userToken: ''
+	userToken: '',
+	searchQuery: ''
 };
 
 const spotifyData = (state = initialState, action) => {
@@ -34,7 +35,6 @@ const spotifyData = (state = initialState, action) => {
 				...state,
 				userToken: payload
 			};
-
 		default:
 			return state;
 	}

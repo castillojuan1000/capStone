@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import history from './history';
 import React, { useState } from 'react';
 import Navbar from './Components/Navbar/Navbar';
-
+import { connect } from 'react-redux';
 import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 
@@ -30,7 +30,7 @@ let ArtistPage = () => <Artist />;
 let ExtraPage = () => <Login />;
 let SignIN = () => <SignInSide />;
 
-function App() {
+function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
 	const style = {
@@ -71,11 +71,21 @@ function App() {
 						<Route path='/' component={HomePage} />
 					</Switch>
 				</main>
-				<Footer />
+				{props.spotifyData.userToken && (
+					<>
+						<Footer />
+					</>
+				)}
 			</div>
 		</Router>
 	);
 }
+
+const mapStateToProps = state => {
+	return {
+		...state
+	};
+};
 // 	const {token} = this.props
 // 	return (
 //   // *** Wrapping the entire app with the Spotify Context Provider
@@ -105,4 +115,7 @@ function App() {
 // 	);
 // }
 
-export default App;
+export default connect(
+	mapStateToProps,
+	null
+)(App);

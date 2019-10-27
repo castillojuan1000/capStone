@@ -6,7 +6,14 @@ import SearchSection from '../../pages/search';
 
 const mapStateToProps = state => ({ ...state });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+	setSearch: payload => {
+		dispatch({ type: 'SET_SEARCH', payload });
+	},
+	clearSearchState: () => {
+		dispatch({ type: 'CLEAR_SEARCH_STATE' });
+	}
+});
 
 export const FooterContainer = connect(
 	mapStateToProps,

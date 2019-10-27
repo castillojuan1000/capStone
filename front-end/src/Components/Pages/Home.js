@@ -152,7 +152,7 @@ function SignInSide(props) {
 					localStorage.setItem('token', SpotifyToken);
 					localStorage.setItem('expiration', expiration);
 					props.spotifyToken(SpotifyToken);
-					props.initiatePlayer(SpotifyToken);
+					props.initiatePlayer(new Spotify(SpotifyToken));
 					props.history.push('/');
 				} else if (expirationTS < 60 || !props.spotifyData.userToken) {
 					localStorage.setItem('token', '');

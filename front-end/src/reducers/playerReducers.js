@@ -4,7 +4,7 @@ const initialState = {
 	queue: []
 };
 
-const authReducer = (state = initialState, action) => {
+const playerReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
 		case 'PLAY_SONG':
@@ -28,4 +28,4 @@ const authReducer = (state = initialState, action) => {
 	}
 };
 
-export default authReducer;
+export default playerReducer;
