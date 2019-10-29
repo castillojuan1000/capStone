@@ -53,7 +53,7 @@ const Toolbar = styled.header`
   width: 100%;
   top: 0;
   left: 0;
-  background: #521751;
+  background: black;
   height: 8vh;
 `
 

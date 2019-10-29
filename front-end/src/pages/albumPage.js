@@ -60,12 +60,13 @@ class AlbumPage extends React.Component {
 			vibrant: 'green'
 		};
 		this.PlaySong = this.PlaySong.bind(this);
+		console.info("props below")
+		console.info(props)
 	}
 	componentDidMount() {
 		var albumId = window.location.pathname.split('/')[2];
-		this.props.setSearch(this.props.location.state);
 		getAlbum(albumId).then(result => {
-			console.log(result);
+			let copyRight = (result.copyrights.length > 0) ? result.copyrights[0].text : ''
 			this.setState({
 				...this.state,
 				artistName: result.artists[0].name,
@@ -76,7 +77,7 @@ class AlbumPage extends React.Component {
 				loading: false,
 				trackCount: result.total_tracks,
 				albumYear: new Date(result.release_date).getFullYear(),
-				copyRight: result.copyrights[0].text
+				copyRight: copyRight
 			});
 			this.setColor(result.images[0].url);
 		});
@@ -91,16 +92,19 @@ class AlbumPage extends React.Component {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let rgb = palette.Vibrant._rgb;
 				let dark = palette.DarkMuted._rgb;
+				let darkvibrant = palette.DarkVibrant._rgb;
 				let muted = palette.LightVibrant._rgb;
 				console.log(palette);
 				dark = `RGBA(${dark[0]}, ${dark[1]}, ${dark[2]}, 1)`;
 				let color = `RGBA(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
 				muted = `RGBA(${muted[0]}, ${muted[1]}, ${muted[2]}, 1)`;
+				darkvibrant = `RGBA(${darkvibrant[0]}, ${darkvibrant[1]}, ${darkvibrant[2]}, 1)`;
 				_.setState({
 					...this.state,
 					vibrant: color,
 					dark: dark,
-					muted
+					muted: muted,
+					darkvibrant: darkvibrant
 				});
 			});
 		});
@@ -125,24 +129,16 @@ class AlbumPage extends React.Component {
 					isPlaying: true
 				})
 			);
-		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				this.setState({
-					...this.state,
-					isPlaying: true
-				})
-			);
+		} else if ((active, this.props.player.isPlaying === false)) {
+			ResumePlayer()
 		} else {
-			StopPlayer().then(() =>
-				this.setState({
-					...this.state,
-					isPlaying: false
-				})
-			);
+			StopPlayer()
 		}
 	};
 
-	PlayAlbum = (id, active = false) => {
+	PlayAlbum = (id) => {
+		var albumId = window.location.pathname.split('/')[2];
+		let active = (this.props.player.albumId === albumId) ? true : false;
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let uris = JSON.stringify(
@@ -150,29 +146,15 @@ class AlbumPage extends React.Component {
 						return track.uri;
 					})
 				);
-				console.log(result);
-				playSong(uris).then(success =>
-					this.setState({
-						...this.state,
-						currentSong: id,
-						isPlaying: true
-					})
-				);
+				
+				playSong(uris)
 			});
-		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				this.setState({
-					...this.state,
-					isPlaying: true
-				})
-			);
+		} else if ((active, this.props.player.isPlaying === false)) {
+			ResumePlayer();
+			this.props.togglePlay()
 		} else {
-			StopPlayer().then(() =>
-				this.setState({
-					...this.state,
-					isPlaying: false
-				})
-			);
+			this.props.togglePlay()
+			StopPlayer();
 		}
 	};
 
@@ -180,12 +162,12 @@ class AlbumPage extends React.Component {
 		let albums = [];
 		if ('albums' in this.state.result) {
 			this.state.result.albums.items.forEach((album, idx) => {
-				let active = this.state.currentSong === album.id ? true : false;
+				let active = this.props.player.albumId === album.id ? true : false;
 				albums.push(
 					<Album
 						handleClick={this.PlayAlbum}
 						active={active}
-						isPlaying={this.state.isPlaying}
+						isPlaying={this.props.player.isPlaying}
 						album={album}
 						idx={idx}
 					/>
@@ -198,14 +180,14 @@ class AlbumPage extends React.Component {
 	buildTracks = () => {
 		let tracks = [];
 		this.state.tracks.forEach((track, idx) => {
-			let active = this.state.currentSong === track.uri ? true : false;
+			let active = this.props.player.currentSongId === track.id ? true : false;
 			tracks.push(
 				<Song
 					albumName={this.state.albumName}
 					image={this.state.albumImg}
 					handleClick={this.PlaySong}
 					active={active}
-					isPlaying={this.state.isPlaying}
+					isPlaying={this.props.player.isPlaying}
 					song={track}
 					idx={idx}
 				/>
@@ -215,8 +197,10 @@ class AlbumPage extends React.Component {
 	};
 
 	render() {
+		var albumId = window.location.pathname.split('/')[2];
+		let Play = (this.props.player.albumId === albumId && this.props.player.isPlaying) ? 'Pause' : 'Play';
 		let backStyle = {
-			background: `linear-gradient(160deg, ${this.state.dark} 15%, rgba(0,0,0, 0.9) 70%)`
+			background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`
 		};
 		let vibrantStyle = {
 			backgroundColor: 'rgba(0,0,0, 0.75)',
@@ -237,8 +221,8 @@ class AlbumPage extends React.Component {
 						<div className='album-description-holder'>
 							<h1>{this.state.albumName}</h1>
 							<h3>{this.state.artistName}</h3>
-							<button style={vibrantStyle} className='btn btn-primary'>
-								Play
+							<button style={vibrantStyle} onClick={this.PlayAlbum} className='btn btn-primary'>
+								{Play}
 							</button>
 							<p>
 								{this.state.albumYear} • {this.state.trackCount} songs

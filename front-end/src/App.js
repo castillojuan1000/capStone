@@ -70,7 +70,10 @@ function App(props) {
 						<Route path='/artist/:id' component={ArtistPage} />
 						<Route path='/' component={HomePage} />
 					</Switch>
+					<Footer />
 				</main>
+				{console.info("spotifyData below")}
+				{console.info(props)}
 				{props.spotifyData.userToken && (
 					<>
 						<Footer />

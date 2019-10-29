@@ -8,18 +8,20 @@ import LensIcon from '@material-ui/icons/Lens';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
+import { Link } from 'react-router-dom'
 
 
 import {getSongSeconds} from '../../utilityFunctions/util.js';
 
 
 
-let Song = ({song, idx, handleClick, active, isPlaying, albumName, image}) => {
+let Song = ({song, idx, handleClick, active, isPlaying, albumName, image, searchState}) => {
     let hoverClass = (active) ? 'song-hover-state active' : 'song-hover-state'
     let playIcon = (active && isPlaying) ? <PauseRoundedIcon style={{fontSize: '.8em'}}/> : <PlayArrowRoundedIcon style={{fontSize: '.8em'}}/>
     let dotStyle = {fontSize: '.4em', paddingBottom: '.2em', marginLeft: '2em', marginRight: '2em'}
-    let artist = song.artists.map( ( artist )  => {return artist.name});
-    let explicit = (song.explicit) ? <span className="explicit-tag">EXPLICIT</span> : ''
+    let artist = song.artists.map( ( artist )  => {return <Link className="album-link" to={{pathname: '/artist/'+ artist.id}}><h5>{artist.name}</h5></Link>});
+
+    let explicit = (song.explicit) ? <h5 className="explicit-tag">EXPLICIT</h5> : ''
     let backgroundStyle = {backgroundImage: `url(${image})`,}
     return (
             <div key={idx} className="song-block">
@@ -32,7 +34,10 @@ let Song = ({song, idx, handleClick, active, isPlaying, albumName, image}) => {
               </div>
               <div className="song-description">
                 <h3>{song.name}</h3>
-                <h5>{explicit}{artist.toString().replace(',', ', ')}</h5>
+                <div className="featured-artists">
+                    {explicit}
+                    {artist}
+                </div>
               </div>
               <div className="song-action">
                 <FavoriteRoundedIcon/>
