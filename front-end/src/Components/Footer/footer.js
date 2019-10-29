@@ -33,6 +33,8 @@ import SwapCallsRoundedIcon from '@material-ui/icons/SwapCallsRounded';
 import ProgressSlider from './progressSlider.js';
 
 import * as Vibrant from 'node-vibrant';
+import { withSpotify } from '../../utilityFunctions/SpotifyContext';
+import { Spotify } from '../../utilityFunctions/util2';
 /* 
 let BoxDemo = (url) => {
     let { data, loading, error } = usePalette(url)
@@ -74,7 +76,6 @@ class Footer extends React.Component {
 		this.toggleLike = this.toggleLike.bind(this);
 		this.playNext = this.playNext.bind(this);
 	}
-
 	// class Footer extends React.Component {
 	//     constructor(props){
 	//       super(props)
@@ -115,6 +116,11 @@ class Footer extends React.Component {
 	}
 
 	playNext(next = true) {
+		const {
+			PlayPrevious,
+			getCurrentlyPlaying,
+			RestartSong
+		} = this.props.player.spotify;
 		let action;
 		if (next === false && this.state.currentTime < 10) {
 			this.resetTimer();
@@ -148,6 +154,7 @@ class Footer extends React.Component {
 	}
 
 	togglePlay = (init = false) => {
+		const { StopPlayer, ResumePlayer } = this.props.player.spotify;
 		!this.state.playing
 			? this.startTimer(this.state.currentTime)
 			: this.stopTimer();
@@ -160,6 +167,7 @@ class Footer extends React.Component {
 	};
 
 	toggleSound = () => {
+		const { ChangeVolume } = this.props.player.spotify;
 		this.state.muted ? ChangeVolume(100) : ChangeVolume(0);
 		this.setState({
 			...this.state,
@@ -167,6 +175,7 @@ class Footer extends React.Component {
 		});
 	};
 	toggleLike = () => {
+		const { AddSong, DeleteSong } = this.props.player.spotify;
 		this.props.player.spotify.getCurrentlyPlaying().then(console.log);
 		///AddSong(this.state.currentSong) : DeleteSong(this.state.currentSong)
 		!this.state.liked
@@ -333,4 +342,4 @@ class Footer extends React.Component {
 	}
 }
 
-export default Footer;
+export default withSpotify(Footer);

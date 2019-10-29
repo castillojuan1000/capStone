@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-export const SpotifyContext = createContext(null);
+export const SpotifyContext = createContext();
 
 export const withSpotify = Component => props => (
 	<SpotifyContext.Consumer>

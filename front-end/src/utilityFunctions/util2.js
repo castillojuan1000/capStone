@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export class Spotify {
-	constructor(token) {
-		this.token = token;
+	constructor() {
+		this.token = localStorage.getItem('token');
 	}
 
 	GET = async (url, successMsg) => {
@@ -95,7 +95,7 @@ export class Spotify {
 
 	playSong = song => {
 		let url = `https://api.spotify.com/v1/me/player/play`;
-		let data = `{"uris": ["${song}"]}`;
+		let data = `{"uris": ${song}}`;
 		return this.PUTBodyParamter(url, data, 'Play specific song');
 	};
 

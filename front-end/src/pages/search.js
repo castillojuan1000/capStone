@@ -87,6 +87,7 @@ class SearchSection extends React.Component {
 	}
 
 	handleSearch({ target }) {
+		const { Search } = this.props.player.spotify;
 		if (this.state.typingTimeout) {
 			clearTimeout(this.state.typingTimeout);
 		}
@@ -124,6 +125,7 @@ class SearchSection extends React.Component {
 	}
 
 	setSearchFilter = name => {
+		const { Search } = this.props.player.spotify;
 		document.getElementById('search-body').scrollTo(0, 0);
 		this.setState({
 			...this.state,
@@ -148,6 +150,7 @@ class SearchSection extends React.Component {
 	};
 
 	PlaySong = (uri, active) => {
+		const { playSong, ResumePlayer, StopPlayer } = this.props.player.spotify;
 		console.log(this.state.result.tracks);
 		if (!active) {
 			let index = this.state.result.tracks.items.findIndex(
@@ -186,6 +189,12 @@ class SearchSection extends React.Component {
 	};
 
 	PlayAlbum = (id, active = false) => {
+		const {
+			getAlbumTracks,
+			playSong,
+			ResumePlayer,
+			StopPlayer
+		} = this.props.player.spotify;
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let uris = JSON.stringify(

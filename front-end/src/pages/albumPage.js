@@ -107,6 +107,7 @@ class AlbumPage extends React.Component {
 	};
 
 	PlaySong = (uri, active) => {
+		const { playSong, StopPlayer, ResumePlayer } = this.props.player.spotify;
 		if (!active) {
 			let index = this.state.tracks.findIndex(track => track.uri === uri);
 			let currentSongs = this.state.tracks
@@ -143,6 +144,12 @@ class AlbumPage extends React.Component {
 	};
 
 	PlayAlbum = (id, active = false) => {
+		const {
+			getAlbumTracks,
+			playSong,
+			ResumePlayer,
+			StopPlayer
+		} = this.props.player.spotify;
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let uris = JSON.stringify(

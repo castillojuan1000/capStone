@@ -12,7 +12,7 @@ import './reset.css';
 
 // *** Spotify Context Imports
 import { SpotifyContext } from './utilityFunctions/SpotifyContext';
-import { Spotify } from './utilityFunctions/util';
+import { Spotify } from './utilityFunctions/util2';
 //
 import {
 	AlbumContainer as Album,
@@ -38,7 +38,7 @@ function App(props) {
 		color: 'black',
 		width: '100%'
 	};
-
+	const { spotifyData } = props;
 	const drawerToggleClickHandler = () => {
 		setSideDrawerOpen(prevState => {
 			return !sideDrawerOpen;
@@ -66,9 +66,15 @@ function App(props) {
 					<Switch>
 						{/* <Route path='/login' component={ExtraPage} /> */}
 						<Route path='/login' component={SignIN} />
-						<Route path='/album/:id' component={AlbumPage} />
-						<Route path='/artist/:id' component={ArtistPage} />
-						<Route path='/' component={HomePage} />
+						{spotifyData.userToken ? (
+							<>
+								<Route path='/album/:id' component={AlbumPage} />
+								<Route path='/artist/:id' component={ArtistPage} />
+								<Route exact path='/' component={HomePage} />
+							</>
+						) : (
+							<Redirect to='/login' />
+						)}
 					</Switch>
 				</main>
 				{props.spotifyData.userToken && (
