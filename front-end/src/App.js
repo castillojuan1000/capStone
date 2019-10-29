@@ -10,10 +10,12 @@ import './reset.css';
 import { SpotifyContext } from './utilityFunctions/SpotifyContext';
 import { Spotify } from './utilityFunctions/util';
 //
-
-import SearchSection from './pages/search';
-import Album from './pages/albumPage';
-import Artist from './pages/artistPage';
+import {
+	AlbumContainer as Album,
+	ArtistContainer as Artist,
+	FooterContainer as Footer,
+	SearchSectionContainer as SearchSection
+} from './Components/Containers/MainContainer';
 import Login from './Components/login';
 import Footer from './Components/Footer/footer';
 import SignInSide from './Components/Pages/Home';
@@ -34,9 +36,8 @@ class App extends React.Component {
 		};
 	}
 
-  
 	render() {
-		const {token} = this.props
+		const { token } = this.props;
 		return (
       // *** Wrapping the entire app with the Spotify Context Provider
       //! Antony we need to handle the token generating within react so we can pass an instance
@@ -59,10 +60,10 @@ class App extends React.Component {
 								<Redirect to='/login' />
 								}
 							}} /> */}
-						</Switch>
-						<Footer />
-					</div>
-				</Router>
+					</Switch>
+					<Footer />
+				</div>
+			</Router>
 		);
 	}
 }
