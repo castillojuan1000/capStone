@@ -2,7 +2,7 @@ const initialState = {
 	token: '',
 	search: '',
 	loading: false,
-	activeFilter: 'artist',
+	activeFilter: '',
 	result: [],
 	firing: false
 };
