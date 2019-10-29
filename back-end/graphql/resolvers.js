@@ -1,4 +1,3 @@
-const { ApolloServer, gql } = require('apollo-server-express');
 const bcrypt = require('bcrypt');
 const resolvers = {
 	Query: {
@@ -8,55 +7,14 @@ const resolvers = {
 		async getUserByEmail(root, { email }, models) {
 			return models.user.findAll({ where: { email: email } });
 		},
-		async getUserRooms(root, { id }, { models }) {
-			return models.room.findAll({
-				where: {
-					userId: id
-				}
-			});
-		},
-		async getUserLikes(root, { id }, { models }) {
-			return models.like.findAll({
-				where: {
-					userId: id
-				}
-			});
-		},
-		async getUserMessages(root, { id }, { models }) {
-			return models.message.findAll({
-				where: {
-					userId: id
-				}
-			});
-		},
 		async getRoom(root, { id }, { models }) {
-			return models.room.findAll({
-				where: { id: id }
-			});
-		},
-		async getRoomSongs(root, { id }, { models }) {
-			return models.song.findAll({
-				where: {
-					roomId: id
-				}
-			});
-		},
-		async getRoomMessages(root, { id }, { models }) {
-			return models.message.findAll({
-				where: {
-					roomId: id
-				}
-			});
+			return models.room.findByPk(id);
 		},
 		async getSong(root, { id }, { models }) {
-			return models.song.findAll({
-				where: {
-					id: id
-				}
-			});
+			return models.song.findByPk(id);
 		},
-		async getSongLikes(root, { id }, { models }) {
-			return models.like.findAll({ where: { songId: id } });
+		async getAllSongs(root, { id }, { models }) {
+			return models.song.findAll();
 		}
 	},
 	Mutation: {
@@ -65,7 +23,10 @@ const resolvers = {
 				email: email.toLowerCase(),
 				password: await hashPass(password)
 			};
-			return await models.user.create(user);
+			return models.user.create(user);
+		},
+		async createLike(root, { userId, roomId, songId }, { models }) {
+			return models.like.create({ userId, roomId, songId });
 		}
 	},
 	User: {
@@ -93,6 +54,28 @@ const resolvers = {
 		},
 		async messages(message) {
 			return message.getMessages();
+		},
+		async host(host) {
+			return host.getHost();
+		}
+	},
+	Song: {
+		async room(room) {
+			return room.getRoom();
+		},
+		async likes(like) {
+			return like.getLikes();
+		}
+	},
+	Like: {
+		async room(room) {
+			return room.getRoom();
+		},
+		async user(user) {
+			return user.getUser();
+		},
+		async song(song) {
+			return song.getSong();
 		}
 	}
 };

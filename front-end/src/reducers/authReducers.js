@@ -1,7 +1,6 @@
 const initialState = {
 	email: '',
 	id: '',
-	likes: [],
 	isLoggedIn: false
 };
 
@@ -10,7 +9,6 @@ const authReducer = (state = initialState, action) => {
 	switch (type) {
 		case 'LOGIN':
 			return {
-				...state,
 				...payload
 			};
 		case 'LOGOUT':

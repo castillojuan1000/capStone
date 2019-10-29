@@ -4,7 +4,7 @@ const initialState = {
 	queue: []
 };
 
-const authReducer = (state = initialState, action) => {
+const playerReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
 		case 'PLAY_SONG':
@@ -17,14 +17,15 @@ const authReducer = (state = initialState, action) => {
 				...state,
 				queue: [...state.queue, payload]
 			};
-		case 'REDIRECT_TO_SIGNIN':
+		case 'INITIATE_SPOTIFY': {
 			return {
 				...state,
-				...payload
+				spotify: payload
 			};
+		}
 		default:
 			return state;
 	}
 };
 
-export default authReducer;
+export default playerReducer;

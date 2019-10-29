@@ -1,7 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
 import history from './history';
+import React, { useState } from 'react';
+import Navbar from './Components/Navbar/Navbar';
+import { connect } from 'react-redux';
+import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
+import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 
 import './App.css';
 import './reset.css';
@@ -16,56 +20,102 @@ import {
 	FooterContainer as Footer,
 	SearchSectionContainer as SearchSection
 } from './Components/Containers/MainContainer';
+import { SignInContainer as SignInSide } from './Components/Containers/SignInContainer';
 import Login from './Components/login';
-import Footer from './Components/Footer/footer';
-import SignInSide from './Components/Pages/Home';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
-let HomePage = () => <SearchSection/>;
-let MainPage = () => <SearchSection/>;
-let AlbumPage = () => <Album/>;
-let ArtistPage = () => <Artist/>;
-let ExtraPage = () => <Login/>;
-let SignIN = () => <SignInSide/>
+let HomePage = () => <SearchSection />;
+let MainPage = () => <SearchSection />;
+let AlbumPage = () => <Album />;
+let ArtistPage = () => <Artist />;
+let ExtraPage = () => <Login />;
+let SignIN = () => <SignInSide />;
 
+function App(props) {
+	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 
-class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			token: null
-		};
+	const style = {
+		marginTop: '8vh',
+		color: 'black',
+		width: '100%'
+	};
+
+	const drawerToggleClickHandler = () => {
+		setSideDrawerOpen(prevState => {
+			return !sideDrawerOpen;
+		});
+	};
+
+	const closeSideDrawerHandler = () => {
+		setSideDrawerOpen(false);
+	};
+
+	let backdrop;
+
+	if (sideDrawerOpen) {
+		backdrop = <Backdrop click={closeSideDrawerHandler} />;
 	}
 
-	render() {
-		const { token } = this.props;
-		return (
-      // *** Wrapping the entire app with the Spotify Context Provider
-      //! Antony we need to handle the token generating within react so we can pass an instance
-	  //! Of the spotify class using the context API. I need a token to for the constructor
-				<Router history={history}>
-					<div className='App'>
-						<div className='header'></div>
-						<Switch>
-							<Route path='/login' component={ExtraPage} />
-              <Route path='/login2' component={SignIN} />
-              <Route path='/album/:id' component={AlbumPage} />
-              <Route path='/artist/:id' component={ArtistPage} />
-							<Route path='/' component={HomePage} />
-
-						{/* 	<Route path='/second' render={() =>{
-								{token !== null ?
-								<SpotifyContext.Provider value={new Spotify(this.state.token)}>
-								<MainPage />
-								</SpotifyContext.Provider>
-								<Redirect to='/login' />
-								}
-							}} /> */}
+	return (
+		<Router history={history}>
+			<div className='App' style={{ height: '100vh' }}>
+				<Navbar draweronClick={drawerToggleClickHandler} />
+				<SideDrawer click={closeSideDrawerHandler} show={sideDrawerOpen} />;
+				{backdrop}
+				<div className='header'></div>
+				<main style={style}>
+					<Switch>
+						{/* <Route path='/login' component={ExtraPage} /> */}
+						<Route path='/login' component={SignIN} />
+						<Route path='/album/:id' component={AlbumPage} />
+						<Route path='/artist/:id' component={ArtistPage} />
+						<Route path='/' component={HomePage} />
 					</Switch>
-					<Footer />
-				</div>
-			</Router>
-		);
-	}
+				</main>
+				{props.spotifyData.userToken && (
+					<>
+						<Footer />
+					</>
+				)}
+			</div>
+		</Router>
+	);
 }
 
-export default App;
+const mapStateToProps = state => {
+	return {
+		...state
+	};
+};
+// 	const {token} = this.props
+// 	return (
+//   // *** Wrapping the entire app with the Spotify Context Provider
+//   //! Antony we need to handle the token generating within react so we can pass an instance
+//   //! Of the spotify class using the context API. I need a token to for the constructor
+// 			<Router history={history}>
+// 				<div className='App'>
+// 					<div className='header'></div>
+// 					<Switch>
+// 						<Route path='/login' component={ExtraPage} />
+//           <Route path='/album/:id' component={AlbumPage} />
+//           <Route path='/artist/:id' component={ArtistPage} />
+// 						<Route path='/' component={HomePage} />
+
+// 					{/* 	<Route path='/second' render={() =>{
+// 							{token !== null ?
+// 							<SpotifyContext.Provider value={new Spotify(this.state.token)}>
+// 							<MainPage />
+// 							</SpotifyContext.Provider>
+// 							<Redirect to='/login' />
+// 							}
+// 						}} /> */}
+// 					</Switch>
+// 					<Footer />
+// 				</div>
+// 			</Router>
+// 	);
+// }
+
+export default connect(
+	mapStateToProps,
+	null
+)(App);

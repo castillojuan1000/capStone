@@ -2,7 +2,9 @@ const initialState = {
 	songs: [],
 	artists: [],
 	albums: [],
-	playlists: []
+	playlists: [],
+	userToken: '',
+	searchQuery: ''
 };
 
 const spotifyData = (state = initialState, action) => {
@@ -27,6 +29,11 @@ const spotifyData = (state = initialState, action) => {
 			return {
 				...state,
 				artist: [...state.artists, payload]
+			};
+		case 'SAVE_SPOTIFY_TOKEN':
+			return {
+				...state,
+				userToken: payload
 			};
 		default:
 			return state;
