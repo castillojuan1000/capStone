@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import io from "socket.io-client"
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import { withRouter } from 'react-router-dom';
-import FormControl from '@material-ui/core/FormControl'
+import '../../style/Chatroom.scss'
+
+
 
 
 class Chatroom extends Component {
@@ -51,20 +48,7 @@ class Chatroom extends Component {
         const addFeedback = data => {
             this.setState({ currentTyper: [...this.state.currentTyper, data] })
         }
-        const useStyles = makeStyles(theme => ({
-            root: {
-                flexGrow: '1'
-            },
-            paper: {
-                padding: theme.spacing(2),
-                textAlign: 'center',
-                color: theme.palette.text.secondary,
-            },
-            submit: {
-                margin: theme.spacing(3, 0, 2)
-            },
-        }));
-        const classes = useStyles();
+
     }
 
 
@@ -72,39 +56,51 @@ class Chatroom extends Component {
 
     render() {
 
+
+
+
         return (
 
-            <div className={classes.root}>
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <Paper className={classes.paper}>xs=6>
-                                <div className="card-title">Global Chat</div>
-                            <hr />
-                            <div className="messages">
-                                {this.state.messages.map(message => {
-                                    return (
-                                        <div>{message.author}: {message.message}</div>
-                                    )
-                                })}
+            <div className="chat">
+                <div class="chat-title">
+                    <h1>Joetta Hall</h1>
+                    <h2>Sound Good</h2>
+                    <figure class="avatar">
+                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
+                </div>
+                <div className='messages'>
+
+                    {this.state.messages.map(message => {
+                        return (
+                            <div class="message new"><figure class="avatar">
+                                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
+                                {message.author}:{message.message}
+
+
                             </div>
+                        )
+                    })}
+                </div>
+                <div className='message-box'>
 
-                        </Paper>
-                        <FormControl>
-                            <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({ username: ev.target.value })} className="form-control" />
-                            <br />
-                            <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-                            <br />
-                            <button onClick={this.sendMessage} className="btn btn-primary form-control">Send</button>
-                        </FormControl>
+                    <textarea className='message-input' type='text'
+                        placeholder="Username"
+                        value={this.state.username}
+                        onChange={ev => this.setState({ username: ev.target.value })} />
+                    <textarea className='message-input' placeholder="Enter a message"
+                        value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
 
+                    <div className='message-submit' onClick={this.sendMessage}
+                        type='submit'> Submit</div>
 
-                    </Grid>
-                </Grid>
+                </div>
+
             </div>
 
-        );
+
+        )
     }
 }
 
 
-export default withRouter(Chatroom)
+export default Chatroom
