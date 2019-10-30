@@ -3,6 +3,7 @@ const initialState = {
 	artists: [],
 	albums: [],
 	playlists: [],
+	personalized: [],
 	userToken: '',
 	searchQuery: ''
 };
@@ -35,6 +36,11 @@ const spotifyData = (state = initialState, action) => {
 				...state,
 				userToken: payload
 			};
+		case 'INITIALIZE_SPOTIFY':
+			return {
+				...state,
+				[payload.key] : payload.data,
+			}
 		default:
 			return state;
 	}
