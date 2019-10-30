@@ -36,7 +36,10 @@ class Chatroom extends Component {
                 author: this.state.username,
                 message: this.state.message
             })
-
+            // fetch('/graphql', {
+            //     method: POST
+            //     body: JSON.stringify({})
+            // })
             this.setState({ message: '' });
         }
 
@@ -51,51 +54,47 @@ class Chatroom extends Component {
 
     }
 
-
-
-
     render() {
 
-
-
-
         return (
+            <div className='main-chatroom'>
+                <div className="chat">
+                    <div class="chat-title">
+                        <h1>Chat room</h1>
+                        <h2>Sound Good Music</h2>
+                        <figure class="avatar">
+                            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
+                    </div>
+                    <div className='messages' style={{ overflowY: 'scroll', scrollbarColor: 'yellow blue' }}>
 
-            <div className="chat">
-                <div class="chat-title">
-                    <h1>Joetta Hall</h1>
-                    <h2>Sound Good</h2>
-                    <figure class="avatar">
-                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
+                        {this.state.messages.map(message => {
+                            return (
+                                <div class="message new"><figure class="avatar">
+                                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
+                                    {message.author}:{message.message}
+
+
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className='message-box'>
+
+                        <textarea className='message-input' type='text'
+                            placeholder="Username"
+                            value={this.state.username}
+                            onChange={ev => this.setState({ username: ev.target.value })} />
+                        <textarea className='message-input' placeholder="Enter a message"
+                            value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
+
+                        <div className='message-submit' onClick={this.sendMessage}
+                            type='submit'> Submit</div>
+
+                    </div>
+
                 </div>
-                <div className='messages'>
-
-                    {this.state.messages.map(message => {
-                        return (
-                            <div class="message new"><figure class="avatar">
-                                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" /></figure>
-                                {message.author}:{message.message}
-
-
-                            </div>
-                        )
-                    })}
-                </div>
-                <div className='message-box'>
-
-                    <textarea className='message-input' type='text'
-                        placeholder="Username"
-                        value={this.state.username}
-                        onChange={ev => this.setState({ username: ev.target.value })} />
-                    <textarea className='message-input' placeholder="Enter a message"
-                        value={this.state.message} onChange={ev => this.setState({ message: ev.target.value })} />
-
-                    <div className='message-submit' onClick={this.sendMessage}
-                        type='submit'> Submit</div>
-
-                </div>
-
             </div>
+
 
 
         )
