@@ -1,0 +1,196 @@
+* {
+      font-family: 'Roboto', sans-serif;
+}
+
+  .artist-page {
+    height: 90vh;
+    width: 95%;
+    padding-left: 4%;
+    padding-right: 1%;
+    display: flex;
+    flex-direction: row;
+    transition: all 4s;
+  }
+
+.artist-banner {
+    height: 18em;
+    width: 18em;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.artist-top-section {
+    width: 30vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: rgba(0,0,0, 0);
+}
+
+.artist-top-section .left-section {
+    width: 100%;
+    width: 30vw;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.artist-btn-row{
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-right: 10%;
+    padding-top: 5%;
+    padding-left: 10%;
+    align-items: center;
+    wrap: nowrap;
+    align-content: center;
+}
+
+
+.artist-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.artist-description h1 {
+    font-size: 3.5em;
+    color: white;
+    letter-spacing: 4px;
+}
+
+
+.btn-primary {
+    border-radius: 25px;
+    border: 0px solid;
+    background: white;
+    color: black;
+    border: 2px solid black;
+    padding: .5em 2em .5em 2em;
+    letter-spacing: 2px;
+    font-weight: 100;
+    margin-top: 10%;
+    margin-bottom: 1.5em;
+}
+
+
+.btn-primary:hover {
+
+   transform: scale(1.05);
+   transition: all .5s;
+   animation-name: huerotate;
+   animation-duration: 15s;
+   animation-iteration-count: infinite;
+}
+
+
+.btn-secondary {
+    border-radius: 25px;
+    color: white;
+    border: 3px solid white;
+    background: rgba(0,0,0, 0.6);
+    padding: .6em 2em .6em 2em;
+    letter-spacing: 2px;
+    font-weight: 100;
+    margin-top: 10%;
+    margin-bottom: 1.5em;
+}
+
+
+.btn-secondary:hover {
+   transform: scale(1.05);
+   transition: all .5s;
+   animation-name: huerotate;
+   animation-duration: 15s;
+   animation-iteration-count: infinite;
+}
+
+
+.artist-description h3 {
+    margin-top: 6vh;
+    color: rgba(255,255,255, 0.85);
+    font-weight: 100;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-size: .8em;
+}
+
+
+
+.artist-search-filter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-left: 0vw;
+  height: 5vh;
+}
+
+.artist-search-filter ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-content: flex-end;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.artist-content .song-block {
+    max-width: 100%;
+}
+
+.artist-content {
+    margin-left: 5vw;
+    margin-top: 2.3%;
+    height: 80vh;
+    overflow-y: scroll;
+    width: 65vw;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255, 0.3) #080707;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+.album-songs2 {
+    padding-left: 1.5%;
+    padding-bottom: 5%;
+    width: 100%;
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    overflow-y: visible;
+    margin-bottom: 1em;
+}
+
+.artist-content h2 {
+    padding-left: 2%;
+    font-size: 2em;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-align: left;
+    padding-bottom: 3%;
+    width: 100%;
+    padding-top: 1%;
+}
+
+
+.artist-albums-holder {
+    display: flex;
+    width: 95%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}

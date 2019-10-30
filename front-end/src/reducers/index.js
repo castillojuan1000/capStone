@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux';
 import authReducers from './authReducers';
-import playerReducer from './playerReducer';
+import playerReducers from './playerReducers';
+import searchReducer from './searchReducers';
+import spotifyData from './spotifyData';
 
 export default combineReducers({
 	user: authReducers,
-	player: playerReducer
+	player: playerReducers,
+	spotifyData: spotifyData,
+	searchState: searchReducer
 });

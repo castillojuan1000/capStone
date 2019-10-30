@@ -3,7 +3,6 @@ const typDefs = gql`
 	type User {
 		id: ID!
 		email: String!
-		password: String!
 		likes: [Like]
 		messages: [Message]
 	}
@@ -16,32 +15,31 @@ const typDefs = gql`
 		messages: [Message]
 	}
 	type Song {
+		id: Int!
 		room: Room
 		order: Int
 		spotifyId: String!
 		songImg: String
 		songLength: Int!
+		likes: [Like]
 	}
 	type Message {
+		id: Int!
 		user: User!
-		room: Room!
+		room: Room
 		message: String!
 	}
 	type Like {
-		user: User!
-		song: Song!
-		room: Room!
+		user: User
+		song: Song
+		room: Room
 	}
 	type Query {
 		getUser(id: Int!): User!
+		getUserByEmail(email: String!): User!
 		getRoom(id: Int!): Room!
-		getUserRooms(id: Int!): [Room!]
-		getUserMessages(id: Int!): [Message!]
-		getUserLikes(id: Int!): [Like!]
-		getRoomSongs(id: Int!): [Song!]
-		getRoomMessages(id: Int!): [Message!]
-		getSongLikes(id: Int!): [Like!]
-		getSong(id: Int!): Song!
+		getSong(spotifyId: Int!): Song!
+		getAllSongs: [Song]
 	}
 	type Mutation {
 		createUser(email: String!, password: String!): User!

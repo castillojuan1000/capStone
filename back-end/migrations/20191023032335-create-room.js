@@ -10,19 +10,11 @@ module.exports = {
 			},
 			hostId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
-				references: {
-					model: 'user',
-					key: 'id'
-				}
+				allowNull: false
 			},
 			roomName: {
 				type: Sequelize.STRING,
-				allowNull: false,
-				references: {
-					model: 'room',
-					key: 'id'
-				}
+				allowNull: false
 			},
 			createdAt: {
 				allowNull: false,

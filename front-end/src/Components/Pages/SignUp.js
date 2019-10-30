@@ -12,7 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { stat } from 'fs';
+import { setupSpotify, StoreAPIToken } from '../../utilityFunctions/util';
+import { Spotify } from '../../utilityFunctions/util2';
+import { withRouter } from 'react-router-dom';
 
 function Copyright() {
 	return (
@@ -56,54 +58,30 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(3, 0, 2)
 	}
 }));
-
-export default function SignInSide(props) {
+function SignUp(props) {
+	const SpotifyToken = StoreAPIToken();
 	const classes = useStyles();
 	const [state, setState] = useState({
 		email: '',
 		password: '',
-		remember: false
+		username: '',
+		remember: false,
+		isLoggedIn: false
 	});
-	const [isRedirected, setIsRedirected] = useState(false);
 	const [error, setError] = useState('');
 	const onChange = e => {
 		return setState({ ...state, [e.target.name]: e.target.value });
 	};
-
-	useEffect(() => {
-		const tokens = sessionStorage.getItem('jwtTokens') || null;
-		const abort = new AbortController();
-		let loginWithToken;
-		if (tokens) {
-			loginWithToken = fetch('/api/token', {
-				method: 'POST',
-				body: tokens,
-				headers: { 'Content-Type': 'application/json' }
-			})
-				.then(res => res.json())
-				.then(response => {
-					if (response.error) {
-						sessionStorage.removeItem('jwtTokens');
-					}
-					const { data, tokens } = response;
-					if (tokens) {
-						sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
-					}
-					props.authUser({ ...data, isLoggedIn: true });
-				});
-		}
-		return () => {
-			abort(loginWithToken);
-		};
-	}, []);
 	const handleSubmit = e => {
 		e.preventDefault();
 		setError('');
 		const formData = JSON.stringify({
 			email: state.email,
-			password: state.password
+			password: state.password,
+			username: state.username
 		});
-		fetch('/api/login', {
+		debugger;
+		fetch('/api/signup', {
 			method: 'POST',
 			body: formData,
 			headers: { 'Content-Type': 'application/json' }
@@ -112,7 +90,7 @@ export default function SignInSide(props) {
 				if (res.status === 200) {
 					return res.json();
 				} else {
-					setError('Please check user name & password!');
+					setError('Check your email!');
 					return 'Error';
 				}
 			})
@@ -121,6 +99,22 @@ export default function SignInSide(props) {
 					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data, isLoggedIn: true });
+			})
+			.then(() => {
+				let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+				const expirationTS =
+					(localStorage.getItem('expiration') - Date.now()) / 1000;
+				if (SpotifyToken) {
+					localStorage.setItem('token', SpotifyToken);
+					localStorage.setItem('expiration', expiration);
+					props.spotifyToken(SpotifyToken);
+					props.initiatePlayer(new Spotify(SpotifyToken));
+					props.history.push('/');
+				} else if (expirationTS < 60 || !props.spotifyData.userToken) {
+					localStorage.setItem('token', '');
+					localStorage.setItem('expiration', 0);
+					setupSpotify();
+				}
 			});
 		e.target.reset();
 	};
@@ -138,6 +132,18 @@ export default function SignInSide(props) {
 					</Typography>
 					{error && <p style={{ color: 'red' }}>{error}</p>}
 					<form className={classes.form} onSubmit={handleSubmit} noValidate>
+						<TextField
+							variant='outlined'
+							margin='normal'
+							required
+							fullWidth
+							id='username'
+							label='User Name'
+							name='username'
+							autoFocus
+							value={state.username}
+							onChange={onChange}
+						/>
 						<TextField
 							variant='outlined'
 							margin='normal'
@@ -182,7 +188,7 @@ export default function SignInSide(props) {
 							variant='contained'
 							color='primary'
 							className={classes.submit}>
-							Sign In
+							Sign up
 						</Button>
 						<Grid container>
 							<Grid item xs>
@@ -205,3 +211,5 @@ export default function SignInSide(props) {
 		</Grid>
 	);
 }
+
+export default withRouter(SignUp);

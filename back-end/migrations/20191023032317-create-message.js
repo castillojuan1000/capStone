@@ -10,19 +10,11 @@ module.exports = {
 			},
 			userId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
-				references: {
-					model: 'user',
-					key: 'id'
-				}
+				allowNull: false
 			},
 			roomId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
-				references: {
-					model: 'room',
-					key: 'id'
-				}
+				allowNull: false
 			},
 			message: {
 				type: Sequelize.STRING
