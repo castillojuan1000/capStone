@@ -301,10 +301,10 @@ export const getAllDevices = (spotify = null) => {
 	return spotify.GET(url, 'got Devices');
 };
 
-export const getPlayer = (spotify = null) => {
+export const getPlayer = (device = null, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
-	let url = `https://api.spotify.com/v1/me/player`;
+	let url = `https://api.spotify.com/v1/me/player?device=${device}&market=US`;
 	return spotify.GET(url, 'got Player');
 };
 

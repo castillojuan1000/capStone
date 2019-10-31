@@ -31,6 +31,19 @@ const playerReducer = (state = initialState, action) => {
 				songName: payload.track_window.current_track.name,
 				playing: !payload.paused
 			}
+		case 'PLAYER_PLAY_NEXT':
+				return {
+					...state,
+					currentSong: payload.item,
+					currentSongId: payload.item.id,
+					artist: payload.item.artists[0].name,
+					songLength: payload.item.duration_ms / 1000,
+					currentTime: payload.progress_ms / 1000,
+					songImg: payload.item.album.images[2].url,
+					albumName: payload.item.album.name,
+					songName: payload.item.name,
+					playing: !payload.paused,
+				}
 		case "PLAYER_SET_ARTIST_ID": 
 			return {
 				...state,

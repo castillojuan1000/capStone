@@ -12,11 +12,7 @@ import {
 	RestartSong,
 	TransferPlayback,
 	getTrack,
-	getLikedTracks,
-	getLikedAlbums, 
-	getFollowedArtists,
-	GetMyPlaylists, 
-	getPersonalizedTopTracks
+	getPlayer,
 } from '../../utilityFunctions/util.js';
 import { Link } from 'react-router-dom';
 
@@ -120,7 +116,8 @@ class Footer extends React.Component {
 		this.toggleSound = this.toggleSound.bind(this);
 		this.toggleLike = this.toggleLike.bind(this);
 		this.playNext = this.playNext.bind(this);
-		this.setupSpotify = this.setupSpotify.bind(this)
+		this.setupSpotify = this.setupSpotify.bind(this);
+		this.setTabID = this.setTabID.bind(this);
 	}
 
 	startTimer(currentTime = 0) {
@@ -147,17 +144,9 @@ class Footer extends React.Component {
 		if (action !== undefined) {
 			action.then(success => {
 				getCurrentlyPlaying().then(result => {
-					console.log(this.state);
+					this.props.player.PlayNext(result)
 					this.setState({
 						...this.state,
-						currentSong: result.item.uri,
-						artist: result.item.artists[0].name,
-						songLength: result.item.duration_ms / 1000,
-						currentTime: result.progress_ms / 1000,
-						songImg: result.item.album.images[2].url,
-						albumName: result.item.album.name,
-						songName: result.item.name,
-						playing: result.is_playing,
 						init: true
 					});
 				});
@@ -223,29 +212,54 @@ class Footer extends React.Component {
 			});
 			player.addListener('player_state_changed', state => {
 				console.debug('new state', state);
+				let action = (state === null) ? window.close() : null;
 				if (
+					action === null &&
 					this.props.player.songImg !==
 					state.track_window.current_track.album.images[2].url
 				) {
 					getTrack(state.track_window.current_track.id).then(result => {
+						document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
 						this.props.playerSetArtistID({
 							albumId: result.album.id, 
 							artistId: result.artists[0].id})
 					});
 					this.setColor(state.track_window.current_track.album.images[2].url);
 				}
-				this.props.playerStateChange(state)
+				if (action === null) {
+					this.props.playerStateChange(state)
+				}
 			});
 			player.addListener('ready', ({ device_id }) => {
+				getPlayer().then(player => console.info(player))
 				console.debug('Ready with Device ID', device_id);
-				StopPlayer()
-				TransferPlayback(device_id);
+				TransferPlayback(device_id).then(data => console.info('transfer', data));
 			});
 			player.addListener('not_ready', ({ device_id }) => {
 				console.debug('Device ID has gone offline', device_id);
 			});
-			player.connect();
+			this.setTabID()
+			window.addEventListener('storage', () => {
+			let item = (this.state.currentTab !== localStorage.getItem("tabID")
+				) ? player.disconnect().then(() => window.close()): '';
+			   });
+			player.connect().then(() => {player.resume()});
+			player.setName(`Sound Good Music ${Math.floor(Math.random() * 10)}`)
 		};
+	}
+
+	setTabID = () => {
+		var iPageTabID = sessionStorage.getItem("tabID");
+		if (iPageTabID == null){
+			var iLocalTabID = localStorage.getItem("tabID");
+			var iPageTabID = (iLocalTabID == null) ? 1 : Number(iLocalTabID) + 1;
+			localStorage.setItem("tabID",iPageTabID);
+			sessionStorage.setItem("tabID",iPageTabID);
+			this.setState({
+				...this.state,
+				currentTab: iPageTabID,
+			})
+			}
 	}
 
 	render() {
