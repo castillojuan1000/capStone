@@ -241,8 +241,12 @@ io.on('connection', (socket) => {
 
 	//socket is waiting for that connection on the client side 
 	//once it get then "chat" message it will call the function
+	//! save the messages to the data base 
 	socket.on('SEND_MESSAGE', function (data) {
-
+		db.message.create({
+			userId: 1,
+			rooomId: 1, message: " "
+		})
 		//then grabbing all the sockets and calling a event and then send the data
 		io.sockets.emit('RECEIVE_MESSAGE', data)
 
