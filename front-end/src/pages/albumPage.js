@@ -134,8 +134,10 @@ class AlbumPage extends React.Component {
 			);
 		} else if ((active, this.props.player.isPlaying === false)) {
 			ResumePlayer();
+			this.props.togglePlay();
 		} else {
 			StopPlayer();
+			this.props.togglePlay();
 		}
 	};
 

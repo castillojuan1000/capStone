@@ -38,6 +38,7 @@ module.exports = function(db) {
 							return res.status(500);
 						} else if (matched) {
 							const accessUser = {
+								username: user.username,
 								email: user.email,
 								id: user.id
 							};
@@ -70,6 +71,7 @@ module.exports = function(db) {
 			.create({ email, password: passwordHash })
 			.then(user => {
 				const accessUser = {
+					username: user.username,
 					email: user.email,
 					id: user.id
 				};
@@ -115,7 +117,7 @@ module.exports = function(db) {
 					return res.sendStatus(401);
 				}
 				const accessToken = createToken({
-					data: { email: user.email, id: user.id },
+					data: { email: user.email, id: user.id, username: user.username },
 					secret: 'ACCESS'
 				});
 				res.json({
@@ -123,7 +125,7 @@ module.exports = function(db) {
 						accessToken,
 						refreshToken
 					},
-					data: { email: user.email, id: user.id }
+					data: { email: user.email, id: user.id, username: user.username }
 				});
 			});
 		});

@@ -8,9 +8,7 @@ function Main(props) {
 	const [queue, setQueue] = React.useState([]);
 	const { player } = props.spotifyData;
 	React.useEffect(() => {
-		player.getAlbum('7CjJb2mikwAWA1V6kewFBF').then(res => {
-			setQueue(s => [...res.tracks.items]);
-		});
+		setQueue([...props.player.queue]);
 	}, [player]);
 	return (
 		<MainRoom>
@@ -34,8 +32,8 @@ function Main(props) {
 						/>
 					);
 				})}
+				<Chatroom />
 			</QueueContainer>
-			<Chatroom />
 		</MainRoom>
 	);
 }

@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
+import '../../App.css';
 
 function Navbar(props) {
 	const handleSignOut = () => {
@@ -26,7 +27,13 @@ function Navbar(props) {
 				<ToolbarNavItems>
 					<ul>
 						<li>
-							<Link to='/main'>HOME</Link>
+							<Link to='/'>HOME</Link>
+						</li>
+						<li>
+							<Link to='/search'>SEARCH</Link>
+						</li>
+						<li>
+							<Link to='/library'>LIBRARY</Link>
 						</li>
 						{props.user.isLoggedIn ? (
 							<li onClick={handleSignOut}>SIGN OUT</li>
@@ -94,7 +101,10 @@ const ToolbarNavItems = styled.div`
 		display: flex;
 
 		li {
-			padding: 0 0.5rem;
+			padding: 0 2rem;
+			font-size: 1.4em;
+			letter-spacing: 3px;
+			font-weight: 300;
 			color: white;
 			&:hover {
 				color: #fa923f;

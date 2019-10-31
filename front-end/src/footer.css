@@ -35,6 +35,25 @@
     animation-iteration-count: infinite;
   }
 
+  .slider-guy .MuiSlider-thumb {
+      opacity: 0;
+      transition: all .4s
+  }
+
+  .slider-guy .PrivateValueLabel-label-344 {
+      padding: 10px;
+      color: white;
+      letter-spacing: 2px;
+      background: black;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255, 0.1);
+  }
+
+  .slider-guy:hover .MuiSlider-thumb {
+    opacity: 1;
+    transition: all 1s
+}
+
 
   .song-img img {
     height: 6em;

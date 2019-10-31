@@ -6,13 +6,14 @@ import Navbar from './Components/Navbar/Navbar';
 import { connect } from 'react-redux';
 import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
-import Chatroom from './Components/Pages/Chatroom';
 import './App.css';
 import './reset.css';
 import {
 	AlbumContainer as Album,
 	ArtistContainer as Artist,
-	SearchSectionContainer as SearchSection
+	FooterContainer as Footer,
+	SearchSectionContainer as SearchSection,
+	LibrarySectionContainer as LibrarySection
 } from './Components/Containers/MainContainer';
 import {
 	SignInContainer as SignInSide,
@@ -22,7 +23,7 @@ import Login from './Components/login';
 import Main from './Components/Pages/Main';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
 let HomePage = () => <SearchSection />;
-let MainPage = () => <SearchSection />;
+let LibraryPage = () => <LibrarySection />;
 let AlbumPage = () => <Album />;
 let ArtistPage = () => <Artist />;
 let ExtraPage = () => <Login />;
@@ -60,18 +61,22 @@ function App(props) {
 						<Route exact path='/signup' component={SignUp} />
 						{props.spotifyData.userToken ? (
 							<>
-								<Route path='/main' component={Main} />
+								<Route path='/' component={Main} />
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
-								<Route exact path='/' component={HomePage} />
+								<Route path='/library' component={LibraryPage} />
+								<Route path='/search' component={HomePage} />
 							</>
 						) : (
 							<Redirect to='/login' />
 						)}
 					</Switch>
 				</main>
-				{/* {console.info('spotifyData below')}
-				{console.info(props)} */}
+				{props.spotifyData.userToken && (
+					<>
+						<Footer />
+					</>
+				)}
 			</div>
 		</Router>
 	);
