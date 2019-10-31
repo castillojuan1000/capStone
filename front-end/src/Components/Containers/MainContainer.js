@@ -3,6 +3,7 @@ import Footer from '../Footer/footer';
 import AlbumPage from '../../pages/albumPage.js';
 import ArtistPage from '../../pages/artistPage.js';
 import SearchSection from '../../pages/search';
+import LibrarySection from '../../pages/library';
 import { playSong } from '../../utilityFunctions/util';
 
 const mapStateToProps = state => ({ ...state });
@@ -15,15 +16,12 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'CLEAR_SEARCH_STATE' });
 	},
 	setSearchResult: payload => {
-		console.info("payload", payload)
 		dispatch({ type: 'SEARCH_RESULT_RETURNED', payload });
 	},
 	setSearchFilter: payload => {
-		console.info("payload", payload)
 		dispatch({ type: 'SET_SEARCH_FILTER', payload });
 	},
 	setCurrentScroll: payload => {
-		console.info("payload", payload)
 		dispatch({ type: 'SET_CURRENT_SCROLL', payload });
 	},
 	extendSearchResults: payload => {
@@ -43,6 +41,10 @@ const mapDispatchToProps = dispatch => ({
 	},
 	togglePlay: payload => {
 		dispatch({type: 'PLAYER_TOGGLE_PLAY', payload})
+	},
+	initializeSpotify: payload => {
+		alert(2)
+		dispatch({type: 'INITIALIZE_SPOTIFY_KEYS', payload})
 	}
 });
 
@@ -63,3 +65,8 @@ export const SearchSectionContainer = connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(SearchSection);
+
+export const LibrarySectionContainer = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(LibrarySection);
