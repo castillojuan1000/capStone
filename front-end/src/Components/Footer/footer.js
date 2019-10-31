@@ -107,7 +107,7 @@ class Footer extends React.Component {
 			RestartSong
 		} = this.props.spotifyData.player;
 		let action;
-		if (next === false && this.props.player.currentTime < 4) {
+		if (next === false && this.props.player.currentTime < 10) {
 			this.resetTimer();
 			action = PlayPrevious();
 		} else if (next === true) {
@@ -117,7 +117,7 @@ class Footer extends React.Component {
 		if (action !== undefined) {
 			action.then(success => {
 				getCurrentlyPlaying().then(result => {
-					this.props.spotifyData.player.PlayNext(result)
+					//this.props.spotifyData.player.PlayNext(result)
 					this.setState({
 						...this.state,
 						init: true
@@ -189,7 +189,6 @@ class Footer extends React.Component {
 }
 
 	setupSpotifyPlayer() {
-		alert(4)
 		console.log('spotify', window.Spotify)
 			let {TransferPlayback, getTrack, getPlayer} = this.props.spotifyData.player;
 			const token = this.props.spotifyData.userToken;
@@ -224,7 +223,10 @@ class Footer extends React.Component {
 			player.addListener('ready', ({ device_id }) => {
 				getPlayer().then(player => console.info(player))
 				console.debug('Ready with Device ID', device_id);
-				TransferPlayback(device_id).then(data => {this.togglePlay()});
+				TransferPlayback(device_id).then(data => {
+					console.info(data)
+					this.props.spotifyData.player.ResumePlayer().then((data) => console.info('start playing' ,data))
+				});
 			});
 			player.addListener('not_ready', ({ device_id }) => {
 				console.debug('Device ID has gone offline', device_id);
