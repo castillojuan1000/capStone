@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-// const io = require('socketio');
+const socket = require('socket.io');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -65,7 +65,7 @@ app.get('/createusers', (req, res) => {
 });
 
 app.use(authRouter(db));
-app.listen(4000, () => {
+var server = app.listen(4000, () => {
 	console.log('Server running! \nhttp://localhost:4000');
 });
 

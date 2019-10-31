@@ -66,6 +66,11 @@ function App(props) {
 							<>
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
+
+
+
+								<Route path='/library' component={LibraryPage} />
+
 								<Route path='/' component={HomePage} />
 							</>
 						) : (
