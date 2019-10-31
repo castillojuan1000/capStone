@@ -1,5 +1,5 @@
-import { stat } from "fs";
-import { duration } from "moment";
+import { stat } from 'fs';
+import { duration } from 'moment';
 
 const initialState = {
 	currentSong: {},
@@ -11,8 +11,7 @@ const initialState = {
 	albumId: '',
 	artistId: '',
 	songImg: '',
-	songName: '',
-
+	songName: ''
 };
 
 const playerReducer = (state = initialState, action) => {
@@ -48,11 +47,11 @@ const playerReducer = (state = initialState, action) => {
 			return {
 				...state,
 				artistId: payload.artistId,
-				albumId: payload.albumId,
-			}
+				albumId: payload.albumId
+			};
 
 		case 'PLAY_SONG':
-			console.info(payload)
+			console.info(payload);
 			return {
 				...state,
 				currentSong: { ...payload }
@@ -62,12 +61,6 @@ const playerReducer = (state = initialState, action) => {
 				...state,
 				queue: [...state.queue, payload]
 			};
-		case 'INITIATE_SPOTIFY': {
-			return {
-				...state,
-				spotify: payload
-			};
-		}
 		case 'PLAYER_SET_CURRENT_TIME': {
 			return {
 				...state,
@@ -76,7 +69,7 @@ const playerReducer = (state = initialState, action) => {
 		}
 		case 'PLAYER_TOGGLE_PLAY': {
 			return {
-				isPlaying: !state.isPlaying,
+				isPlaying: !state.isPlaying
 			};
 		}
 		default:

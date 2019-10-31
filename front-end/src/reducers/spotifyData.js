@@ -36,7 +36,13 @@ const spotifyData = (state = initialState, action) => {
 				...state,
 				userToken: payload
 			};
-		case 'INITIALIZE_SPOTIFY':
+		case 'INITIATE_SPOTIFY': {
+			return {
+				...state,
+				player: payload
+			};
+		}
+		case 'INITIALIZE_SPOTIFY_KEYS':
 			return {
 				...state,
 				[payload.key] : payload.data,

@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => ({
 	},
 	initializeSpotify: payload => {
 		alert(2)
-		dispatch({type: 'INITIALIZE_SPOTIFY', payload})
+		dispatch({type: 'INITIALIZE_SPOTIFY_KEYS', payload})
 	},
 	PlayNext: payload => {
 		alert(2)
