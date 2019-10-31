@@ -13,10 +13,7 @@ const authReducer = (state = initialState, action) => {
 			};
 		case 'LOGOUT':
 			return {
-				name: '',
-				id: '',
-				isLoggedIn: false,
-				score: 0
+				...initialState
 			};
 		case 'REDIRECT_TO_SIGNIN':
 			return {

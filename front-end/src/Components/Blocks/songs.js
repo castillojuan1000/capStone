@@ -1,7 +1,7 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import { fontSize } from '@material-ui/system';
-
+import '../../App.css';
 
 import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import LensIcon from '@material-ui/icons/Lens';
@@ -9,16 +9,17 @@ import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
 
+import { Link } from 'react-router-dom'
 
 import {getSongSeconds} from '../../utilityFunctions/util.js';
 
 
 
-let Song = ({song, idx, handleClick, active, isPlaying}) => {
+let Song = ({song, idx, handleClick, active, isPlaying, searchState}) => {
     let hoverClass = (active) ? 'song-hover-state active' : 'song-hover-state'
     let playIcon = (active && isPlaying) ? <PauseRoundedIcon style={{fontSize: '.8em'}}/> : <PlayArrowRoundedIcon style={{fontSize: '.8em'}}/>
     let dotStyle = {fontSize: '.4em', paddingBottom: '.2em', marginLeft: '2em', marginRight: '2em'}
-    let artist = song.artists.map( ( artist )  => {return artist.name});
+    let artist = song.artists.map( ( artist )  => {return <Link className="album-link" to={{pathname: '/artist/'+ artist.id}}><h5>{artist.name}</h5></Link>});
     let image = (song.album.images.length > 0) ? song.album.images[1].url : 'https://via.placeholder.com/150'
     let backgroundStyle = {backgroundImage: `url(${image})`,}
     return (
@@ -32,7 +33,11 @@ let Song = ({song, idx, handleClick, active, isPlaying}) => {
               </div>
               <div className="song-description">
                 <h3>{song.name}</h3>
-                <h5>{artist.toString().replace(',', ', ')}  <LensIcon style={dotStyle}/> {song.album.name}</h5>
+                <div className="featured-artists">
+                    {artist}
+                    <h5><LensIcon style={dotStyle}/></h5> 
+                    <Link className='album-link' to={{ pathname: '/album/' + song.album.id, state: { ...searchState } }}><h5>{song.album.name}</h5></Link>
+                </div>
               </div>
               <div className="song-action">
                 <FavoriteRoundedIcon/>

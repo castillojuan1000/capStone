@@ -1,8 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const crypto = require('crypto');
-var socket = require('socket.io')
-const bcrypt = require('bcrypt');
 // const io = require('socketio');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
@@ -10,13 +7,12 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
-const createData = require('./fakerData');
+const authRouter = require('./routes/authServer');
+const createUsers = require('./fakerData');
 const app = express();
-const env = process.env.NODE_ENV;
 const myStore = new SequelizeStore({
 	db: db.sequelize
 });
-const { createToken, verifyToken } = require('./utils');
 
 //! Apollo set up
 const { ApolloServer } = require('apollo-server-express');
@@ -33,7 +29,6 @@ apolloServ.applyMiddleware({ app });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
-let refreshTokens = [];
 app.use(
 	session({
 		secret: 'mySecret',
@@ -47,7 +42,6 @@ myStore.sync();
 if (process.env.NODE_ENV == 'development') {
 	app.use(function (req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
-		console.log(token);
 		if (
 			req.path === '/api/login' ||
 			req.path === '/api/signup' ||
@@ -66,33 +60,13 @@ if (process.env.NODE_ENV == 'development') {
 		});
 	});
 }
-
-var server = app.listen(4000, () => {
-	console.log('Server running on port 4000');
+app.get('/createusers', (req, res) => {
+	createUsers(db);
 });
 
-
-//*** GET ROUTES
-app.get('/api/hello', (req, res, next) => {
-	res.send('Hello World');
-});
-
-app.get('/api/createUsers', (req, res, next) => {
-	createData(db);
-	res.send('Done!');
-});
-app.get('/api/getRoom', (req, res, next) => {
-	db.room.findByPk(1).then(response => {
-		res.send(response.getHost());
-	});
-});
-
-app.delete('/api/signout', (req, res) => {
-	req.session.destroy();
-	const refreshToken = null;
-	refreshTokens = refreshTokens.filter(token => token !== req.body.token);
-	res.status(200);
-	res.send({ data: 'Successfully logged out' });
+app.use(authRouter(db));
+app.listen(4000, () => {
+	console.log('Server running! \nhttp://localhost:4000');
 });
 
 app.get('/auth/:provider', (req, res) => {
@@ -241,8 +215,12 @@ io.on('connection', (socket) => {
 
 	//socket is waiting for that connection on the client side 
 	//once it get then "chat" message it will call the function
+	//! save the messages to the data base 
 	socket.on('SEND_MESSAGE', function (data) {
-
+		db.message.create({
+			userId: 1,
+			rooomId: 1, message: " "
+		})
 		//then grabbing all the sockets and calling a event and then send the data
 		io.sockets.emit('RECEIVE_MESSAGE', data)
 
