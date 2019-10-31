@@ -13,7 +13,7 @@ import {
 	ResumePlayer,
 	getAlbumTracks
 } from '../utilityFunctions/util.js';
-import { withRouter,  Redirect, push } from 'react-router-dom';
+import { withRouter, Redirect, push } from 'react-router-dom';
 import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs';
@@ -21,6 +21,7 @@ import Song from '../Components/Blocks/songs';
 import history from '../history';
 
 import '../App.css';
+import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
@@ -46,8 +47,6 @@ let Loader = ({ loading }) => {
 	);
 };
 
-
-
 class SearchSection extends React.Component {
 	constructor(props) {
 		super(props);
@@ -57,39 +56,42 @@ class SearchSection extends React.Component {
 			loading: this.props.searchState.loading,
 			activeFilter: this.props.searchState.activeFilter,
 			result: this.props.searchState.result,
-			firing: false,
+			firing: false
 		};
-		console.info(props)
+		console.info(props);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
 	}
 	componentDidMount() {
-		document
-			.getElementById('search-body')
-			.addEventListener('scroll', this.checkScroll);
-		let token = StoreAPIToken();
-		let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
-		if (token !== undefined) {
-			localStorage.setItem('token', token);
-			localStorage.setItem('expiration', expiration);
-		} else if ((localStorage.getItem('expiration') - Date.now()) / 1000 < 60) {
-			localStorage.setItem('token', '');
-			localStorage.setItem('expiration', 0);
-			setupSpotify();
-		}
+		// document
+		// 	.getElementById('search-body')
+		// 	.addEventListener('scroll', this.checkScroll);
+		// let token = StoreAPIToken();
+		// let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+		// if (token !== undefined) {
+		// 	localStorage.setItem('token', token);
+		// 	localStorage.setItem('expiration', expiration);
+		// } else if ((localStorage.getItem('expiration') - Date.now()) / 1000 < 60) {
+		// 	localStorage.setItem('token', '');
+		// 	localStorage.setItem('expiration', 0);
+		// 	setupSpotify();
+		// }
 		const wrappedElement = document.getElementById('search-body');
-		wrappedElement.scrollTo(0, this.props.searchState.scroll)
+		wrappedElement.scrollTo(0, this.props.searchState.scroll);
 		//getCategoriesList().then(data => console.log(data));
 	}
 
 	handleSearch({ target }) {
-		this.props.setSearch(target)
+		this.props.setSearch(target);
 		if (this.state.typingTimeout) {
 			clearTimeout(this.state.typingTimeout);
 		}
-		if (this.props.searchState.search === '' && this.props.searchState.loading === true) {
-			this.props.clearSearchState()
+		if (
+			this.props.searchState.search === '' &&
+			this.props.searchState.loading === true
+		) {
+			this.props.clearSearchState();
 		}
 
 		this.setState({
@@ -99,17 +101,15 @@ class SearchSection extends React.Component {
 						? 'album,artist,playlist,track'
 						: this.props.searchState.activeFilter;
 				Search(this.props.searchState.search, type).then(result => {
-					this.props.setSearchResult(result)
+					this.props.setSearchResult(result);
 				});
 			}, 500)
 		});
 	}
 
-
-
 	setSearchFilter = name => {
 		document.getElementById('search-body').scrollTo(0, 0);
-		this.props.setSearchFilter(name)
+		this.props.setSearchFilter(name);
 		if (this.props.searchState.search !== '') {
 			setTimeout(() => {
 				let type =
@@ -117,7 +117,7 @@ class SearchSection extends React.Component {
 						? 'album,artist,playlist,track'
 						: this.props.searchState.activeFilter;
 				Search(this.props.searchState.search, type).then(result => {
-					this.props.setSearchResult(result)
+					this.props.setSearchResult(result);
 				});
 			}, 10);
 		}
@@ -136,17 +136,11 @@ class SearchSection extends React.Component {
 					})
 			);
 			console.log(uris);
-			playSong(uris).then(result =>
-				console.log(result)
-			);
+			playSong(uris).then(result => console.log(result));
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-			console.log(0)
-			);
+			ResumePlayer().then(() => console.log(0));
 		} else {
-			StopPlayer().then(() =>
-			console.log(1)
-			);
+			StopPlayer().then(() => console.log(1));
 		}
 	};
 
@@ -168,13 +162,9 @@ class SearchSection extends React.Component {
 				);
 			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				console.log(1)
-			);
+			ResumePlayer().then(() => console.log(1));
 		} else {
-			StopPlayer().then(() =>
-				console.log(2)
-			);
+			StopPlayer().then(() => console.log(2));
 		}
 	};
 
@@ -212,7 +202,8 @@ class SearchSection extends React.Component {
 		let tracks = [];
 		if ('tracks' in this.props.searchState.result) {
 			this.props.searchState.result.tracks.items.forEach((track, idx) => {
-				let active = this.props.player.currentSong.uri === track.uri ? true : false;
+				let active =
+					this.props.player.currentSong.uri === track.uri ? true : false;
 				tracks.push(
 					<Song
 						handleClick={this.PlaySong}
@@ -229,7 +220,7 @@ class SearchSection extends React.Component {
 
 	checkScroll = e => {
 		const wrappedElement = document.getElementById('search-body');
-		this.props.setCurrentScroll(wrappedElement.scrollTop)
+		this.props.setCurrentScroll(wrappedElement.scrollTop);
 		if (
 			wrappedElement.scrollHeight - wrappedElement.scrollTop <
 				wrappedElement.clientHeight + 300 &&
@@ -239,7 +230,7 @@ class SearchSection extends React.Component {
 			if (this.state.activeFilter !== 'topresults') {
 				this.setState({
 					...this.state,
-					firing: true,
+					firing: true
 				});
 				Search(
 					this.props.searchState.search,
@@ -247,10 +238,10 @@ class SearchSection extends React.Component {
 					50,
 					this.props.searchState.offset + 1 * 50
 				).then(result => {
-					this.props.extendSearchResults(result)
+					this.props.extendSearchResults(result);
 					this.setState({
 						...this.state,
-						firing: false,
+						firing: false
 					});
 				});
 			}
@@ -303,9 +294,10 @@ class SearchSection extends React.Component {
 					</div>
 					<Loader loading={this.props.searchState.loading} />
 				</div>
+				<Footer />
 			</div>
 		);
 	}
 }
 
-export default withRouter(SearchSection)
+export default withRouter(SearchSection);

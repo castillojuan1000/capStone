@@ -8,6 +8,7 @@ function Navbar(props) {
 	const handleSignOut = () => {
 		props.logOut();
 		fetch('/api/signout');
+		props.history.go('/');
 	};
 	return (
 		<Toolbar>
@@ -25,7 +26,7 @@ function Navbar(props) {
 				<ToolbarNavItems>
 					<ul>
 						<li>
-							<Link to='/'>HOME</Link>
+							<Link to='/main'>HOME</Link>
 						</li>
 						{props.user.isLoggedIn ? (
 							<li onClick={handleSignOut}>SIGN OUT</li>

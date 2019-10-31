@@ -123,7 +123,6 @@ function SignInSide(props) {
 			email: state.email,
 			password: state.password
 		});
-		debugger;
 		fetch('/api/login', {
 			method: 'POST',
 			body: formData,
@@ -138,7 +137,6 @@ function SignInSide(props) {
 				}
 			})
 			.then(({ data, tokens }) => {
-				debugger;
 				if (tokens && state.remember) {
 					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
