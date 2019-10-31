@@ -1,22 +1,8 @@
 import React from 'react';
 import '../../footer.css';
 import {
-	getCurrentlyPlaying,
-	StopPlayer,
-	ResumePlayer,
-	AddSong,
-	DeleteSong,
 	ChangeVolume,
 	PlayNext,
-	PlayPrevious,
-	RestartSong,
-	TransferPlayback,
-	getTrack,
-	getLikedTracks,
-	getLikedAlbums,
-	getFollowedArtists,
-	GetMyPlaylists,
-	getPersonalizedTopTracks
 } from '../../utilityFunctions/util.js';
 import { Link } from 'react-router-dom';
 
@@ -43,39 +29,17 @@ import { stat } from 'fs';
 import Script from 'react-load-script';
 
 
-class LoadScript extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			scriptLoaded: false
+async function waitForSpotifyWebPlaybackSDKToLoad() {
+	return new Promise(resolve => {
+		if (window.Spotify) {
+			resolve(window.Spotify);
+		} else {
+			window.onSpotifyWebPlaybackSDKReady = () => {
+				resolve(window.Spotify);
+			};
 		}
-	}
-
-	handleScriptCreate() {
-		this.setState({ scriptLoaded: false })
-	}
-
-	handleScriptError() {
-		this.setState({ scriptError: true })
-	}
-
-	handleScriptLoad() {
-		this.props.setupSpotify()
-		this.setState({ scriptLoaded: true })
-	}
-
-	render() {
-		return (
-			<Script
-				url="https://sdk.scdn.co/spotify-player.js"
-				onCreate={this.handleScriptCreate.bind(this)}
-				onError={this.handleScriptError.bind(this)}
-				onLoad={this.handleScriptLoad.bind(this)}
-			/>
-		)
-	}
-
-}
+	});
+};
 
 
 
@@ -113,14 +77,17 @@ class Footer extends React.Component {
 			playing: this.props.player.isPlaying,
 			muted: false,
 			liked: false,
+			loaded: false,
 			currentTime: this.props.player.currentTime,
-			songLength: this.props.player.songLength
+			songLength: this.props.player.songLength,
 		};
 
 		this.toggleSound = this.toggleSound.bind(this);
 		this.toggleLike = this.toggleLike.bind(this);
 		this.playNext = this.playNext.bind(this);
-		this.setupSpotify = this.setupSpotify.bind(this)
+		this.setupSpotifyPlayer = this.setupSpotifyPlayer.bind(this);
+		this.setTabID = this.setTabID.bind(this);
+		this.handleScriptMount = this.handleScriptMount.bind(this)
 	}
 
 	startTimer(currentTime = 0) {
@@ -140,27 +107,19 @@ class Footer extends React.Component {
 			RestartSong
 		} = this.props.spotifyData.player;
 		let action;
-		if (next === false && this.props.player.currentTime < 4) {
+		if (next === false && this.props.player.currentTime < 10) {
 			this.resetTimer();
 			action = PlayPrevious();
 		} else if (next === true) {
 			this.resetTimer();
-			action = PlayNext();
+			action = this.props.spotifyData.player.PlayNext();
 		}
 		if (action !== undefined) {
 			action.then(success => {
 				getCurrentlyPlaying().then(result => {
-					console.log(this.state);
+					//this.props.spotifyData.player.PlayNext(result)
 					this.setState({
 						...this.state,
-						currentSong: result.item.uri,
-						artist: result.item.artists[0].name,
-						songLength: result.item.duration_ms / 1000,
-						currentTime: result.progress_ms / 1000,
-						songImg: result.item.album.images[2].url,
-						albumName: result.item.album.name,
-						songName: result.item.name,
-						playing: result.is_playing,
 						init: true
 					});
 				});
@@ -193,7 +152,8 @@ class Footer extends React.Component {
 		});
 	};
 	toggleLike = () => {
-		this.props.player.spotify.getCurrentlyPlaying().then(console.log);
+		let { AddSong, getCurrentlyPlaying, DeleteSong } = this.props.spotifyData.player;
+		getCurrentlyPlaying().then(console.log);
 		!this.state.liked
 			? AddSong([this.props.player.currentSongId])
 			: DeleteSong([this.props.player.currentSongId]);
@@ -220,40 +180,82 @@ class Footer extends React.Component {
 		});
 	};
 
-	setupSpotify() {
-		window.onSpotifyWebPlaybackSDKReady = () => {
-			const token = localStorage.getItem('token');
-			const player = new window.Spotify.Player({
-				name: 'Sound Good Music',
-				getOAuthToken: cb => {
-					cb(token);
-				}
-			});
-			player.addListener('player_state_changed', state => {
-				console.debug('new state', state);
-				if (
-					this.props.player.songImg !==
-					state.track_window.current_track.album.images[2].url
-				) {
-					getTrack(state.track_window.current_track.id).then(result => {
-						this.props.playerSetArtistID({
-							albumId: result.album.id,
-							artistId: result.artists[0].id
-						});
+	handleScriptMount() {
+		//alert(1)
+		(async () => {
+			const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
+			this.setupSpotifyPlayer()
+		})();
+	}
+
+	setupSpotifyPlayer() {
+		console.log('spotify', window.Spotify)
+		let { TransferPlayback, getTrack, getPlayer } = this.props.spotifyData.player;
+		const token = this.props.spotifyData.userToken;
+		const player = new window.Spotify.Player({
+			name: `Sound Good Music ${Math.floor(Math.random() * 10)}`,
+			getOAuthToken: cb => {
+				cb(token);
+			}
+		});
+		console.debug('debug', player)
+		player.addListener('player_state_changed', state => {
+			console.debug('new state', state);
+			let action = (state === null) ? window.close() : null;
+			if (
+				action === null &&
+				this.props.player.songImg !==
+				state.track_window.current_track.album.images[2].url
+			) {
+				getTrack(state.track_window.current_track.id).then(result => {
+					document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
+					this.props.playerSetArtistID({
+						albumId: result.album.id,
+						artistId: result.artists[0].id
 					});
-					this.setColor(state.track_window.current_track.album.images[2].url);
-				}
-				this.props.playerStateChange(state);
+				});
+				this.setColor(state.track_window.current_track.album.images[2].url);
+			}
+			if (action === null) {
+				this.props.playerStateChange(state)
+			}
+		});
+		player.addListener('ready', ({ device_id }) => {
+			getPlayer().then(player => console.info(player))
+			console.debug('Ready with Device ID', device_id);
+			TransferPlayback(device_id).then(data => {
+				console.info(data)
+				this.props.spotifyData.player.ResumePlayer().then((data) => console.info('start playing', data))
 			});
-			player.addListener('ready', ({ device_id }) => {
-				console.debug('Ready with Device ID', device_id);
-				TransferPlayback(device_id);
-			});
-			player.addListener('not_ready', ({ device_id }) => {
-				console.debug('Device ID has gone offline', device_id);
-			});
-			player.connect();
-		};
+		});
+		player.addListener('not_ready', ({ device_id }) => {
+			console.debug('Device ID has gone offline', device_id);
+		});
+		player.on('initialization_error', ({ message }) => {
+			console.debug('Failed to initialize', message);
+		});
+		this.setTabID()
+		window.addEventListener('storage', () => {
+			alert(2)
+			let item = (this.state.currentTab !== localStorage.getItem("tabID")
+			) ? player.disconnect().then(() => window.close()) : '';
+		});
+		player.connect().then(() => { player.resume() });
+		player.setName(`Sound Good Music ${Math.floor(Math.random() * 10)}`)
+	}
+
+	setTabID = () => {
+		var iPageTabID = sessionStorage.getItem("tabID");
+		if (iPageTabID == null) {
+			var iLocalTabID = localStorage.getItem("tabID");
+			var iPageTabID = (iLocalTabID == null) ? 1 : Number(iLocalTabID) + 1;
+			localStorage.setItem("tabID", iPageTabID);
+			sessionStorage.setItem("tabID", iPageTabID);
+			this.setState({
+				...this.state,
+				currentTab: iPageTabID,
+			})
+		}
 	}
 
 	render() {
@@ -349,7 +351,10 @@ class Footer extends React.Component {
 							/>
 						</div>
 					</div>
-					<LoadScript setupSpotify={this.setupSpotify} />
+					<Script
+						url="https://sdk.scdn.co/spotify-player.js"
+						onLoad={this.handleScriptMount}
+					/>
 					<ProgressSlider
 						color={this.state.vibrant}
 						current={this.props.player.currentTime}

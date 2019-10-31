@@ -77,10 +77,7 @@ function App(props) {
 								<Redirect to='/login' />
 							)}
 					</Switch>
-					<Footer />
 				</main>
-				{/* {console.info('spotifyData below')}
-				{console.info(props)} */}
 				{props.spotifyData.userToken && (
 					<>
 						<Footer />
