@@ -16,7 +16,8 @@ import {
 	AlbumContainer as Album,
 	ArtistContainer as Artist,
 	FooterContainer as Footer,
-	SearchSectionContainer as SearchSection
+	SearchSectionContainer as SearchSection,
+	LibrarySectionContainer as LibrarySection
 } from './Components/Containers/MainContainer';
 import {
 	SignInContainer as SignInSide,
@@ -25,7 +26,7 @@ import {
 import Login from './Components/login';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
 let HomePage = () => <SearchSection />;
-let MainPage = () => <SearchSection />;
+let LibraryPage = () => <LibrarySection />;
 let AlbumPage = () => <Album />;
 let ArtistPage = () => <Artist />;
 let ExtraPage = () => <Login />;
@@ -65,6 +66,7 @@ function App(props) {
 							<>
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
+								<Route path='/library' component={LibraryPage} />
 								<Route path='/' component={HomePage} />
 							</>
 						) : (
