@@ -35,6 +35,12 @@ const spotifyData = (state = initialState, action) => {
 				...state,
 				userToken: payload
 			};
+		case 'INITIATE_SPOTIFY': {
+			return {
+				...state,
+				player: payload
+			};
+		}
 		default:
 			return state;
 	}

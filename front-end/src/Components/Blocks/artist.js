@@ -2,7 +2,7 @@ import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import { fontSize } from '@material-ui/system';
 
-
+import { Link } from 'react-router-dom'
 
 
 let Artist = ({artist, idx}) => {
@@ -18,7 +18,7 @@ let Artist = ({artist, idx}) => {
                   </div>
               </div>
               <div className="artist-description">
-                <h3>{artist.name}</h3>
+                 <Link className="album-link" to={{pathname: '/artist/'+ artist.id}}><h3>{artist.name}</h3></Link>
               </div>
             </div>)
 }

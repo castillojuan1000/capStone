@@ -33,6 +33,7 @@ import SwapCallsRoundedIcon from '@material-ui/icons/SwapCallsRounded';
 import ProgressSlider from './progressSlider.js';
 
 import * as Vibrant from 'node-vibrant';
+import { stat } from 'fs';
 /* 
 let BoxDemo = (url) => {
     let { data, loading, error } = usePalette(url)
@@ -41,8 +42,8 @@ let BoxDemo = (url) => {
     return <div style={divStyle} ></div>
 } */
 
-let VolumeOn = ({ Muted, onClick }) => {
-	let iconStyle = { fontSize: '2em' };
+let VolumeOn = ({ Muted, onClick, color }) => {
+	let iconStyle = { fontSize: '2em', color: color };
 	return Muted ? (
 		<VolumeOffRoundedIcon onClick={onClick} style={iconStyle} />
 	) : (
@@ -50,8 +51,17 @@ let VolumeOn = ({ Muted, onClick }) => {
 	);
 };
 
-let LikeTrack = ({ liked, onClick }) => {
-	let iconStyle = { fontSize: '1.6em', paddingRight: '5%' };
+let IsPlaying = ({ IsPlaying, color }) => {
+	let iconStyle = { fontSize: '2em', color: color };
+	return IsPlaying ? (
+		<PauseRoundedIcon style={iconStyle} />
+	) : (
+		<PlayArrowRoundedIcon style={iconStyle} />
+	);
+};
+
+let LikeTrack = ({ liked, onClick, color }) => {
+	let iconStyle = { fontSize: '1.6em', paddingRight: '5%', color: color };
 	return liked ? (
 		<FavoriteRoundedIcon onClick={onClick} style={iconStyle} />
 	) : (
@@ -63,11 +73,11 @@ class Footer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			playing: false,
+			playing: this.props.player.isPlaying,
 			muted: false,
 			liked: false,
-			currentTime: 0,
-			songLength: 321
+			currentTime: this.props.player.currentTime,
+			songLength: this.props.player.songLength
 		};
 
 		this.toggleSound = this.toggleSound.bind(this);
@@ -75,39 +85,10 @@ class Footer extends React.Component {
 		this.playNext = this.playNext.bind(this);
 	}
 
-	// class Footer extends React.Component {
-	//     constructor(props){
-	//       super(props)
-	//       this.state = {
-	//         playing: false,
-	//         muted: false,
-	//         liked: false,
-	//         currentTime: 0,
-	//         songLength: 321,
-	//         vibrant: 'green',
-	//       }
-
-	//     this.toggleSound = this.toggleSound.bind(this)
-	//     this.toggleLike = this.toggleLike.bind(this)
-	//     this.playNext = this.playNext.bind(this)
-	//     this.setColor = this.setColor.bind(this)
-	//     }
-
 	startTimer(currentTime = 0) {
-		this.setState({
-			playing: true,
-			currentTime: currentTime
-		});
-		this.timer = setInterval(
-			() =>
-				this.setState({
-					currentTime: this.state.currentTime + 0.25
-				}),
-			250
-		);
+		this.timer = setInterval(() => this.props.setCurrentTime(), 250);
 	}
 	stopTimer() {
-		this.setState({ ...this.state, playing: false });
 		clearInterval(this.timer);
 	}
 	resetTimer() {
@@ -115,8 +96,13 @@ class Footer extends React.Component {
 	}
 
 	playNext(next = true) {
+		const {
+			PlayPrevious,
+			getCurrentlyPlaying,
+			RestartSong
+		} = this.props.spotifyData.player;
 		let action;
-		if (next === false && this.state.currentTime < 10) {
+		if (next === false && this.props.player.currentTime < 4) {
 			this.resetTimer();
 			action = PlayPrevious();
 		} else if (next === true) {
@@ -141,22 +127,24 @@ class Footer extends React.Component {
 					});
 				});
 			});
-		} else if (this.state.currentTime > 10 && next == false) {
+		} else if (this.props.player.currentTime > 4 && next == false) {
 			this.resetTimer();
 			RestartSong();
 		}
 	}
 
 	togglePlay = (init = false) => {
-		!this.state.playing
-			? this.startTimer(this.state.currentTime)
+		console.log(this.props.spotifyData.player);
+		const {
+			togglePlay,
+			StopPlayer,
+			ResumePlayer
+		} = this.props.spotifyData.player;
+		!this.props.player.isPlaying
+			? this.startTimer(this.props.player.currentTime)
 			: this.stopTimer();
-		this.state.playing ? StopPlayer() : ResumePlayer();
-		this.setState({
-			...this.state,
-			playing: !this.state.playing,
-			init: false
-		});
+		this.props.player.isPlaying ? StopPlayer() : ResumePlayer();
+		this.props.togglePlay();
 	};
 
 	toggleSound = () => {
@@ -168,10 +156,9 @@ class Footer extends React.Component {
 	};
 	toggleLike = () => {
 		this.props.player.spotify.getCurrentlyPlaying().then(console.log);
-		///AddSong(this.state.currentSong) : DeleteSong(this.state.currentSong)
 		!this.state.liked
-			? AddSong([this.state.currentSongId])
-			: DeleteSong([this.state.currentSongId]);
+			? AddSong([this.props.player.currentSongId])
+			: DeleteSong([this.props.player.currentSongId]);
 		this.setState({
 			...this.state,
 			liked: !this.state.liked
@@ -205,38 +192,27 @@ class Footer extends React.Component {
 				}
 			});
 			player.addListener('player_state_changed', state => {
-				console.log('new state', state);
+				console.debug('new state', state);
 				if (
-					this.state.songImg !==
+					this.props.player.songImg !==
 					state.track_window.current_track.album.images[2].url
 				) {
 					getTrack(state.track_window.current_track.id).then(result => {
-						this.setState({
-							...this.state,
-							albumId: result.album.id
+						this.props.playerSetArtistID({
+							albumId: result.album.id,
+							artistId: result.artists[0].id
 						});
 					});
 					this.setColor(state.track_window.current_track.album.images[2].url);
 				}
-				this.setState({
-					...this.state,
-					currentSong: state.track_window.current_track.uri,
-					currentSongId: state.track_window.current_track.id,
-					artist: state.track_window.current_track.artists[0].name,
-					songLength: state.track_window.current_track.duration_ms / 1000,
-					currentTime: state.position / 1000,
-					songImg: state.track_window.current_track.album.images[2].url,
-					albumName: state.track_window.current_track.album.name,
-					songName: state.track_window.current_track.name,
-					playing: !state.paused
-				});
+				this.props.playerStateChange(state);
 			});
 			player.addListener('ready', ({ device_id }) => {
-				console.log('Ready with Device ID', device_id);
+				console.debug('Ready with Device ID', device_id);
 				TransferPlayback(device_id);
 			});
 			player.addListener('not_ready', ({ device_id }) => {
-				console.log('Device ID has gone offline', device_id);
+				console.debug('Device ID has gone offline', device_id);
 			});
 			player.connect();
 		};
@@ -249,13 +225,19 @@ class Footer extends React.Component {
 			<div className='footer'>
 				<div className='song-info'>
 					<div className='song-img'>
-						<img id='currently-playing' src={this.state.songImg}></img>
+						<img id='currently-playing' src={this.props.player.songImg}></img>
 					</div>
 					<div className='title-holder'>
-						<Link className='album-link' to={'/album/' + this.state.albumId}>
-							<h3>{this.state.songName}</h3>
+						<Link
+							className='album-link'
+							to={'/album/' + this.props.player.albumId}>
+							<h3>{this.props.player.songName}</h3>
 						</Link>
-						<h6>{this.state.artist}</h6>
+						<Link
+							className='album-link'
+							to={{ pathname: '/artist/' + this.props.player.artistId }}>
+							<h6>{this.props.player.artist}</h6>
+						</Link>
 					</div>
 				</div>
 				<div className='slider-section-container'>
@@ -265,6 +247,7 @@ class Footer extends React.Component {
 								liked={this.state.liked}
 								onClick={this.toggleLike}
 								className='action-icon'
+								color={this.state.vibrant}
 							/>
 						</div>
 						<div>
@@ -285,6 +268,7 @@ class Footer extends React.Component {
 								onClick={() => this.playNext(false)}
 								className='action-icon'
 								style={iconStyle}
+								color={this.state.vibrant}
 							/>
 							<div
 								className='play-holder'
@@ -296,14 +280,16 @@ class Footer extends React.Component {
 									height: '2.15em'
 								}}
 								onClick={this.togglePlay}>
-								<PlayArrowRoundedIcon
+								<IsPlaying
 									className='action-icon'
-									IsPlaying={this.state.playing}
+									IsPlaying={this.props.player.isPlaying}
+									color={this.state.vibrant}
 								/>
 							</div>
 							<ArrowRightRoundedIcon
 								onClick={() => this.playNext(true)}
 								className='action-icon'
+								color={this.state.vibrant}
 								style={iconStyle}
 							/>
 							<div>
@@ -318,13 +304,17 @@ class Footer extends React.Component {
 							</div>
 						</div>
 						<div className='play-holder vol-holder'>
-							<VolumeOn onClick={this.toggleSound} Muted={this.state.muted} />
+							<VolumeOn
+								color={this.state.vibrant}
+								onClick={this.toggleSound}
+								Muted={this.state.muted}
+							/>
 						</div>
 					</div>
 					<ProgressSlider
 						color={this.state.vibrant}
-						current={this.state.currentTime}
-						max={this.state.songLength}
+						current={this.props.player.currentTime}
+						max={this.props.player.songLength}
 					/>
 				</div>
 				<div className='player-section'></div>

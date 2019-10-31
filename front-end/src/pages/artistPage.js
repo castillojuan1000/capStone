@@ -37,7 +37,6 @@ class artistPage extends React.Component {
         loading: true,
         activeFilter: 'artist',
         result: [],
-        firing: false,
         tracks: [],
         vibrant: 'green',
 
@@ -49,7 +48,7 @@ class artistPage extends React.Component {
         getArtist(artistId).then(result => {
             getArtistTopTracks(artistId).then(tracks => {
                 getArtistAlbums(artistId).then(albums => {
-                    console.log(albums)
+                    
                 this.setState({
                     ...this.state,
                     artistName: result.name,
@@ -57,7 +56,8 @@ class artistPage extends React.Component {
                     artistImg: result.images[0].url,
                     followers: result.followers.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                     loading: false,
-                    tracks: tracks.tracks
+                    tracks: tracks.tracks,
+                    albums: albums,
                 })
              this.setColor(tracks.tracks[0].album.images[0].url)
                 })
@@ -130,7 +130,6 @@ class artistPage extends React.Component {
           let uris = JSON.stringify(result.items
             .map(track => {return track.uri})
           )
-          console.log(result)
           playSong(uris).then(success => 
             this.setState({
               ...this.state,
@@ -161,34 +160,50 @@ class artistPage extends React.Component {
 
     buildAlbums = () => {
       let albums = []
-      if (('albums' in this.state.result)){
-        this.state.result.albums.items.forEach((album, idx) => {
-          let active = (this.state.currentSong === album.id) ? true : false;
-          albums.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+      let singles = []
+      let features = [];
+      if ((this.state.albums)){
+        let albumCount = 0;
+        let singleCount = 0;
+        let featureCount = 0;
+        this.state.albums.items.forEach((album, idx) => {
+            
+            if (album.album_group === 'album' && albumCount < 10) {
+              albumCount ++;
+              let active = (this.props.player.albumId === album.id) ? true : false;
+              albums.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+            }
+            else if (album.album_group === 'single' && singleCount < 10) {
+              singleCount ++;
+              let active = (this.props.player.albumId === album.id) ? true : false;
+              singles.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+            }
+            else if (album.album_group === 'appears_on' && featureCount < 10) {
+              featureCount ++;
+              let active = (this.props.player.albumId === album.id) ? true : false;
+              features.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+            }
         })
       }
-      return albums
+      return [albums, singles, features]
     }
 
     buildTracks = () => {
       let tracks = []
         this.state.tracks.forEach((track, idx) => {
-          let active = (this.state.currentSong === track.uri) ? true : false;
+          let active = (this.props.player.currentSongId === track.id) ? true : false;
           tracks.push(<Song albumName={this.state.albumName} image={track.album.images[0].url} handleClick={this.PlaySong} active={active} isPlaying={this.state.isPlaying} song={track} idx={idx}/>)
         })
       return tracks
     }
   
     render() {
-         let ListItems = [];
-            searchFilters.forEach((name) => {
-                ListItems.push(<FilterItem onClick={this.setSearchFilter} name={name} isActive={this.state.activeFilter}/>)
-            })
         let backStyle = {background: `linear-gradient(160deg, ${this.state.dark} 15%, rgba(0,0,0, 0.9) 70%)`}
         let bannerStyle = {backgroundImage: `url('${this.state.artistImg}')`}
         let vibrantStyle = {backgroundColor: "rgba(0,0,0, 0.75)", color: this.state.vibrant}
         let scrollStyle = {scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`}
         let tracks = this.buildTracks();
+        let [albums, singles, features] = this.buildAlbums();
       return (
           <div className="artist-page" style={backStyle}>
             <div className="artist-top-section">
@@ -209,11 +224,24 @@ class artistPage extends React.Component {
                  </div>
             </div>
             <div>
-                <div className="album-songs" style={scrollStyle}>
-                    <Loader loading={this.state.loading}/>
-                        <h2>Top Tracks</h2>
-                        {tracks}
-                        <h2>Albums</h2>
+                <div className='artist-content' style={scrollStyle}>
+                  <div className="album-songs2">
+                      <Loader loading={this.state.loading}/>
+                          <h2>Top Tracks</h2>
+                              {tracks}
+                  </div>
+                  <div className="artist-albums-holder">
+                      <h2>Albums</h2>
+                      {albums}
+                  </div>
+                  <div className="artist-albums-holder">
+                      <h2>Singles</h2>
+                      {singles}
+                  </div>
+                  <div className="artist-albums-holder">
+                      <h2>Features</h2>
+                      {features}
+                  </div>
                 </div>
             </div>
             </div>
