@@ -216,7 +216,7 @@ class Footer extends React.Component {
 		window.onSpotifyWebPlaybackSDKReady = () => {
 			const token = localStorage.getItem('token');
 			const player = new window.Spotify.Player({
-				name: 'Sound Good Music',
+				name: `Sound Good Music ${Math.floor(Math.random() * 10)}`,
 				getOAuthToken: cb => {
 					cb(token);
 				}
@@ -238,6 +238,7 @@ class Footer extends React.Component {
 			});
 			player.addListener('ready', ({ device_id }) => {
 				console.debug('Ready with Device ID', device_id);
+				StopPlayer()
 				TransferPlayback(device_id);
 			});
 			player.addListener('not_ready', ({ device_id }) => {
