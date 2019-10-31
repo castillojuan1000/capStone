@@ -6,6 +6,10 @@ export const getSongSeconds = seconds => {
 	seconds = `${Math.round(seconds % 60)}`;
 	minutes = minutes.length < 2 ? 0 + minutes : minutes;
 	seconds = seconds.length < 2 ? 0 + seconds : seconds;
+	if (minutes == NaN) {
+		alert(1)
+		return `00:00`
+	}
 	return `${minutes}:${seconds}`;
 };
 
@@ -301,10 +305,10 @@ export const getAllDevices = (spotify = null) => {
 	return spotify.GET(url, 'got Devices');
 };
 
-export const getPlayer = (spotify = null) => {
+export const getPlayer = (device = null, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
-	let url = `https://api.spotify.com/v1/me/player`;
+	let url = `https://api.spotify.com/v1/me/player?device=${device}&market=US`;
 	return spotify.GET(url, 'got Player');
 };
 

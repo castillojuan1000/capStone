@@ -4,7 +4,7 @@ import AlbumPage from '../../pages/albumPage.js';
 import ArtistPage from '../../pages/artistPage.js';
 import SearchSection from '../../pages/search';
 import LibrarySection from '../../pages/library';
-import { playSong } from '../../utilityFunctions/util';
+import { playSong, PlayNext } from '../../utilityFunctions/util';
 
 const mapStateToProps = state => ({ ...state });
 
@@ -45,6 +45,10 @@ const mapDispatchToProps = dispatch => ({
 	initializeSpotify: payload => {
 		alert(2)
 		dispatch({type: 'INITIALIZE_SPOTIFY_KEYS', payload})
+	},
+	PlayNext: payload => {
+		alert(2)
+		dispatch({type: 'PLAYER_PLAY_NEXT', payload})
 	}
 });
 

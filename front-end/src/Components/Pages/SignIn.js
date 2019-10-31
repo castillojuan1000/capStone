@@ -92,7 +92,10 @@ function SignInSide(props) {
 					if (tokens) {
 						sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 					}
-					setState({ ...state, isLoggedIn: true });
+					setState({ 
+						...state, 
+						isLoggedIn: true 
+					});
 					return props.authUser({ ...data, isLoggedIn: true });
 				})
 				.then(() => {
