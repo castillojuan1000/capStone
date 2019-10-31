@@ -13,9 +13,9 @@ import {
 	TransferPlayback,
 	getTrack,
 	getLikedTracks,
-	getLikedAlbums, 
+	getLikedAlbums,
 	getFollowedArtists,
-	GetMyPlaylists, 
+	GetMyPlaylists,
 	getPersonalizedTopTracks
 } from '../../utilityFunctions/util.js';
 import { Link } from 'react-router-dom';
@@ -40,13 +40,13 @@ import ProgressSlider from './progressSlider.js';
 import * as Vibrant from 'node-vibrant';
 import { stat } from 'fs';
 
-import Script from 'react-load-script'
+import Script from 'react-load-script';
 
 
 class LoadScript extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state= {
+		this.state = {
 			scriptLoaded: false
 		}
 	}
@@ -54,11 +54,11 @@ class LoadScript extends React.Component {
 	handleScriptCreate() {
 		this.setState({ scriptLoaded: false })
 	}
-	
+
 	handleScriptError() {
 		this.setState({ scriptError: true })
 	}
-	
+
 	handleScriptLoad() {
 		this.props.setupSpotify()
 		this.setState({ scriptLoaded: true })
@@ -66,12 +66,12 @@ class LoadScript extends React.Component {
 
 	render() {
 		return (
-		<Script
-			url="https://sdk.scdn.co/spotify-player.js"
-			onCreate={this.handleScriptCreate.bind(this)}
-			onError={this.handleScriptError.bind(this)}
-			onLoad={this.handleScriptLoad.bind(this)}
-		/>
+			<Script
+				url="https://sdk.scdn.co/spotify-player.js"
+				onCreate={this.handleScriptCreate.bind(this)}
+				onError={this.handleScriptError.bind(this)}
+				onLoad={this.handleScriptLoad.bind(this)}
+			/>
 		)
 	}
 
@@ -84,8 +84,8 @@ let VolumeOn = ({ Muted, onClick, color }) => {
 	return Muted ? (
 		<VolumeOffRoundedIcon onClick={onClick} style={iconStyle} />
 	) : (
-		<VolumeUpRoundedIcon onClick={onClick} style={iconStyle} />
-	);
+			<VolumeUpRoundedIcon onClick={onClick} style={iconStyle} />
+		);
 };
 
 let IsPlaying = ({ IsPlaying, color }) => {
@@ -93,8 +93,8 @@ let IsPlaying = ({ IsPlaying, color }) => {
 	return IsPlaying ? (
 		<PauseRoundedIcon style={iconStyle} />
 	) : (
-		<PlayArrowRoundedIcon style={iconStyle} />
-	);
+			<PlayArrowRoundedIcon style={iconStyle} />
+		);
 };
 
 let LikeTrack = ({ liked, onClick, color }) => {
@@ -102,8 +102,8 @@ let LikeTrack = ({ liked, onClick, color }) => {
 	return liked ? (
 		<FavoriteRoundedIcon onClick={onClick} style={iconStyle} />
 	) : (
-		<FavoriteBorderRoundedIcon onClick={onClick} style={iconStyle} />
-	);
+			<FavoriteBorderRoundedIcon onClick={onClick} style={iconStyle} />
+		);
 };
 
 class Footer extends React.Component {
@@ -208,7 +208,7 @@ class Footer extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img).getPalette((err, palette) => {
 				let rgb = palette.Vibrant._rgb;
 				let color = `RGBA(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
@@ -349,7 +349,7 @@ class Footer extends React.Component {
 							/>
 						</div>
 					</div>
-					<LoadScript setupSpotify={this.setupSpotify}/>
+					<LoadScript setupSpotify={this.setupSpotify} />
 					<ProgressSlider
 						color={this.state.vibrant}
 						current={this.props.player.currentTime}
