@@ -6,6 +6,10 @@ export const getSongSeconds = seconds => {
 	seconds = `${Math.round(seconds % 60)}`;
 	minutes = minutes.length < 2 ? 0 + minutes : minutes;
 	seconds = seconds.length < 2 ? 0 + seconds : seconds;
+	if (minutes == NaN) {
+		alert(1)
+		return `00:00`
+	}
 	return `${minutes}:${seconds}`;
 };
 

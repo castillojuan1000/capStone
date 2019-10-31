@@ -69,6 +69,7 @@ const playerReducer = (state = initialState, action) => {
 		}
 		case 'PLAYER_TOGGLE_PLAY': {
 			return {
+				...state,
 				isPlaying: !state.isPlaying
 			};
 		}
