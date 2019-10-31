@@ -38,6 +38,7 @@ module.exports = function(db) {
 							return res.status(500);
 						} else if (matched) {
 							const accessUser = {
+								username: user.username,
 								email: user.email,
 								id: user.id
 							};
@@ -70,6 +71,7 @@ module.exports = function(db) {
 			.create({ email, password: passwordHash })
 			.then(user => {
 				const accessUser = {
+					username: user.username,
 					email: user.email,
 					id: user.id
 				};
@@ -109,13 +111,13 @@ module.exports = function(db) {
 				console.log('Token Expired');
 				return res.status(401).send({ error: 'token expired' });
 			}
-			const { id, iat, exp } = tokenRes;
+			const { id } = tokenRes;
 			db.user.findByPk(id).then(user => {
 				if (user === null) {
 					return res.sendStatus(401);
 				}
 				const accessToken = createToken({
-					data: { email: user.email, id: user.id },
+					data: { email: user.email, id: user.id, username: user.name },
 					secret: 'ACCESS'
 				});
 				res.json({
@@ -123,7 +125,7 @@ module.exports = function(db) {
 						accessToken,
 						refreshToken
 					},
-					data: { email: user.email, id: user.id }
+					data: { email: user.email, id: user.id, username: user.username }
 				});
 			});
 		});
