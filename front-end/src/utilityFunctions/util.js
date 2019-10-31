@@ -240,17 +240,17 @@ export const TrackIsLiked = (ids, spotify = null) => {
 	return spotify.GET(url, 'Boolean Track is Saved');
 };
 
-export const getLikedAlbums = (spotify = null, offset = 0, limit = 100) => {
+export const getLikedAlbums = (spotify = null, offset = 0, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/albums?limit=${limit}&offset=${offset}`;
 	return spotify.GET(url, 'get all liked albums');
 };
 
-export const getLikedTracks = (spotify = null, offset = 0, limit = 100) => {
+export const getLikedTracks = (spotify = null, offset = 0, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
-	let url = `https://api.spotify.com/v1/me/tracks?limit=${limit}&offset=${offset}`;
+	let url = `https://api.spotify.com/v1/me/tracks?limit=${limit}&offset=${offset}&market=US`;
 	return spotify.GET(url, 'get all liked Songs');
 };
 
@@ -286,7 +286,7 @@ export const getPersonalizedTopTracks = (
 	type,
 	spotify = null,
 	offset = 0,
-	limit = 100
+	limit = 50
 ) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
@@ -476,7 +476,7 @@ export const CreatePlaylist = (
 	return spotify.POST(url, 'Create new Playlist');
 };
 
-export const GetMyPlaylists = (limit = 100, offset = 0, spotify = null) => {
+export const GetMyPlaylists = (limit = 50, offset = 0, spotify = null) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`;
