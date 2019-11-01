@@ -3,6 +3,7 @@ const typDefs = gql`
 	type User {
 		id: ID!
 		email: String!
+		username: String
 		likes: [Like]
 		messages: [Message]
 	}

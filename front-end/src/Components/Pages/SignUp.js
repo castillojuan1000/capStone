@@ -96,7 +96,7 @@ function SignUp(props) {
 			})
 			.then(({ data, tokens }) => {
 				if (tokens && state.remember) {
-					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data, isLoggedIn: true });
 			})

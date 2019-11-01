@@ -62,24 +62,9 @@ if (process.env.NODE_ENV == 'development') {
 		});
 	});
 }
-app.get('/createusers', (req, res) => {
-	createUsers(db);
-});
 
 app.listen(4000, () => {
 	console.log('Server running! \nhttp://localhost:4000');
-});
-
-app.get('/auth/:provider', (req, res) => {
-	console.log(req);
-	res.redirect('http://127.0.0.1:3000/login');
-});
-
-app.get('/getToken', (req, res) => {
-	console.log(req);
-	res.redirect(
-		'https://accounts.spotify.com/authorize?client_id=9fbcf6fdda254c04b4c8406f1f540040&redirect_uri=127.0.0.1:4000/api/auth/spotify&scope=user-read-playback-state%20streaming%20user-read-private%20user-read-currently-playing%20user-modify-playback-state%20user-library-read%20user-library-modify&response_type=token'
-	);
 });
 
 //! CHARTROOM SERVER
@@ -96,7 +81,7 @@ io.on('connection', socket => {
 	socket.on('SEND_MESSAGE', function(data) {
 		console.log(data);
 		db.message.create({
-			userId: 1,
+			userId: data.authorId,
 			roomId: 1,
 			message: data.message
 		});

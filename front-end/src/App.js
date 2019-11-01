@@ -20,7 +20,7 @@ import {
 	SignUpContainer as SignUp
 } from './Components/Containers/SignInContainer';
 import Login from './Components/login';
-import Main from './Components/Pages/Main';
+import Room from './Components/Pages/Room';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
 let HomePage = () => <SearchSection />;
 let LibraryPage = () => <LibrarySection />;
@@ -61,11 +61,11 @@ function App(props) {
 						<Route exact path='/signup' component={SignUp} />
 						{props.spotifyData.userToken ? (
 							<>
-								<Route path='/' component={Main} />
+								<Route exact path='/room/:id' component={Room} />
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
-								<Route path='/library' component={LibraryPage} />
-								<Route path='/search' component={HomePage} />
+								<Route exact path='/library' component={LibraryPage} />
+								<Route exact path='/search' component={HomePage} />
 							</>
 						) : (
 							<Redirect to='/login' />

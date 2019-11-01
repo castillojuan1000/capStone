@@ -4,13 +4,17 @@ import App from './App';
 import { Provider } from 'react-redux';
 import store from './Store';
 import * as serviceWorker from './serviceWorker';
+import { ApolloProvider } from '@apollo/react-hooks';
+import client from './Apollo';
 // import { Provider } from 'react-redux';
 // import store from './Store';
 
 ReactDOM.render(
-	<Provider store={store}>
-		<App />
-	</Provider>,
+	<ApolloProvider client={client}>
+		<Provider store={store}>
+			<App />
+		</Provider>
+	</ApolloProvider>,
 	document.getElementById('root')
 );
 

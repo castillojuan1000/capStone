@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import '../../style/Chatroom.scss';
@@ -6,11 +7,10 @@ import '../../style/Chatroom.scss';
 class Chatroom extends Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
-			username: this.props.user.username,
+			username: '',
 			message: '',
-			messages: [],
+			messages: this.props.messages || [],
 			currentTyper: ''
 		};
 		this.socket = io('localhost:4001');
@@ -19,7 +19,6 @@ class Chatroom extends Component {
 		this.socket.on('RECEIVE_MESSAGE', function(data) {
 			addMessage(data);
 		});
-
 		// the server will then send the message back and update the state
 		const addMessage = data => {
 			this.setState({ messages: [...this.state.messages, data] });
@@ -29,7 +28,7 @@ class Chatroom extends Component {
 			ev.preventDefault();
 			this.socket.emit('SEND_MESSAGE', {
 				author: this.props.username,
-				authorId: this.props.user.id,
+				authorId: this.props.id,
 				message: this.state.message
 			});
 			// fetch('/graphql', {
@@ -48,6 +47,16 @@ class Chatroom extends Component {
 			this.setState({ currentTyper: [...this.state.currentTyper, data] });
 		};
 	}
+	scrollToBottom = () => {
+		const messagesContainer = ReactDOM.findDOMNode(this.messagesContainer);
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	};
+	componentDidMount() {
+		this.scrollToBottom();
+	}
+	componentDidUpdate() {
+		this.scrollToBottom();
+	}
 
 	render() {
 		return (
@@ -61,6 +70,9 @@ class Chatroom extends Component {
 						</figure>
 					</div>
 					<div
+						ref={el => {
+							this.messagesContainer = el;
+						}}
 						className='messages'
 						style={{ overflowY: 'scroll', scrollbarColor: 'yellow blue' }}>
 						{this.state.messages.map(message => {
@@ -69,34 +81,34 @@ class Chatroom extends Component {
 									<figure class='avatar'>
 										<img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg' />
 									</figure>
-									{message.author}:{message.message}
+									{message.author}:
+									<br />
+									{message.message}
 								</div>
 							);
 						})}
 					</div>
-					<div className='message-box'>
-						<textarea
-							className='message-input'
-							type='text'
-							placeholder='Username'
-							value={this.state.username}
-							onChange={ev => this.setState({ username: ev.target.value })}
-						/>
-						<textarea
-							className='message-input'
-							placeholder='Enter a message'
-							value={this.state.message}
-							onChange={ev => this.setState({ message: ev.target.value })}
-						/>
+					<form onSubmit={this.sendMessage}>
+						<div className='message-box'>
+							<input
+								className='message-input'
+								type='text'
+								placeholder={this.props.username}
+								disabled
+							/>
+							<input
+								className='message-input'
+								placeholder='Enter a message'
+								value={this.state.message}
+								onChange={ev => this.setState({ message: ev.target.value })}
+							/>
 
-						<div
-							className='message-submit'
-							onClick={this.sendMessage}
-							type='submit'>
-							{' '}
-							Submit
+							<button className='message-submit' type='submit'>
+								{' '}
+								Submit
+							</button>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		);
@@ -104,7 +116,7 @@ class Chatroom extends Component {
 }
 
 const mapState = state => {
-	return { ...state };
+	return { ...state.user };
 };
 export default connect(
 	mapState,

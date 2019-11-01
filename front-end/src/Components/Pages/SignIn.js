@@ -74,7 +74,7 @@ function SignInSide(props) {
 	};
 
 	useEffect(() => {
-		const authTokens = sessionStorage.getItem('jwtTokens') || null;
+		const authTokens = localStorage.getItem('jwtTokens') || null;
 		const abortController = new AbortController();
 		let loginWithToken;
 		if (authTokens && !props.user.isLoggedIn) {
@@ -86,15 +86,15 @@ function SignInSide(props) {
 				.then(res => res.json())
 				.then(response => {
 					if (response.error) {
-						sessionStorage.removeItem('jwtTokens');
+						localStorage.removeItem('jwtTokens');
 					}
 					const { data, tokens } = response;
 					if (tokens) {
-						sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+						localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 					}
-					setState({ 
-						...state, 
-						isLoggedIn: true 
+					setState({
+						...state,
+						isLoggedIn: true
 					});
 					return props.authUser({ ...data, isLoggedIn: true });
 				})
@@ -141,7 +141,7 @@ function SignInSide(props) {
 			})
 			.then(({ data, tokens }) => {
 				if (tokens && state.remember) {
-					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data, isLoggedIn: true });
 			})

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
@@ -7,6 +7,7 @@ import '../../App.css';
 
 function Navbar(props) {
 	const handleSignOut = () => {
+		localStorage.removeItem('jwtTokens');
 		props.logOut();
 		fetch('/api/signout');
 		props.history.go('/');
@@ -19,7 +20,7 @@ function Navbar(props) {
 				</div>
 
 				<ToolbarLogo>
-					<Link to='/'>THE LOGO</Link>
+					<NavLink to='/'>THE LOGO</NavLink>
 				</ToolbarLogo>
 
 				<Spacer></Spacer>
@@ -27,23 +28,33 @@ function Navbar(props) {
 				<ToolbarNavItems>
 					<ul>
 						<li>
-							<Link to='/'>HOME</Link>
+							<NavLink activeClassName='active' to='/room/1'>
+								ROOM
+							</NavLink>
 						</li>
 						<li>
-							<Link to='/search'>SEARCH</Link>
+							<NavLink activeClassName='active' to='/search'>
+								SEARCH
+							</NavLink>
 						</li>
 						<li>
-							<Link to='/library'>LIBRARY</Link>
+							<NavLink activeClassName='active' to='/library'>
+								LIBRARY
+							</NavLink>
 						</li>
 						{props.user.isLoggedIn ? (
 							<li onClick={handleSignOut}>SIGN OUT</li>
 						) : (
 							<>
 								<li>
-									<Link to='/login'>SIGN IN</Link>
+									<NavLink activeClassName='active' to='/login'>
+										SIGN IN
+									</NavLink>
 								</li>
 								<li>
-									<Link to='/signup'>SIGN UP</Link>
+									<NavLink activeClassName='active' to='/signup'>
+										SIGN UP
+									</NavLink>
 								</li>
 							</>
 						)}
@@ -93,6 +104,9 @@ const ToolbarNavItems = styled.div`
 	@media (max-width: 768px) {
 		display: none;
 	}
+	.navCurrent {
+		color: gold;
+	}
 
 	ul {
 		list-style: none;
@@ -118,7 +132,7 @@ const ToolbarNavItems = styled.div`
 					color: #fa923f;
 				}
 
-				&:active {
+				&.active {
 					color: #fa923f;
 				}
 			}

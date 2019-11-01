@@ -111,7 +111,7 @@ module.exports = function(db) {
 				console.log('Token Expired');
 				return res.status(401).send({ error: 'token expired' });
 			}
-			const { id, iat, exp } = tokenRes;
+			const { id } = tokenRes;
 			db.user.findByPk(id).then(user => {
 				if (user === null) {
 					return res.sendStatus(401);
