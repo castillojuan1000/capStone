@@ -38,20 +38,11 @@ app.use(
 	})
 );
 myStore.sync();
-<<<<<<< HEAD
 const authServer = require('./routes/authServer.js');
 app.use(authServer(db));
-=======
-
-
-const authServer = require('./routes/authServer.js')
-app.use(authServer(db))
-
-
->>>>>>> parent of a1ee5b6... Fixing routes to seperate the auth server
 
 if (process.env.NODE_ENV == 'development') {
-	app.use(function (req, res, next) {
+	app.use(function(req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
 			req.path === '/api/login' ||
@@ -74,39 +65,19 @@ if (process.env.NODE_ENV == 'development') {
 app.get('/createusers', (req, res) => {
 	createUsers(db);
 });
-
-app.use(authRouter(db));
-app.listen(4000, () => {
-	console.log('Server running! \nhttp://localhost:4000');
-});
-
-app.get('/auth/:provider', (req, res) => {
-	console.log(req);
-	res.redirect('http://127.0.0.1:3000/login');
-});
-
-app.get('/getToken', (req, res) => {
-	console.log(req);
-	res.redirect(
-		'https://accounts.spotify.com/authorize?client_id=9fbcf6fdda254c04b4c8406f1f540040&redirect_uri=127.0.0.1:4000/api/auth/spotify&scope=user-read-playback-state%20streaming%20user-read-private%20user-read-currently-playing%20user-modify-playback-state%20user-library-read%20user-library-modify&response_type=token'
-	);
-});
-
-
 app.listen(4000, () => {
 	console.log('Server running! \nhttp://localhost:4000');
 });
 
 //! CHARTROOM SERVER
 app.use(express.static('./src/Components/Pages'));
-var http = require('http').createServer(app)
+var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-io.on('connection', (socket) => {
-	console.log('made socket connection', socket.id)
+io.on('connection', socket => {
+	console.log('made socket connection', socket.id);
 
-	//socket is waiting for that connection on the client side 
+	//socket is waiting for that connection on the client side
 	//once it get then "chat" message it will call the function
-<<<<<<< HEAD
 	//! save the messages to the data base
 	socket.on('SEND_MESSAGE', function(data) {
 		console.log(data);
@@ -115,22 +86,12 @@ io.on('connection', (socket) => {
 			roomId: 1,
 			message: data.message
 		});
-=======
-	//! save the messages to the data base 
-	socket.on('SEND_MESSAGE', function (data) {
-		db.message.create({
-			userId: 1,
-			rooomId: 1, message: " "
-		})
->>>>>>> parent of a1ee5b6... Fixing routes to seperate the auth server
 		//then grabbing all the sockets and calling a event and then send the data
-		io.sockets.emit('RECEIVE_MESSAGE', data)
+		io.sockets.emit('RECEIVE_MESSAGE', data);
+	});
 
-	})
-
-	socket.on('typing', function (data) {
-
+	socket.on('typing', function(data) {
 		// this is broadcasting the message once a person is typing but not to the person typing the message
-		socket.broadcast.emit('typing', data)
-	})
-})
+		socket.broadcast.emit('typing', data);
+	});
+});

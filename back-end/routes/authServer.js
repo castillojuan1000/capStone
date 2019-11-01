@@ -115,11 +115,7 @@ module.exports = function(db) {
 					return res.sendStatus(401);
 				}
 				const accessToken = createToken({
-<<<<<<< HEAD
 					data: { email: user.email, id: user.id, username: user.username },
-=======
-					data: { email: user.email, id: user.id },
->>>>>>> parent of a1ee5b6... Fixing routes to seperate the auth server
 					secret: 'ACCESS'
 				});
 				res.json({
