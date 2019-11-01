@@ -637,3 +637,34 @@ App.main-chatroom {
 	overflow: hidden;
 	height: 100%;
   }
+
+
+
+
+.nav-link {
+	color: rgba(255, 255, 255, 0.4);
+	cursor: pointer;
+	padding: 0.8%;
+	padding-left: 2%;
+	padding-right: 2%;
+	font-weight: 100;
+	font-size: 1em;
+	letter-spacing: 4px;
+	border-bottom: 2px solid transparent;
+	transition: all 0.6s;
+	font-weight: 100;
+	letter-spacing: 3px;
+	font-family: 'roboto'
+}
+
+.nav-link:hover {
+	border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+	color: rgba(255, 255, 255, 0.6);
+	transition: all 0.6s;
+}
+
+.nav-link.active {
+	border-bottom: 2px solid green;
+	color: rgba(255, 255, 255, 0.75);
+	transition: all 0.6s;
+}

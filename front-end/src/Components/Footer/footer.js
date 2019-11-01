@@ -257,6 +257,7 @@ class Footer extends React.Component {
 }
 
 	setupSpotifyPlayer() {
+		alert(1)
 			let {TransferPlayback, getTrack, getPlayer} = this.props.spotifyData.player;
 			const token = this.props.spotifyData.userToken;
 			this.setTabID()

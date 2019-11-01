@@ -28,17 +28,17 @@ function Navbar(props) {
 				<ToolbarNavItems>
 					<ul>
 						<li>
-							<NavLink activeClassName='active' to='/room/1'>
+							<NavLink className="nav-link" activeClassName='active' to='/room/1'>
 								ROOM
 							</NavLink>
 						</li>
 						<li>
-							<NavLink activeClassName='active' to='/search'>
+							<NavLink className="nav-link" activeClassName='active' to='/search'>
 								SEARCH
 							</NavLink>
 						</li>
 						<li>
-							<NavLink activeClassName='active' to='/library'>
+							<NavLink className="nav-link" activeClassName='active' to='/library'>
 								LIBRARY
 							</NavLink>
 						</li>
@@ -47,12 +47,12 @@ function Navbar(props) {
 						) : (
 							<>
 								<li>
-									<NavLink activeClassName='active' to='/login'>
+									<NavLink className="nav-link" activeClassName='active' to='/login'>
 										SIGN IN
 									</NavLink>
 								</li>
 								<li>
-									<NavLink activeClassName='active' to='/signup'>
+									<NavLink className="nav-link" activeClassName='active' to='/signup'>
 										SIGN UP
 									</NavLink>
 								</li>
