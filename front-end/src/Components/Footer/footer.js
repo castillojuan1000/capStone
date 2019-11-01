@@ -336,6 +336,14 @@ class Footer extends React.Component {
 	}
 
 	render() {
+		let scriptTag = []
+		if (window.Spotify === undefined) {
+			console.error(1)
+			scriptTag = [<Script
+					url="https://sdk.scdn.co/spotify-player.js"
+					onLoad={this.handleScriptMount}
+				/>]
+		}
 		//let footerStyle = {backgroundImage: `url(${this.state.songImg})`,  backgroundSize: 'cover'}
 		let iconStyle = { fontSize: '4em' };
 		let alert = this.state.NewLike? <Alert 
@@ -458,10 +466,7 @@ class Footer extends React.Component {
 							/>
 						</div>
 					</div>
-					<Script
-						url="https://sdk.scdn.co/spotify-player.js"
-						onLoad={this.handleScriptMount}
-					/>
+					{scriptTag}
 					<ProgressSlider
 						color={this.state.Vibrant}
 						current={this.state.currentTime}
