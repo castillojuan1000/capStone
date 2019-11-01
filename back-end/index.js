@@ -38,12 +38,17 @@ app.use(
 	})
 );
 myStore.sync();
+<<<<<<< HEAD
+const authServer = require('./routes/authServer.js');
+app.use(authServer(db));
+=======
 
 
 const authServer = require('./routes/authServer.js')
 app.use(authServer(db))
 
 
+>>>>>>> parent of a1ee5b6... Fixing routes to seperate the auth server
 
 if (process.env.NODE_ENV == 'development') {
 	app.use(function (req, res, next) {
@@ -88,6 +93,10 @@ app.get('/getToken', (req, res) => {
 });
 
 
+app.listen(4000, () => {
+	console.log('Server running! \nhttp://localhost:4000');
+});
+
 //! CHARTROOM SERVER
 app.use(express.static('./src/Components/Pages'));
 var http = require('http').createServer(app)
@@ -97,12 +106,23 @@ io.on('connection', (socket) => {
 
 	//socket is waiting for that connection on the client side 
 	//once it get then "chat" message it will call the function
+<<<<<<< HEAD
+	//! save the messages to the data base
+	socket.on('SEND_MESSAGE', function(data) {
+		console.log(data);
+		db.message.create({
+			userId: data.authorId,
+			roomId: 1,
+			message: data.message
+		});
+=======
 	//! save the messages to the data base 
 	socket.on('SEND_MESSAGE', function (data) {
 		db.message.create({
 			userId: 1,
 			rooomId: 1, message: " "
 		})
+>>>>>>> parent of a1ee5b6... Fixing routes to seperate the auth server
 		//then grabbing all the sockets and calling a event and then send the data
 		io.sockets.emit('RECEIVE_MESSAGE', data)
 
