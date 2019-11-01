@@ -69,8 +69,8 @@ export class Spotify {
 		let url = `https://api.spotify.com/v1/users/${user_id}/playlists?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'Get Users Playlists');
 	};
-	GetMyPlaylists = (limit = 100, offset = 0) => {
-		let url = `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`;
+	GetMyPlaylists = (limit = 50, offset = 0) => {
+		let url = `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}&market=US`;
 		return this.GET(url, 'Get All my Playlists');
 	};
 
@@ -281,7 +281,7 @@ export class Spotify {
 		return this.PUT(url, 'Put Player Resume');
 	};
 
-	EnableRepeatMode = (context = 'track') => {
+	EnableRepeatMode = (context = 'context') => {
 		let url = `https://api.spotify.com/v1/me/player/repeat?state=${context}`;
 		return this.PUT(url, 'Put Song/Album/Playlist on repeat');
 	};

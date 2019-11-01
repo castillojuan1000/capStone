@@ -7,11 +7,13 @@ const initialState = {
 	queue: [],
 	isPlaying: false,
 	songLength: 321,
-	currentTime: 0,
 	albumId: '',
 	artistId: '',
 	songImg: '',
-	songName: ''
+	songName: '',
+	colors: {
+		vibrant: 'green',
+	}
 };
 
 const playerReducer = (state = initialState, action) => {
@@ -24,11 +26,12 @@ const playerReducer = (state = initialState, action) => {
 				currentSongId: payload.track_window.current_track.id,
 				artist: payload.track_window.current_track.artists[0].name,
 				songLength: payload.track_window.current_track.duration_ms / 1000,
-				currentTime: payload.position / 1000,
 				songImg: payload.track_window.current_track.album.images[2].url,
 				albumName: payload.track_window.current_track.album.name,
 				songName: payload.track_window.current_track.name,
-				playing: !payload.paused
+				playing: !payload.paused,
+				shuffle: payload.shuffle,
+				repeat: (payload.repeat_mode === 1) ? true : false
 			}
 		case 'PLAYER_PLAY_NEXT':
 				return {
@@ -37,7 +40,6 @@ const playerReducer = (state = initialState, action) => {
 					currentSongId: payload.item.id,
 					artist: payload.item.artists[0].name,
 					songLength: payload.item.duration_ms / 1000,
-					currentTime: payload.progress_ms / 1000,
 					songImg: payload.item.album.images[2].url,
 					albumName: payload.item.album.name,
 					songName: payload.item.name,
@@ -61,16 +63,26 @@ const playerReducer = (state = initialState, action) => {
 				...state,
 				queue: [...state.queue, payload]
 			};
-		case 'PLAYER_SET_CURRENT_TIME': {
+		case 'RESET_PLAYER_QUEUE':
 			return {
 				...state,
-				currentTime: state.currentTime + 0.25
+				queue: [...payload]
+			}
+		case 'PLAYER_SET_PlAYING': {
+			return {
+				...state,
 			};
 		}
 		case 'PLAYER_TOGGLE_PLAY': {
 			return {
 				...state,
 				isPlaying: !state.isPlaying
+			}
+		}
+		case 'SET_PLAYER_COLORS': {
+			return {
+				...state,
+				colors: payload
 			};
 		}
 		default:

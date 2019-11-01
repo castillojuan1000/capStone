@@ -24,11 +24,14 @@ import '../App.css';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
-let FilterItem = ({ name, isActive, onClick }) => {
+let FilterItem = ({ name, isActive, onClick, color}) => {
 	let className =
 		isActive === name.replace(' ', '').toLowerCase() ? 'active' : '';
+	let border = 
+		(isActive === name.replace(' ', '').toLowerCase()) ? {borderBottom: `2px solid ${color}`} : {};
 	return (
 		<li
+			style={border}
 			onClick={() => onClick(name.replace(' ', '').toLowerCase())}
 			className={className}>
 			{name}
@@ -59,7 +62,6 @@ class SearchSection extends React.Component {
 			result: this.props.searchState.result,
 			firing: false,
 		};
-		console.info(props)
 		this.handleSearch = this.handleSearch.bind(this);
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
@@ -80,7 +82,6 @@ class SearchSection extends React.Component {
 		}
 		const wrappedElement = document.getElementById('search-body');
 		wrappedElement.scrollTo(0, this.props.searchState.scroll)
-		//getCategoriesList().then(data => console.log(data));
 	}
 
 	handleSearch({ target }) {
@@ -88,9 +89,9 @@ class SearchSection extends React.Component {
 		if (this.state.typingTimeout) {
 			clearTimeout(this.state.typingTimeout);
 		}
-		if (this.props.searchState.search === '' && this.props.searchState.loading === true) {
+		/* if (this.props.searchState.search === '' && this.props.searchState.loading === true) {
 			this.props.clearSearchState()
-		}
+		} */
 
 		this.setState({
 			typingTimeout: setTimeout(() => {
@@ -135,18 +136,14 @@ class SearchSection extends React.Component {
 						return track.uri;
 					})
 			);
-			console.log(uris);
-			playSong(uris).then(result =>
-				console.log(result)
-			);
+			playSong(uris).then(data => {
+				let queue = this.props.searchState.result.tracks.items.slice(index, this.props.searchState.result.tracks.items.length)
+				this.props.ResetQueue(queue)
+			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-			console.log(0)
-			);
+			ResumePlayer();
 		} else {
-			StopPlayer().then(() =>
-			console.log(1)
-			);
+			StopPlayer();
 		}
 	};
 
@@ -158,7 +155,7 @@ class SearchSection extends React.Component {
 						return track.uri;
 					})
 				);
-				console.log(result);
+				
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -168,13 +165,9 @@ class SearchSection extends React.Component {
 				);
 			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				console.log(1)
-			);
+			ResumePlayer();
 		} else {
-			StopPlayer().then(() =>
-				console.log(2)
-			);
+			StopPlayer();
 		}
 	};
 
@@ -258,6 +251,20 @@ class SearchSection extends React.Component {
 	};
 
 	render() {
+		let searchLeft = {
+			borderLeft: `2px solid ${this.props.player.colors.vibrant}`,
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
+		let searchRight = {
+			borderRight: `2px solid ${this.props.player.colors.vibrant}`,
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
+		let searchInput = {
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
 		let artists = this.buildArtists();
 		let albums = this.buildAlbums();
 		let tracks = this.buildTracks();
@@ -271,6 +278,7 @@ class SearchSection extends React.Component {
 					onClick={this.setSearchFilter}
 					name={name}
 					isActive={this.props.searchState.activeFilter}
+					color={this.props.player.colors.vibrant}
 				/>
 			);
 		});
@@ -280,7 +288,7 @@ class SearchSection extends React.Component {
 					<ul>{ListItems}</ul>
 				</div>
 				<div className='input-holder'>
-					<div className='search-icon'>
+					<div className='search-icon' style={searchLeft} >
 						<SearchRoundedIcon />
 					</div>
 					<input
@@ -290,8 +298,9 @@ class SearchSection extends React.Component {
 						value={this.props.searchState.search}
 						name='search'
 						placeholder='Search...'
+						style={searchInput}
 					/>
-					<div onClick={this.props.clearSearchState} className='cancel-icon'>
+					<div onClick={this.props.clearSearchState} className='cancel-icon' style={searchRight}>
 						<ClearRoundedIcon />
 					</div>
 				</div>

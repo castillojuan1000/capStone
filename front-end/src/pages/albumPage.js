@@ -60,12 +60,12 @@ class AlbumPage extends React.Component {
 			vibrant: 'green'
 		};
 		this.PlaySong = this.PlaySong.bind(this);
-		console.info("props below")
-		console.info(props)
+		
 	}
 	componentDidMount() {
 		var albumId = window.location.pathname.split('/')[2];
 		getAlbum(albumId).then(result => {
+			
 			let copyRight = (result.copyrights.length > 0) ? result.copyrights[0].text : ''
 			this.setState({
 				...this.state,
@@ -94,7 +94,7 @@ class AlbumPage extends React.Component {
 				let dark = palette.DarkMuted._rgb;
 				let darkvibrant = palette.DarkVibrant._rgb;
 				let muted = palette.LightVibrant._rgb;
-				console.log(palette);
+				
 				dark = `RGBA(${dark[0]}, ${dark[1]}, ${dark[2]}, 1)`;
 				let color = `RGBA(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
 				muted = `RGBA(${muted[0]}, ${muted[1]}, ${muted[2]}, 1)`;
@@ -199,7 +199,7 @@ class AlbumPage extends React.Component {
 	};
 
 	render() {
-		var albumId = window.location.pathname.split('/')[2];
+		var albumId = this.props.match.params.id;
 		let Play = (this.props.player.albumId === albumId && this.props.player.isPlaying) ? 'Pause' : 'Play';
 		let backStyle = {
 			background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`

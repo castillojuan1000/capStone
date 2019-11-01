@@ -34,7 +34,6 @@ let SignIN = () => <SignInSide />;
 function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 	const style = {
-		marginTop: '8vh',
 		color: 'black',
 		width: '100%'
 	};

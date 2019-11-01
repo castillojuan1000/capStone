@@ -5,9 +5,10 @@ import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import {Search, playSong, StopPlayer, ResumePlayer, getAlbumTracks, 
     getAlbum, getArtist, getArtistTopTracks, getArtistAlbums} from '../utilityFunctions/util.js';
 
-import Artist from '../Components/Blocks/artist';
+
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/albumSongs';
+import { withRouter } from 'react-router-dom';
 
 import '../App.css';
 import '../artistPage.css';
@@ -44,7 +45,7 @@ class artistPage extends React.Component {
       this.PlaySong = this.PlaySong.bind(this)
     }
     componentDidMount() {
-        var artistId = window.location.pathname.split('/')[2];
+        var artistId = this.props.match.params.id;
         getArtist(artistId).then(result => {
             getArtistTopTracks(artistId).then(tracks => {
                 getArtistAlbums(artistId).then(albums => {
@@ -248,5 +249,4 @@ class artistPage extends React.Component {
       );
     }
   }
-
-export default artistPage
+export default withRouter(artistPage);
