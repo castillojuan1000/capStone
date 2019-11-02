@@ -14,10 +14,10 @@ const initialState = {
 	songImg: '',
 	songName: '',
 	colors: {
-		vibrant: 'black',
+		vibrant: 'black'
 	},
 	secondaryColors: {
-		vibrant: 'black',
+		vibrant: 'black'
 	}
 };
 
@@ -27,35 +27,40 @@ const playerReducer = (state = initialState, action) => {
 		case 'PLAYER_SET_STATE':
 			let newQueue;
 			let recentlyPlayed;
-			let previousBtn = true
-			if (state.queue.length === 0){
-				newQueue = JSON.parse(localStorage.getItem('queue'))
-				recentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed'))
-				recentlyPlayed = (recentlyPlayed !== null) ? recentlyPlayed: []
-			}
-			else if (state.queue.length > 1 && payload.track_window.current_track.id === state.queue[1].id) {
-				newQueue = state.queue.slice(1)
-				recentlyPlayed = [state.queue[0], ...state.recentlyPlayed]
-				localStorage.setItem('queue', JSON.stringify(newQueue))
-				localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed))
-			}
-			else if (state.recentlyPlayed.length > 0 && payload.track_window.current_track.id === state.recentlyPlayed[0].id) {
-				recentlyPlayed = state.recentlyPlayed.slice(1)
-				newQueue = [state.recentlyPlayed[0], ...state.queue]
-				localStorage.setItem('queue', JSON.stringify(newQueue))
-				localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed))
-			}
-			else {
-				newQueue = state.queue
-				recentlyPlayed = state.recentlyPlayed
+			let previousBtn = true;
+			if (state.queue.length === 0) {
+				newQueue = JSON.parse(localStorage.getItem('queue')) || [];
+				recentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed'));
+				recentlyPlayed = recentlyPlayed !== null ? recentlyPlayed : [];
+			} else if (
+				state.queue.length > 1 &&
+				payload.track_window.current_track.id === state.queue[1].id
+			) {
+				newQueue = state.queue.slice(1);
+				recentlyPlayed = [state.queue[0], ...state.recentlyPlayed];
+				localStorage.setItem('queue', JSON.stringify(newQueue));
+				localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed));
+			} else if (
+				state.recentlyPlayed.length > 0 &&
+				payload.track_window.current_track.id === state.recentlyPlayed[0].id
+			) {
+				recentlyPlayed = state.recentlyPlayed.slice(1);
+				newQueue = [state.recentlyPlayed[0], ...state.queue];
+				localStorage.setItem('queue', JSON.stringify(newQueue));
+				localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed));
+			} else {
+				newQueue = state.queue;
+				recentlyPlayed = state.recentlyPlayed;
 			}
 			if (payload.track_window.previous_tracks.length === 0) {
-				previousBtn = false
+				previousBtn = false;
 			}
-			if (newQueue.length > 0 && newQueue[0].id !== payload.track_window.current_track) {
+			if (
+				newQueue.length > 0 &&
+				newQueue[0].id !== payload.track_window.current_track
+			) {
 				//newQueue = []
 				//localStorage.setItem('queue', JSON.stringify([]))
-
 			}
 			return {
 				...state,
@@ -69,24 +74,24 @@ const playerReducer = (state = initialState, action) => {
 				playing: !payload.paused,
 				isPlaying: !payload.paused,
 				shuffle: payload.shuffle,
-				repeat: (payload.repeat_mode === 1) ? true : false,
+				repeat: payload.repeat_mode === 1 ? true : false,
 				queue: newQueue,
-				recentlyPlayed : recentlyPlayed,
-				previousBtn: previousBtn,
-			}
+				recentlyPlayed: recentlyPlayed,
+				previousBtn: previousBtn
+			};
 		case 'PLAYER_PLAY_NEXT':
-				return {
-					...state,
-					currentSong: payload.item,
-					currentSongId: payload.item.id,
-					artist: payload.item.artists[0].name,
-					songLength: payload.item.duration_ms / 1000,
-					songImg: payload.item.album.images[2].url,
-					albumName: payload.item.album.name,
-					songName: payload.item.name,
-					playing: !payload.paused,
-				}
-		case "PLAYER_SET_ARTIST_ID": 
+			return {
+				...state,
+				currentSong: payload.item,
+				currentSongId: payload.item.id,
+				artist: payload.item.artists[0].name,
+				songLength: payload.item.duration_ms / 1000,
+				songImg: payload.item.album.images[2].url,
+				albumName: payload.item.album.name,
+				songName: payload.item.name,
+				playing: !payload.paused
+			};
+		case 'PLAYER_SET_ARTIST_ID':
 			return {
 				...state,
 				artistId: payload.artistId,
@@ -94,7 +99,6 @@ const playerReducer = (state = initialState, action) => {
 			};
 
 		case 'PLAY_SONG':
-
 			return {
 				...state,
 				currentSong: { ...payload }
@@ -105,21 +109,21 @@ const playerReducer = (state = initialState, action) => {
 				queue: [...state.queue, payload]
 			};
 		case 'RESET_PLAYER_QUEUE':
-			localStorage.setItem('queue', JSON.stringify([...payload]))
+			localStorage.setItem('queue', JSON.stringify([...payload]));
 			return {
 				...state,
-				queue: [...payload],
-			}
+				queue: [...payload]
+			};
 		case 'PLAYER_SET_PlAYING': {
 			return {
-				...state,
+				...state
 			};
 		}
 		case 'PLAYER_TOGGLE_PLAY': {
 			return {
 				...state,
 				isPlaying: !state.isPlaying
-			}
+			};
 		}
 		case 'SET_PLAYER_COLORS': {
 			return {

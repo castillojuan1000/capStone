@@ -7,31 +7,32 @@ import { useQuery } from '@apollo/react-hooks';
 import { GET_ROOM } from '../../Apollo';
 import Chatroom from './Chatroom';
 
-function Room({ match, spotifyData, user }) {
+function Room({ match, spotifyData, user, setRoom }) {
 	const [queue, setQueue] = React.useState([]);
 	const [messages, setMessages] = React.useState([]);
 	const { player } = spotifyData;
-	const socket = io('localhost:4001');
-
-	socket.once('CONNECTED', () => {
-		socket.emit('SYNC_PLAYER', data => ({ ...player }));
-	});
-
 	return (
 		<MainRoom>
 			<div className='main_room_header'>
 				<h1>SoungGoodMusic</h1>
 			</div>
-			<QueryRoom id={Number(match.params.id)} queue={queue} user={user} />
+			<QueryRoom
+				id={Number(match.params.id)}
+				queue={queue}
+				user={user}
+				setRoom={setRoom}
+			/>
 		</MainRoom>
 	);
 }
 
-export function QueryRoom({ id, queue, player, user }) {
+export function QueryRoom({ id, queue, player, user, setRoom }) {
 	const { loading, error, data, networkStatus } = useQuery(GET_ROOM, {
-		variables: { id }
+		variables: { id },
+		pollInterval: 0
 	});
 	let isHost;
+	let host;
 	let messages = [];
 	if (loading) {
 		return (
@@ -44,27 +45,45 @@ export function QueryRoom({ id, queue, player, user }) {
 		return <MainContainer>Error</MainContainer>;
 	}
 	if (data) {
-		messages = data.getRoom.messages.map(m => {
+		const { getRoom } = data;
+		messages = getRoom.messages.map(m => {
 			return {
 				author: m.user.username,
 				message: m.message
 			};
 		});
-		isHost = data.getRoom.host.id === user.id;
-		debugger;
+		host = getRoom.host;
+		isHost = Number(getRoom.host.id) === user.id;
 	}
 	return (
 		<MainContainer>
 			{isHost ? (
-				<HostView queue={queue} messages={messages} />
+				<HostView
+					queue={queue}
+					messages={messages}
+					roomId={id}
+					isHost={isHost ? 1 : 0}
+					setRoom={setRoom}
+					host={host}
+				/>
 			) : (
-				<ListenerView queue={queue} messages={messages} />
+				<ListenerView
+					queue={queue}
+					messages={messages}
+					roomId={id}
+					isHost={isHost ? 1 : 0}
+					setRoom={setRoom}
+					host={host}
+				/>
 			)}
 		</MainContainer>
 	);
 }
 
-function HostView({ messages, queue, player }) {
+function HostView({ messages, queue, player, roomId, isHost, host, setRoom }) {
+	React.useEffect(() => {
+		setRoom({ roomId, host: { isHost, ...host } });
+	}, []);
 	return (
 		<>
 			<h1>Host!</h1>
@@ -87,12 +106,23 @@ function HostView({ messages, queue, player }) {
 					);
 				})}
 			</div>
-			<Chatroom messages={messages} />
+			<Chatroom messages={messages} roomId={roomId} isHost={isHost ? 1 : 0} />
 		</>
 	);
 }
 
-function ListenerView({ messages, queue, player }) {
+function ListenerView({
+	messages,
+	queue,
+	player,
+	roomId,
+	isHost,
+	host,
+	setRoom
+}) {
+	React.useEffect(() => {
+		setRoom({ roomId, host: { isHost, ...host } });
+	}, []);
 	return (
 		<>
 			<h1>Queue</h1>
@@ -114,7 +144,7 @@ function ListenerView({ messages, queue, player }) {
 					);
 				})}
 			</div>
-			<Chatroom messages={messages} />
+			<Chatroom messages={messages} roomId={roomId} isHost={isHost ? 1 : 0} />
 		</>
 	);
 }
@@ -161,7 +191,12 @@ let Loader = ({ loading }) => {
 const mapState = state => {
 	return { ...state };
 };
+const mapDispatch = dispatch => {
+	return {
+		setRoom: payload => dispatch({ type: 'SET_ROOM', payload })
+	};
+};
 export default connect(
 	mapState,
-	null
+	mapDispatch
 )(Room);

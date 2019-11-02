@@ -247,7 +247,7 @@ export class Spotify {
 	};
 
 	getPersonalizedTopTracks = type => {
-		console.debug(type)
+		console.debug(type);
 		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=10&offset=0`;
 		return this.GET(url, 'got personalized top tracks');
 	};
@@ -309,6 +309,10 @@ export class Spotify {
 
 	RestartSong = () => {
 		let url = `https://api.spotify.com/v1/me/player/seek?position_ms=1000`;
+		return this.PUT(url, 'Start song over');
+	};
+	SeekSong = position => {
+		let url = `https://api.spotify.com/v1/me/player/seek?position_ms=${position}`;
 		return this.PUT(url, 'Start song over');
 	};
 

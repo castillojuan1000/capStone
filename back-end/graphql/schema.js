@@ -39,6 +39,7 @@ const typDefs = gql`
 		getUser(id: Int!): User
 		getUserByEmail(email: String!): User
 		getRoom(id: Int!): Room
+		getAllRooms: [Room]
 		getSong(spotifyId: Int!): Song
 		getAllSongs: [Song]
 	}

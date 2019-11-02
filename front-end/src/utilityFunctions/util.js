@@ -8,28 +8,26 @@ export const getSongSeconds = seconds => {
 	seconds = seconds.length < 2 ? 0 + seconds : seconds;
 	if (seconds > 59) {
 		return `${minutes[0] + 1}:00`;
-		}
-	else {
+	} else {
 		return `${minutes}:${seconds}`;
 	}
 };
 
 export const searchArray = (nameKey, myArray) => {
-    for (var i=0; i < myArray.length; i++) {
-        if (myArray[i].id === nameKey) {
-            return myArray[i].images
-        }
-    }
-}
+	for (var i = 0; i < myArray.length; i++) {
+		if (myArray[i].id === nameKey) {
+			return myArray[i].images;
+		}
+	}
+};
 
 export const getColor = (palette, key) => {
-	if (key in palette && palette[key] !== null){
-		return  palette[key].getHex()
+	if (key in palette && palette[key] !== null) {
+		return palette[key].getHex();
+	} else {
+		return null;
 	}
-	else {
-		return null
-	}
-}
+};
 
 export const StoreAPIToken = () => {
 	let hash = window.location.hash.substr(1).split('&');
@@ -56,7 +54,7 @@ export const setupSpotify = () => {
 		'user-read-private',
 		'user-read-currently-playing',
 		'user-modify-playback-state',
-		'user-top-read',
+		'user-top-read'
 		// 'user-read-birthdate'
 		// 'user-read-email',
 		// 'user-library-read,

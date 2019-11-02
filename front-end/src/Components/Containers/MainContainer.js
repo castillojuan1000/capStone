@@ -26,40 +26,47 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'SET_CURRENT_SCROLL', payload });
 	},
 	extendSearchResults: payload => {
-		dispatch({type: 'EXTEND_SEARCH_RESULTS', payload})
+		dispatch({ type: 'EXTEND_SEARCH_RESULTS', payload });
 	},
 	playSong: payload => {
-		dispatch({type: 'PLAY_SONG', payload})
+		dispatch({ type: 'PLAY_SONG', payload });
 	},
 	playerStateChange: payload => {
-		dispatch({type: 'PLAYER_SET_STATE', payload})
+		dispatch({ type: 'PLAYER_SET_STATE', payload });
 	},
 	playerSetArtistID: payload => {
-		dispatch({type: 'PLAYER_SET_ARTIST_ID', payload})
+		dispatch({ type: 'PLAYER_SET_ARTIST_ID', payload });
 	},
 	setCurrentTime: payload => {
-		dispatch({type: 'PLAYER_SET_CURRENT_TIME', payload})
+		dispatch({ type: 'PLAYER_SET_CURRENT_TIME', payload });
 	},
 	togglePlay: payload => {
-		dispatch({type: 'PLAYER_TOGGLE_PLAY', payload})
+		dispatch({ type: 'PLAYER_TOGGLE_PLAY', payload });
 	},
 	initializeSpotify: payload => {
-		dispatch({type: 'INITIALIZE_SPOTIFY_KEYS', payload})
+		alert(2);
+		dispatch({ type: 'INITIALIZE_SPOTIFY_KEYS', payload });
 	},
 	PlayNext: payload => {
-		dispatch({type: 'PLAYER_PLAY_NEXT', payload})
+		alert(2);
+		dispatch({ type: 'PLAYER_PLAY_NEXT', payload });
+	},
+	SyncFromHost: () => {
+		dispatch({ type: 'SYNC_FROM_HOST' });
 	},
 	SetColors: payload => {
-		dispatch({type: 'SET_PLAYER_COLORS', payload})
+		dispatch({ type: 'SET_PLAYER_COLORS', payload });
 	},
 	ResetQueue: payload => {
-		console.debug(payload)
-		dispatch({type: 'RESET_PLAYER_QUEUE', payload})
+		console.debug(payload);
+		dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
 	},
 	SetSecondaryColors: payload => {
-		console.debug(payload)
-		dispatch({type: 'SET_SECONDARY_COLORS', payload})
-	}
+		console.debug(payload);
+		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
+	},
+	setPlayer: payload =>
+		dispatch({ type: 'PLAYER_SET_STATE_FROM_HOST', payload })
 });
 
 export const FooterContainer = connect(

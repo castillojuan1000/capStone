@@ -38,6 +38,7 @@ module.exports = function(db) {
 							return res.status(500);
 						} else if (matched) {
 							const accessUser = {
+								username: user.username,
 								email: user.email,
 								id: user.id
 							};
@@ -63,13 +64,14 @@ module.exports = function(db) {
 		}
 	});
 	router.post('/api/signup', async (req, res) => {
-		const email = req.body.email.toLowerCase();
-		const password = req.body.password;
+		const { email, password, username } = req.body;
+
 		const passwordHash = bcrypt.hashSync(password, 10);
 		db.user
-			.create({ email, password: passwordHash })
+			.create({ email: email.toLowerCase(), password: passwordHash, username })
 			.then(user => {
 				const accessUser = {
+					username: user.username,
 					email: user.email,
 					id: user.id
 				};
@@ -109,7 +111,7 @@ module.exports = function(db) {
 				console.log('Token Expired');
 				return res.status(401).send({ error: 'token expired' });
 			}
-			const { id, iat, exp } = tokenRes;
+			const { id } = tokenRes;
 			db.user.findByPk(id).then(user => {
 				if (user === null) {
 					return res.sendStatus(401);
@@ -123,7 +125,7 @@ module.exports = function(db) {
 						accessToken,
 						refreshToken
 					},
-					data: { email: user.email, id: user.id }
+					data: { email: user.email, id: user.id, username: user.username }
 				});
 			});
 		});
