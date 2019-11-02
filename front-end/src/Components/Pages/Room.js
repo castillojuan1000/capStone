@@ -11,11 +11,6 @@ function Room({ match, spotifyData, user }) {
 	const [queue, setQueue] = React.useState([]);
 	const [messages, setMessages] = React.useState([]);
 	const { player } = spotifyData;
-	const socket = io('localhost:4001');
-
-	socket.once('CONNECTED', () => {
-		socket.emit('SYNC_PLAYER', data => ({ ...player }));
-	});
 
 	return (
 		<MainRoom>
@@ -50,21 +45,31 @@ export function QueryRoom({ id, queue, player, user }) {
 				message: m.message
 			};
 		});
-		isHost = data.getRoom.host.id === user.id;
-		debugger;
+		isHost = Number(data.getRoom.host.id) === user.id;
+		console.log(data.getRoom.host.id, isHost, user.id);
 	}
 	return (
 		<MainContainer>
 			{isHost ? (
-				<HostView queue={queue} messages={messages} />
+				<HostView
+					queue={queue}
+					messages={messages}
+					roomId={id}
+					isHost={isHost ? 1 : 0}
+				/>
 			) : (
-				<ListenerView queue={queue} messages={messages} />
+				<ListenerView
+					queue={queue}
+					messages={messages}
+					roomId={id}
+					isHost={isHost ? 1 : 0}
+				/>
 			)}
 		</MainContainer>
 	);
 }
 
-function HostView({ messages, queue, player }) {
+function HostView({ messages, queue, player, roomId, isHost }) {
 	return (
 		<>
 			<h1>Host!</h1>
@@ -87,12 +92,12 @@ function HostView({ messages, queue, player }) {
 					);
 				})}
 			</div>
-			<Chatroom messages={messages} />
+			<Chatroom messages={messages} roomId={roomId} isHost={isHost ? 1 : 0} />
 		</>
 	);
 }
 
-function ListenerView({ messages, queue, player }) {
+function ListenerView({ messages, queue, player, roomId, isHost }) {
 	return (
 		<>
 			<h1>Queue</h1>
@@ -114,7 +119,7 @@ function ListenerView({ messages, queue, player }) {
 					);
 				})}
 			</div>
-			<Chatroom messages={messages} />
+			<Chatroom messages={messages} roomId={roomId} isHost={isHost ? 1 : 0} />
 		</>
 	);
 }

@@ -64,11 +64,11 @@ module.exports = function(db) {
 		}
 	});
 	router.post('/api/signup', async (req, res) => {
-		const email = req.body.email.toLowerCase();
-		const password = req.body.password;
+		const { email, password, username } = req.body;
+
 		const passwordHash = bcrypt.hashSync(password, 10);
 		db.user
-			.create({ email, password: passwordHash })
+			.create({ email: email.toLowerCase(), password: passwordHash, username })
 			.then(user => {
 				const accessUser = {
 					username: user.username,

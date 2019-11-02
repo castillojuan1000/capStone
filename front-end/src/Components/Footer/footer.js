@@ -1,9 +1,6 @@
 import React from 'react';
 import '../../footer.css';
-import {
-	ChangeVolume,
-	PlayNext,
-} from '../../utilityFunctions/util.js';
+import { ChangeVolume, PlayNext } from '../../utilityFunctions/util.js';
 import { Link } from 'react-router-dom';
 
 import ArrowLeftRoundedIcon from '@material-ui/icons/ArrowLeftRounded';
@@ -26,22 +23,19 @@ import ProgressSlider from './progressSlider.js';
 import * as Vibrant from 'node-vibrant';
 import { stat } from 'fs';
 
-import Script from 'react-load-script'
+import Script from 'react-load-script';
 
-
-async function waitForSpotifyWebPlaybackSDKToLoad () {
+async function waitForSpotifyWebPlaybackSDKToLoad() {
 	return new Promise(resolve => {
-	  if (window.Spotify) {
-		resolve(window.Spotify);
-	  } else {
-		window.onSpotifyWebPlaybackSDKReady = () => {
-		  resolve(window.Spotify);
-		};
-	  }
+		if (window.Spotify) {
+			resolve(window.Spotify);
+		} else {
+			window.onSpotifyWebPlaybackSDKReady = () => {
+				resolve(window.Spotify);
+			};
+		}
 	});
-  };
-
-
+}
 
 let VolumeOn = ({ Muted, onClick, color }) => {
 	let iconStyle = { fontSize: '2em', color: color };
@@ -79,7 +73,7 @@ class Footer extends React.Component {
 			liked: false,
 			loaded: false,
 			currentTime: this.props.player.currentTime,
-			songLength: this.props.player.songLength,
+			songLength: this.props.player.songLength
 		};
 
 		this.toggleSound = this.toggleSound.bind(this);
@@ -87,7 +81,7 @@ class Footer extends React.Component {
 		this.playNext = this.playNext.bind(this);
 		this.setupSpotifyPlayer = this.setupSpotifyPlayer.bind(this);
 		this.setTabID = this.setTabID.bind(this);
-		this.handleScriptMount = this.handleScriptMount.bind(this)
+		this.handleScriptMount = this.handleScriptMount.bind(this);
 	}
 
 	startTimer(currentTime = 0) {
@@ -152,7 +146,11 @@ class Footer extends React.Component {
 		});
 	};
 	toggleLike = () => {
-		let {AddSong, getCurrentlyPlaying, DeleteSong} = this.props.spotifyData.player;
+		let {
+			AddSong,
+			getCurrentlyPlaying,
+			DeleteSong
+		} = this.props.spotifyData.player;
 		getCurrentlyPlaying().then(console.log);
 		!this.state.liked
 			? AddSong([this.props.player.currentSongId])
@@ -180,83 +178,98 @@ class Footer extends React.Component {
 		});
 	};
 
-	handleScriptMount(){
+	handleScriptMount() {
 		//alert(1)
 		(async () => {
 			const { Player } = await waitForSpotifyWebPlaybackSDKToLoad();
-			this.setupSpotifyPlayer()
-		  })();
-}
+			this.setupSpotifyPlayer();
+		})();
+	}
 
 	setupSpotifyPlayer() {
-		console.log('spotify', window.Spotify)
-			let {TransferPlayback, getTrack, getPlayer} = this.props.spotifyData.player;
-			const token = this.props.spotifyData.userToken;
-			const player = new window.Spotify.Player({
-				name: `Sound Good Music ${Math.floor(Math.random() * 10)}`,
-				getOAuthToken: cb => {
-					cb(token);
-				}
-			});
-			console.debug('debug', player)
-			player.addListener('player_state_changed', state => {
-				console.debug('new state', state);
-				let action = (state === null) ? window.close() : null;
-				if (
-					action === null &&
-					this.props.player.songImg !==
-					state.track_window.current_track.album.images[2].url
-				) {
-					getTrack(state.track_window.current_track.id).then(result => {
-						document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
-						this.props.playerSetArtistID({
-							albumId: result.album.id,
-							artistId: result.artists[0].id
-						});
-					});
-					this.setColor(state.track_window.current_track.album.images[2].url);
-				}
-				if (action === null) {
-					this.props.playerStateChange(state)
-				}
-			});
-			player.addListener('ready', ({ device_id }) => {
-				getPlayer().then(player => console.info(player))
-				console.debug('Ready with Device ID', device_id);
-				TransferPlayback(device_id).then(data => {
-					console.info(data)
-					this.props.spotifyData.player.ResumePlayer().then((data) => console.info('start playing' ,data))
+		console.log('spotify', window.Spotify);
+		let {
+			TransferPlayback,
+			getTrack,
+			getPlayer
+		} = this.props.spotifyData.player;
+		const token = this.props.spotifyData.userToken;
+		const player = new window.Spotify.Player({
+			name: `Sound Good Music ${Math.floor(Math.random() * 10)}`,
+			getOAuthToken: cb => {
+				cb(token);
+			}
+		});
+		console.debug('debug', player);
+		player.addListener('player_state_changed', state => {
+			if (this.props.player.fromHost) {
+				player.seek(this.props.player.currentTime * 1000).then(() => {
+					this.props.SyncFromHost();
 				});
+			}
+			console.debug('new state', state);
+			let action = state === null ? window.close() : null;
+			if (
+				action === null &&
+				this.props.player.songImg !==
+					state.track_window.current_track.album.images[2].url
+			) {
+				getTrack(state.track_window.current_track.id).then(result => {
+					document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
+					this.props.playerSetArtistID({
+						albumId: result.album.id,
+						artistId: result.artists[0].id
+					});
+				});
+				this.setColor(state.track_window.current_track.album.images[2].url);
+			}
+			if (action === null) {
+				this.props.playerStateChange(state);
+			}
+		});
+		player.addListener('ready', ({ device_id }) => {
+			getPlayer().then(player => console.info(player));
+			console.debug('Ready with Device ID', device_id);
+			TransferPlayback(device_id).then(data => {
+				console.info(data);
+				this.props.spotifyData.player
+					.ResumePlayer()
+					.then(data => console.info('start playing', data));
 			});
-			player.addListener('not_ready', ({ device_id }) => {
-				console.debug('Device ID has gone offline', device_id);
-			});
-			player.on('initialization_error', ({ message }) => {
-				console.debug('Failed to initialize', message);
-			  });
-			this.setTabID()
-			window.addEventListener('storage', () => {
-				alert(2)
-				let item = (this.state.currentTab !== localStorage.getItem("tabID")
-				) ? player.disconnect().then(() => window.close()): '';
-			   });
-			player.connect().then(() => {player.resume()});
-			player.setName(`Sound Good Music ${Math.floor(Math.random() * 10)}`)
+		});
+		player.addListener('not_ready', ({ device_id }) => {
+			console.debug('Device ID has gone offline', device_id);
+		});
+		player.on('initialization_error', ({ message }) => {
+			console.debug('Failed to initialize', message);
+		});
+		this.setTabID();
+		window.addEventListener('storage', () => {
+			alert(2);
+			let item =
+				this.state.currentTab !== localStorage.getItem('tabID')
+					? player.disconnect().then(() => window.close())
+					: '';
+		});
+		player.connect().then(() => {
+			player.resume();
+		});
+		player.setName(`Sound Good Music ${Math.floor(Math.random() * 10)}`);
 	}
 
 	setTabID = () => {
-		var iPageTabID = sessionStorage.getItem("tabID");
-		if (iPageTabID == null){
-			var iLocalTabID = localStorage.getItem("tabID");
-			var iPageTabID = (iLocalTabID == null) ? 1 : Number(iLocalTabID) + 1;
-			localStorage.setItem("tabID",iPageTabID);
-			sessionStorage.setItem("tabID",iPageTabID);
+		var iPageTabID = sessionStorage.getItem('tabID');
+		if (iPageTabID == null) {
+			var iLocalTabID = localStorage.getItem('tabID');
+			var iPageTabID = iLocalTabID == null ? 1 : Number(iLocalTabID) + 1;
+			localStorage.setItem('tabID', iPageTabID);
+			sessionStorage.setItem('tabID', iPageTabID);
 			this.setState({
 				...this.state,
-				currentTab: iPageTabID,
-			})
-			}
-	}
+				currentTab: iPageTabID
+			});
+		}
+	};
 
 	render() {
 		//let footerStyle = {backgroundImage: `url(${this.state.songImg})`,  backgroundSize: 'cover'}
@@ -352,7 +365,7 @@ class Footer extends React.Component {
 						</div>
 					</div>
 					<Script
-						url="https://sdk.scdn.co/spotify-player.js"
+						url='https://sdk.scdn.co/spotify-player.js'
 						onLoad={this.handleScriptMount}
 					/>
 					<ProgressSlider
