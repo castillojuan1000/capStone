@@ -46,7 +46,7 @@ class Playlist extends React.Component {
     render = () => {
         this.setColor(this.props.playlist.images[0].url)
         return (
-            <div className="block" style={{background: this.state.colors.DarkMuted}}>
+            <div className="queue-block" style={{background: this.state.colors.DarkMuted}}>
                 <div className="circle1" style={{background: this.state.colors.Vibrant}} ></div>
                 <div className="circle4" style={{background: this.state.colors.Muted}}></div>
                 <div className="cover"><h1>{this.props.playlist.name}</h1></div>
