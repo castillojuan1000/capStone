@@ -171,8 +171,8 @@ export class Spotify {
 		return this.GET(url, 'got recommendations');
 	};
 
-	getFollowedArtists = (limit = 100) => {
-		let url = `https://api.spotify.com/v1/me/following?type=artist&limit=${limit}`;
+	getFollowedArtists = (limit = 50) => {
+		let url = `https://api.spotify.com/v1/me/following?type=artist&limit=${limit}&market=US`;
 		return this.GET(url, 'got Followed Artists');
 	};
 

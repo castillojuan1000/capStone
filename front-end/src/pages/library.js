@@ -1,29 +1,31 @@
 import React from 'react';
+import '.././style/library.css'
 
 
 import {
 	playSong,
 	StopPlayer,
 	ResumePlayer,
-    getAlbumTracks,
-    getLikedTracks,
-    getLikedAlbums, 
-    getFollowedArtists,
-    GetMyPlaylists, 
-    getPersonalizedTopTracks
+	getAlbumTracks,
+	getLikedTracks,
+	getLikedAlbums,
+	getFollowedArtists,
+	GetMyPlaylists,
+	getPersonalizedTopTracks
 } from '../utilityFunctions/util.js';
 import { withRouter } from 'react-router-dom';
 import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
-import Song from '../Components/Blocks/songs';
+import Song from '../Components/Blocks/songs2';
 
 import '../App.css';
+import { element } from 'prop-types';
 
 let searchFilters = ['PLAYLISTS', 'MADE FOR YOU', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
 
 let FilterItem = ({ name, isActive, onClick }) => {
 	let className =
-        isActive === name ? 'active' : '';
+		isActive === name ? 'active' : '';
 	return (
 		<li
 			onClick={() => onClick(name)}
@@ -51,37 +53,47 @@ class LibrarySection extends React.Component {
 		this.state = {
 			token: this.props.spotifyData.token,
 			loading: this.props.searchState.loading,
-			activeFilter: 'PLAYLISTS',
+			activeFilter: searchFilters,
 			result: this.props.searchState.result,
-        };
-        console.info("these are your props", props)
+			likes: [],
+			artists: [],
+			playlists: [],
+			personalized: []
+
+		};
+		console.info("these are your props", props)
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
-    }
+	}
 
 	componentDidMount = () => {
-        getLikedAlbums().then(data => {
-            console.info(data)
-            this.setState({...this.state, albums: data})
-        })
-        getFollowedArtists().then(data => this.setState({...this.state, artists: data}))
-        getLikedTracks().then(data => this.setState({...this.state, likes: data}))
-        GetMyPlaylists().then(data => this.setState({...this.state, playlists: data}))
-        getPersonalizedTopTracks().then(data => this.setState({...this.state, personalized: data}))
+		getLikedAlbums().then(data => {
+			this.setState({ ...this.state, albums: data.items })
+		})
+		getFollowedArtists().then(data => {
+
+			this.setState({ ...this.state, artists: data.artists.items })
+		})
+		getLikedTracks().then(data => this.setState({ ...this.state, likes: data.items }))
+		debugger
+		GetMyPlaylists().then(data =>
+
+			this.setState({ ...this.state, playlists: data.items }))
+		getPersonalizedTopTracks().then(data => this.setState({ ...this.state, personalized: data }))
 	}
 
 
 	setSearchFilter = name => {
 		document.getElementById('search-body').scrollTo(0, 0);
 		this.setState({
-            ...this.state,
-            activeFilter: name,
-        })
+			...this.state,
+			activeFilter: name,
+		})
 	};
 
 	PlaySong = (uri, active) => {
 		if (!active) {
-			let index = this.props.searchState.result.tracks.items.findIndex(
+			let index = this.state.likes.items.findIndex(
 				track => track.uri === uri
 			);
 			let uris = JSON.stringify(
@@ -97,11 +109,11 @@ class LibrarySection extends React.Component {
 			);
 		} else if ((active, this.state.isPlaying === false)) {
 			ResumePlayer().then(() =>
-			console.log(0)
+				console.log(0)
 			);
 		} else {
 			StopPlayer().then(() =>
-			console.log(1)
+				console.log(1)
 			);
 		}
 	};
@@ -136,9 +148,9 @@ class LibrarySection extends React.Component {
 
 	buildArtists = () => {
 		let artists = [];
-		if ('artists' in this.props.searchState.result) {
-			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist artist={artist} idx={idx} />);
+		if (this.state.artists) {
+			artists = this.state.artists.map((artist, idx) => {
+				return (<Artist artist={artist} idx={idx} />);
 			});
 		}
 		return artists;
@@ -146,15 +158,16 @@ class LibrarySection extends React.Component {
 
 	buildAlbums = () => {
 		let albums = [];
-		if ('albums' in this.props.searchState.result) {
-			this.props.searchState.result.albums.items.forEach((album, idx) => {
+		if (this.state.albums) {
+
+			albums = this.state.albums.map((album, idx) => {
 				let active = this.props.player.albumId === album.id ? true : false;
-				albums.push(
+				return (
 					<Album
 						handleClick={this.PlayAlbum}
 						active={active}
 						isPlaying={this.state.isPlaying}
-						album={album}
+						album={album.album}
 						idx={idx}
 						searchState={this.state}
 					/>
@@ -166,15 +179,16 @@ class LibrarySection extends React.Component {
 
 	buildTracks = () => {
 		let tracks = [];
-		if ('tracks' in this.props.searchState.result) {
-			this.props.searchState.result.tracks.items.forEach((track, idx) => {
+		if (this.state.likes) {
+
+			this.state.likes.forEach((track, idx) => {
 				let active = this.props.player.currentSong.uri === track.uri ? true : false;
 				tracks.push(
 					<Song
 						handleClick={this.PlaySong}
 						active={active}
 						isPlaying={this.state.isPlaying}
-						song={track}
+						song={track.track}
 						idx={idx}
 					/>
 				);
@@ -182,13 +196,22 @@ class LibrarySection extends React.Component {
 		}
 		return tracks;
 	};
+	buildPlaylist = () => {
+		let playlists = [];
+		if (this.state.playlists) {
+			playlists = this.state.playlists.map((playlist, idx) => {
+				return (<div playlists={playlist} idx={idx} />)
+			})
+		}
+		return playlists;
+	}
+
+
 
 	render() {
-        console.info('likes below')
-        console.info(this.state)
-        console.info('likes above')
-		let artists = this.buildArtists();
-		let albums = this.buildAlbums();
+		console.info('likes below')
+		console.info(this.state)
+		console.info('likes above')
 		let tracks = this.buildTracks();
 		let sectionStyle =
 			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
@@ -203,17 +226,20 @@ class LibrarySection extends React.Component {
 				/>
 			);
 		});
+
+
+
 		return (
 			<div className='main'>
 				<div className='search-filter'>
-					<ul>{ListItems}</ul>
+					<ul >{ListItems}</ul>
 				</div>
 				<div className='search-body' id='search-body'>
-					{artists}
-					{albums}
-					<div className='songs-container' style={sectionStyle}>
-						{tracks}
-					</div>
+					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
+					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
+					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}
+					{this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()}
+
 					<Loader loading={this.props.searchState.loading} />
 				</div>
 			</div>

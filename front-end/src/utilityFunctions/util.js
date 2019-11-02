@@ -37,11 +37,12 @@ export const setupSpotify = () => {
 		'streaming',
 		'user-read-private',
 		'user-read-currently-playing',
-		'user-modify-playback-state'
-		// 'user-read-birthdate'
-		// 'user-read-email',
-		// 'user-library-read',
-		// 'user-library-modify'
+		'user-modify-playback-state',
+		'user-read-birthdate',
+		'user-read-email',
+		'user-library-read',
+		'user-library-modify',
+		'user-follow-read'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;
@@ -181,7 +182,7 @@ export const getRecommendations = (spotify = null, offset = 0, limit = 100) => {
 	return spotify.GET(url, 'got recommendations');
 };
 
-export const getFollowedArtists = (spotify = null, limit = 100) => {
+export const getFollowedArtists = (spotify = null, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/following?type=artist&limit=${limit}`;
