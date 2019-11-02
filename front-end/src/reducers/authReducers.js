@@ -1,7 +1,9 @@
 const initialState = {
 	email: '',
 	id: '',
-	isLoggedIn: false
+	username: '',
+	isLoggedIn: false,
+	room: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -9,7 +11,8 @@ const authReducer = (state = initialState, action) => {
 	switch (type) {
 		case 'LOGIN':
 			return {
-				...payload
+				...payload,
+				room: null
 			};
 		case 'LOGOUT':
 			return {
@@ -19,6 +22,11 @@ const authReducer = (state = initialState, action) => {
 			return {
 				...state,
 				...payload
+			};
+		case 'SET_ROOM':
+			return {
+				...state,
+				room: { ...payload }
 			};
 		default:
 			return state;

@@ -64,7 +64,7 @@ const PrettoSlider = withStyles({
             <PrettoSlider 
                 getAriaValueText={() => { return currentTime}}
                 getAriaLabel={() => {return currentTime}}
-                valueLabelDisplay="on" 
+                valueLabelDisplay="off" 
                 valueLabelFormat={() => {return currentTime}}
                 aria-label="song-slider" 
                 style={{color: color}}value={current}
@@ -72,7 +72,6 @@ const PrettoSlider = withStyles({
                 min={0}
                 defaultValue={current} 
                 className="slider-guy"
-                onClick={console.info("changed")}
                 />
             <div className="label song-length">
                 <p>{totalTime}</p>

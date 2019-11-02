@@ -4,7 +4,8 @@ import AlbumPage from '../../pages/albumPage.js';
 import ArtistPage from '../../pages/artistPage.js';
 import SearchSection from '../../pages/search';
 import LibrarySection from '../../pages/library';
-import { playSong, PlayNext } from '../../utilityFunctions/util';
+import Home from '../../pages/homePage';
+import Navbar from '../Navbar/Navbar';
 
 const mapStateToProps = state => ({ ...state });
 
@@ -52,7 +53,20 @@ const mapDispatchToProps = dispatch => ({
 	},
 	SyncFromHost: () => {
 		dispatch({ type: 'SYNC_FROM_HOST' });
-	}
+	},
+	SetColors: payload => {
+		dispatch({ type: 'SET_PLAYER_COLORS', payload });
+	},
+	ResetQueue: payload => {
+		console.debug(payload);
+		dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
+	},
+	SetSecondaryColors: payload => {
+		console.debug(payload);
+		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
+	},
+	setPlayer: payload =>
+		dispatch({ type: 'PLAYER_SET_STATE_FROM_HOST', payload })
 });
 
 export const FooterContainer = connect(
@@ -77,3 +91,13 @@ export const LibrarySectionContainer = connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(LibrarySection);
+
+export const NavBarSection = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Navbar);
+
+export const HomePageContainer = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Home);

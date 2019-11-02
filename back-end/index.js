@@ -65,7 +65,9 @@ if (process.env.NODE_ENV == 'development') {
 		});
 	});
 }
-
+app.get('/createusers', (req, res) => {
+	createUsers(db);
+});
 app.listen(4000, () => {
 	console.log('Server running! \nhttp://localhost:4000');
 });
@@ -82,16 +84,7 @@ io.of('/rooms').on('connection', socket => {
 	});
 	//socket is waiting for that connection on the client side
 	//once it get then "chat" message it will call the function
-	socket.on('REQUEST_PLAYER_STATE', data => {
-		console.log(data);
-		const { socketId } = data;
-		socket.to(`room${data.roomId}`).emit('SYNC_PLAYER', { socketId });
-	});
-	socket.on('SEND_PLAYER_STATE', data => {
-		const { socketId, player } = data;
-		console.log(socketId, player);
-		socket.to(socketId).emit('RECEIVE_PLAYER_STATE', { player });
-	});
+
 	//! save the messages to the data base
 	socket.on('SEND_MESSAGE', function(data) {
 		db.message.create({
@@ -109,6 +102,15 @@ io.of('/rooms').on('connection', socket => {
 	});
 });
 io.on('connection', socket => {
+	socket.on('REQUEST_PLAYER_STATE', data => {
+		console.log(data);
+		io.emit('SYNC_PLAYER', data);
+	});
+	socket.on('SEND_PLAYER_STATE', data => {
+		const { socketId, player } = data;
+		console.log(socketId, player);
+		io.to(socketId).emit('RECEIVE_PLAYER_STATE', { player });
+	});
 	// // console.log('made socket connection', socket.id);
 	// socket.on('JOIN_ROOM');
 	// //socket is waiting for that connection on the client side

@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-	StoreAPIToken,
-	setupSpotify,
-	getCategoriesList
+	searchArray,
 } from '../utilityFunctions/util.js';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
@@ -13,23 +11,25 @@ import {
 	ResumePlayer,
 	getAlbumTracks
 } from '../utilityFunctions/util.js';
-import { withRouter, Redirect, push } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs';
 
-import history from '../history';
 
 import '../App.css';
 import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
-let FilterItem = ({ name, isActive, onClick }) => {
+let FilterItem = ({ name, isActive, onClick, color}) => {
 	let className =
 		isActive === name.replace(' ', '').toLowerCase() ? 'active' : '';
+	let border = 
+		(isActive === name.replace(' ', '').toLowerCase()) ? {borderBottom: `2px solid ${color}`} : {};
 	return (
 		<li
+			style={border}
 			onClick={() => onClick(name.replace(' ', '').toLowerCase())}
 			className={className}>
 			{name}
@@ -47,6 +47,8 @@ let Loader = ({ loading }) => {
 	);
 };
 
+
+
 class SearchSection extends React.Component {
 	constructor(props) {
 		super(props);
@@ -58,10 +60,10 @@ class SearchSection extends React.Component {
 			result: this.props.searchState.result,
 			firing: false
 		};
-		console.info(props);
 		this.handleSearch = this.handleSearch.bind(this);
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
+		this.PlayArtist = this.PlayArtist.bind(this)
 	}
 	componentDidMount() {
 		// document
@@ -78,8 +80,7 @@ class SearchSection extends React.Component {
 		// 	setupSpotify();
 		// }
 		const wrappedElement = document.getElementById('search-body');
-		wrappedElement.scrollTo(0, this.props.searchState.scroll);
-		//getCategoriesList().then(data => console.log(data));
+		wrappedElement.scrollTo(0, this.props.searchState.scroll)
 	}
 
 	handleSearch({ target }) {
@@ -87,12 +88,9 @@ class SearchSection extends React.Component {
 		if (this.state.typingTimeout) {
 			clearTimeout(this.state.typingTimeout);
 		}
-		if (
-			this.props.searchState.search === '' &&
-			this.props.searchState.loading === true
-		) {
-			this.props.clearSearchState();
-		}
+		/* if (this.props.searchState.search === '' && this.props.searchState.loading === true) {
+			this.props.clearSearchState()
+		} */
 
 		this.setState({
 			typingTimeout: setTimeout(() => {
@@ -135,24 +133,43 @@ class SearchSection extends React.Component {
 						return track.uri;
 					})
 			);
-			console.log(uris);
-			playSong(uris).then(result => console.log(result));
+			playSong(uris).then(data => {
+				let newItems = [];
+				let queue = this.props.searchState.result.tracks.items.slice(index, this.props.searchState.result.tracks.items.length)
+				queue.forEach((track, idx) => {
+					track.order = idx;
+					newItems.push(track)
+				})
+				this.props.ResetQueue(newItems)
+			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() => console.log(0));
+			ResumePlayer();
 		} else {
-			StopPlayer().then(() => console.log(1));
+			StopPlayer();
 		}
 	};
 
 	PlayAlbum = (id, active = false) => {
 		if (!active) {
 			getAlbumTracks(id).then(result => {
+				let images = searchArray(id, this.props.searchState.result.albums.items);
+				console.debug(images)
+				let newItems = []
+				result.items.forEach((track, idx) => {
+					track.order = idx;
+					track.album = {
+						images: images
+					}
+					newItems.push(track)
+				})
+				console.debug(newItems)
+				this.props.ResetQueue(newItems)
 				let uris = JSON.stringify(
 					result.items.map(track => {
 						return track.uri;
 					})
 				);
-				console.log(result);
+				
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -162,9 +179,40 @@ class SearchSection extends React.Component {
 				);
 			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() => console.log(1));
+			ResumePlayer();
 		} else {
-			StopPlayer().then(() => console.log(2));
+			StopPlayer();
+		}
+	};
+
+	PlayArtist = (id, active = false) => {
+		if (!active) {
+			this.props.spotifyData.player.getArtistTopTracks(id).then(result => {
+				let newItems = [];
+				console.debug(result)
+				result.tracks.forEach((track, idx) => {
+					track.order = idx;
+					newItems.push(track)
+				})
+				this.props.ResetQueue(newItems)
+				let uris = JSON.stringify(
+					result.tracks.map(track => {
+						return track.uri;
+					})
+				);
+				
+				playSong(uris).then(success =>
+					this.setState({
+						...this.state,
+						currentSong: id,
+						isPlaying: true
+					})
+				);
+			});
+		} else if ((active, this.state.isPlaying === false)) {
+			ResumePlayer();
+		} else {
+			StopPlayer();
 		}
 	};
 
@@ -172,7 +220,11 @@ class SearchSection extends React.Component {
 		let artists = [];
 		if ('artists' in this.props.searchState.result) {
 			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist artist={artist} idx={idx} />);
+				artists.push(<Artist 
+					artist={artist} 
+					idx={idx} 
+					handleClick={this.PlayArtist}
+					/>);
 			});
 		}
 		return artists;
@@ -249,6 +301,20 @@ class SearchSection extends React.Component {
 	};
 
 	render() {
+		let searchLeft = {
+			borderLeft: `2px solid ${this.props.player.colors.vibrant}`,
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
+		let searchRight = {
+			borderRight: `2px solid ${this.props.player.colors.vibrant}`,
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
+		let searchInput = {
+			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
+			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
+		}
 		let artists = this.buildArtists();
 		let albums = this.buildAlbums();
 		let tracks = this.buildTracks();
@@ -262,6 +328,7 @@ class SearchSection extends React.Component {
 					onClick={this.setSearchFilter}
 					name={name}
 					isActive={this.props.searchState.activeFilter}
+					color={this.props.player.colors.vibrant}
 				/>
 			);
 		});
@@ -271,7 +338,7 @@ class SearchSection extends React.Component {
 					<ul>{ListItems}</ul>
 				</div>
 				<div className='input-holder'>
-					<div className='search-icon'>
+					<div className='search-icon' style={searchLeft} >
 						<SearchRoundedIcon />
 					</div>
 					<input
@@ -281,8 +348,9 @@ class SearchSection extends React.Component {
 						value={this.props.searchState.search}
 						name='search'
 						placeholder='Search...'
+						style={searchInput}
 					/>
-					<div onClick={this.props.clearSearchState} className='cancel-icon'>
+					<div onClick={this.props.clearSearchState} className='cancel-icon' style={searchRight}>
 						<ClearRoundedIcon />
 					</div>
 				</div>
@@ -294,7 +362,7 @@ class SearchSection extends React.Component {
 					</div>
 					<Loader loading={this.props.searchState.loading} />
 				</div>
-				<Footer />
+				
 			</div>
 		);
 	}

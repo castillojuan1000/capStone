@@ -12,6 +12,7 @@ export const GET_ROOM = gql`
 		getRoom(id: $id) {
 			roomName
 			host {
+				username
 				id
 			}
 			messages {
