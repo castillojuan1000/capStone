@@ -64,8 +64,13 @@ class Queue extends React.Component {
     renderPlaylists = () => {
         let playlists = [];
         if (this.props.playlists !== undefined){
-            this.props.playlists.forEach(playlist => {   
-                playlists.push(<Playlist playlist={playlist}/>)
+            this.props.playlists.forEach((playlist, idx) => {   
+                playlists.push(
+                <Playlist 
+                    playlist={playlist} 
+                    id={idx}
+                    getPlaylistTracks = {this.props.getPlaylistTracks}
+                />)
             })
         }
         return playlists
@@ -94,6 +99,7 @@ class Queue extends React.Component {
         let tracks = [];
         let queueStyle = {
             opacity: (this.props.isActive) ? 1 : 0,
+            height: (this.props.isActive) ? '' : 0,
         }
         let arrowStyle = {
             background: (this.props.isActive) ? '' : 'transparent',

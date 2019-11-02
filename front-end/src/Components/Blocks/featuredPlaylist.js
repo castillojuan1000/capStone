@@ -54,14 +54,20 @@ class FeaturedPlaylist extends React.Component {
             background: `linear-gradient(160deg, 
                 ${this.state.colors.Vibrant}, 
                 ${this.state.colors.DarkMuted})`,
-        }
+        };
         return (
-            <div className="playlist" style={{background: this.state.colors.LightVibrant}}>
+            <div className="playlist" style={containerStyle}>
+                <div className="triangle-holder">
                 <div className="triangle-left" 
-                    style={{borderBottom: `18em solid ${this.state.colors.DarkVibrant}`}}>
+                    style={{borderBottom: `18em solid rgba(0,0,0,.1)`}}>
+                </div>
+                <div className="triangle-right" style={{borderTop: `22em solid rgba(0,0,0,.1)`}}></div>
                 </div>
                 <img src={this.props.url}></img>
-                <div className="triangle-right" style={{borderTop: `22em solid ${this.state.colors.DarkVibrant}`}}></div>
+                <div className="playlist-cover">
+                    <h1>{this.props.name}</h1>
+                    <h3>{this.props.artistName}</h3>
+                </div>
             </div>
         )
     }

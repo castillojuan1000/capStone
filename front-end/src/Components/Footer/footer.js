@@ -374,6 +374,7 @@ class Footer extends React.Component {
 					queue={this.props.player.queue}
 					currentURI = {this.props.player.currentSong.uri}
 					isPlaying = {this.props.player.isPlaying}
+					getPlaylistTracks={(this.props.spotifyData.player) ? this.props.spotifyData.player.GetPlaylistTracks : null}
 					/>
 					
 				{alert}

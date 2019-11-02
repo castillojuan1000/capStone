@@ -66,7 +66,7 @@ class FeaturedArtist extends React.Component {
                     <div className="inner5" style={{background: this.state.colors.LightVibrant}}></div>
                     <div className="inner6" style={{background: this.state.colors.Muted}}></div>
                 </div>
-                <h1>{this.props.name}</h1>
+                <div className="artist-name"><h1>{this.props.name}</h1></div>
             </div>
         )
     }
