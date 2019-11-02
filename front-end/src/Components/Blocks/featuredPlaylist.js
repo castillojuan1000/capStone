@@ -61,7 +61,7 @@ class FeaturedPlaylist extends React.Component {
                     style={{borderBottom: `18em solid ${this.state.colors.DarkVibrant}`}}>
                 </div>
                 <img src={this.props.url}></img>
-                <div className="triangle-right" style={{borderTop: `22em solid ${this.state.colors.Vibrant}`}}></div>
+                <div className="triangle-right" style={{borderTop: `22em solid ${this.state.colors.DarkVibrant}`}}></div>
             </div>
         )
     }
