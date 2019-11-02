@@ -68,8 +68,29 @@ if (process.env.NODE_ENV == 'development') {
 app.get('/createusers', (req, res) => {
 	createUsers(db);
 });
+
+app.post('/api/createroom/', (req, res) => {
+	const { hostId, roomName } = req.body;
+	if (hostId) {
+		db.room
+			.create({
+				hostId,
+				roomName
+			})
+			.then(room => {
+				return res.status(200).json({
+					message: 'Created room!',
+					roomId: room.id
+				});
+			});
+	} else {
+		return res.status(401).json({
+			error: 'PLEASE PROVIDE A HOST ID'
+		});
+	}
+});
 app.listen(4000, () => {
-	console.log('Server running! \nhttp://localhost:4000');
+	console.log('Server running! \n http://localhost:4000');
 });
 
 //! CHARTROOM SERVER

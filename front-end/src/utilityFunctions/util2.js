@@ -51,7 +51,7 @@ export class Spotify {
 		return response;
 	};
 
-	GetPlaylistTracks = (playlist_id, limit = 100, offset = 0) => {
+	GetPlaylistTracks = (playlist_id, limit = 50, offset = 0) => {
 		let url = `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'Get Playlist Tracks');
 	};
@@ -216,12 +216,12 @@ export class Spotify {
 		return this.GET(url, 'Boolean Track is Saved');
 	};
 
-	getLikedAlbums = (offset = 0, limit = 100) => {
+	getLikedAlbums = (offset = 0, limit = 50) => {
 		let url = `https://api.spotify.com/v1/me/albums?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'get all liked albums');
 	};
 
-	getLikedTracks = (offset = 0, limit = 100) => {
+	getLikedTracks = (offset = 0, limit = 50) => {
 		let url = `https://api.spotify.com/v1/me/tracks?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'get all liked Songs');
 	};
@@ -248,7 +248,7 @@ export class Spotify {
 
 	getPersonalizedTopTracks = type => {
 		console.debug(type);
-		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=5&offset=0`;
+		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=10&offset=0`;
 		return this.GET(url, 'got personalized top tracks');
 	};
 

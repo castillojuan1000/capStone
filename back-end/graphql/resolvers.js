@@ -15,6 +15,9 @@ const resolvers = {
 		},
 		async getAllSongs(root, { id }, { models }) {
 			return models.song.findAll();
+		},
+		async getAllRooms(root, { id }, { models }) {
+			return models.room.findAll();
 		}
 	},
 	Mutation: {

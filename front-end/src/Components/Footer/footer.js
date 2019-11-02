@@ -128,7 +128,11 @@ class Footer extends React.Component {
 			this.props.spotifyData.player
 				.playSong(JSON.stringify(hostPlayer.queue.map(s => s.uri)))
 				.then(() => {
-					this.props.spotifyData.player.SeekSong(hostPlayer.currentTime * 1000).then(()=>{ this.props.ResetQueue(hostPlayer.queue)})
+					this.props.spotifyData.player
+						.SeekSong(hostPlayer.currentTime * 1000)
+						.then(() => {
+							this.props.ResetQueue(hostPlayer.queue);
+						});
 				});
 		});
 		const sendPlayerState = (socketId, player) => {
@@ -442,6 +446,11 @@ class Footer extends React.Component {
 					queue={this.props.player.queue}
 					currentURI={this.props.player.currentSong.uri}
 					isPlaying={this.props.player.isPlaying}
+					getPlaylistTracks={
+						this.props.spotifyData.player
+							? this.props.spotifyData.player.GetPlaylistTracks
+							: null
+					}
 				/>
 
 				{alert}
@@ -593,7 +602,10 @@ class Footer extends React.Component {
 									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 								}}
 							/>
-							{this.props.user.room && (
+
+							{/* {This checks if the current user is in a room & they are not the host!} */}
+
+							{this.props.user.room && !this.props.user.room.host.isHost && (
 								<button onClick={() => this.requestPlayerState(this.socket.id)}>
 									Sync with host!
 								</button>

@@ -14,6 +14,7 @@
 		"moment-duration-format": "^2.3.2",
 		"node-sass": "^4.13.0",
 		"react": "^16.11.0",
+		"react-beautiful-dnd": "^12.0.0",
 		"react-cookie": "^4.0.1",
 		"react-dom": "^16.11.0",
 		"react-load-script": "0.0.6",
@@ -47,5 +48,5 @@
 			"last 1 safari version"
 		]
 	},
-	"proxy": "http://10.150.40.202:4000"
+	"proxy": "http://localhost:4000"
 }

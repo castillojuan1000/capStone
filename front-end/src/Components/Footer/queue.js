@@ -1,11 +1,26 @@
 import React from 'react';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 import * as Vibrant from 'node-vibrant';
-
+import { connect } from 'react-redux';
 import { getColor } from '../../utilityFunctions/util.js';
 import Playlist from './playlist';
 import Song from '../../Components/Blocks/songshort';
+import Station from './station.js';
 
+const query = `query{
+    getAllRooms{
+        id
+        roomName
+        host{
+            id
+        }
+    }
+}`;
+const opts = {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ query })
+};
 let QueueFilter = ({ name, isActive, onClick, color }) => {
 	let className = isActive === name ? 'active' : '';
 	let border = isActive === name ? { borderBottom: `2px solid ${color}` } : {};
@@ -23,11 +38,20 @@ class Queue extends React.Component {
 			activeFilter: 'Queue',
 			color: this.props.color,
 			isActive: this.props.isActive,
-			toggleQ: this.props.toggleQ
+			toggleQ: this.props.toggleQ,
+			rooms: []
 		};
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 	}
-
+	componentDidMount() {
+		fetch('/graphql', opts)
+			.then(res => res.json())
+			.then(res => {
+				debugger;
+				const { getAllRooms: rooms } = res.data;
+				this.setState({ rooms });
+			});
+	}
 	setSearchFilter = name => {
 		this.setState({
 			...this.state,
@@ -36,7 +60,7 @@ class Queue extends React.Component {
 	};
 
 	getFilterItems = () => {
-		let searchFilters = ['Queue', 'Playlists'];
+		let searchFilters = ['Queue', 'Playlists', 'Stations'];
 		let ListItems = [];
 		searchFilters.forEach(name => {
 			ListItems.push(
@@ -54,13 +78,32 @@ class Queue extends React.Component {
 	renderPlaylists = () => {
 		let playlists = [];
 		if (this.props.playlists !== undefined) {
-			this.props.playlists.forEach(playlist => {
-				playlists.push(<Playlist playlist={playlist} />);
+			this.props.playlists.forEach((playlist, idx) => {
+				playlists.push(
+					<Playlist
+						playlist={playlist}
+						id={idx}
+						getPlaylistTracks={this.props.getPlaylistTracks}
+					/>
+				);
 			});
 		}
 		return playlists;
 	};
-
+	buildStations = () => {
+		const rooms = this.state.rooms.map((room, i) => {
+			const isHost = this.props.user.id === Number(room.host.id);
+			return (
+				<Station
+					roomId={room.id}
+					roomName={room.roomName}
+					key={i}
+					isHost={isHost ? 1 : 0}
+				/>
+			);
+		});
+		return rooms;
+	};
 	buildTracks = () => {
 		let tracks = [];
 		this.props.queue.forEach((track, idx) => {
@@ -79,20 +122,22 @@ class Queue extends React.Component {
 	};
 
 	render() {
-		// console.log(this.props.queue)
 		let playlists = [];
 		let tracks = [];
+		let stations = [];
 		let queueStyle = {
-			height: this.props.isActive ? '' : 0,
-			opacity: this.props.isActive ? 1 : 0
+			opacity: this.props.isActive ? 1 : 0,
+			height: this.props.isActive ? '' : 0
 		};
 		let arrowStyle = {
 			background: this.props.isActive ? '' : 'transparent'
 		};
 		if (this.state.activeFilter === 'Playlists') {
 			playlists = this.renderPlaylists();
-		} else {
+		} else if (this.state.activeFilter === 'Queue') {
 			tracks = this.buildTracks();
+		} else if (this.state.activeFilter === 'Stations') {
+			stations = this.buildStations();
 		}
 		let ListItems = this.getFilterItems();
 		return (
@@ -105,6 +150,7 @@ class Queue extends React.Component {
 				<div className='queue-playlist-holder'>
 					{playlists}
 					{tracks}
+					{stations}
 				</div>
 				<div
 					className='downward-arrow'
@@ -123,5 +169,10 @@ class Queue extends React.Component {
 		);
 	}
 }
-
-export default Queue;
+const mapState = state => {
+	return { ...state };
+};
+export default connect(
+	mapState,
+	null
+)(Queue);

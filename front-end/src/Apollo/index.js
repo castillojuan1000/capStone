@@ -24,3 +24,13 @@ export const GET_ROOM = gql`
 		}
 	}
 `;
+export const GET_ALL_ROOMS = gql`
+	query getAllRooms {
+		getAllRooms {
+			id
+			host {
+				id
+			}
+		}
+	}
+`;
