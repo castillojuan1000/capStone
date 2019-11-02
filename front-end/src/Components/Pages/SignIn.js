@@ -67,7 +67,6 @@ function SignInSide(props) {
 		remember: false,
 		isLoggedIn: false
 	});
-	const [isRedirected, setIsRedirected] = useState(false);
 	const [error, setError] = useState('');
 	const onChange = e => {
 		return setState({ ...state, [e.target.name]: e.target.value });

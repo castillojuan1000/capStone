@@ -7,8 +7,8 @@ export const getSongSeconds = seconds => {
 	minutes = minutes.length < 2 ? 0 + minutes : minutes;
 	seconds = seconds.length < 2 ? 0 + seconds : seconds;
 	if (minutes == NaN) {
-		alert(1)
-		return `00:00`
+		alert(1);
+		return `00:00`;
 	}
 	return `${minutes}:${seconds}`;
 };
@@ -31,7 +31,7 @@ export const StoreAPIToken = () => {
 export const setupSpotify = () => {
 	var client_id = '42c128e85c9c4eddad1930a129937c94';
 	var response_type = 'token';
-	var redirect_uri = 'http://127.0.0.1:3000/login';
+	var redirect_uri = 'http://10.150.40.202:3000/login';
 	var scope = [
 		'user-read-playback-state',
 		'streaming',

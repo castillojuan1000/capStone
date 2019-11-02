@@ -13,7 +13,7 @@ class Chatroom extends Component {
 			messages: this.props.messages || [],
 			currentTyper: ''
 		};
-		this.socket = io(`localhost:4001/rooms`);
+		this.socket = io(`10.150.40.202:4001/rooms`);
 		this.socket.on('connect', function(data) {
 			joinRoom();
 		});
@@ -150,6 +150,7 @@ class Chatroom extends Component {
 							</button>
 						</div>
 					</form>
+					<br />
 					<button onClick={() => this.requestPlayerState(this.socket.id)}>
 						Sync player
 					</button>
