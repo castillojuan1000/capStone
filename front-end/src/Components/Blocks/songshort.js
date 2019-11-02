@@ -1,17 +1,10 @@
 import React from 'react';
-import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
 import '../../App.css';
 
-import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
-import LensIcon from '@material-ui/icons/Lens';
-import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
-import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
+import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 
-import { Link } from 'react-router-dom'
 
-import {getSongSeconds} from '../../utilityFunctions/util.js';
 
 
 
@@ -20,7 +13,8 @@ let Song = ({song, idx, handleClick, active, isPlaying, searchState}) => {
     let playIcon = (active && isPlaying) ? <PauseRoundedIcon style={{fontSize: '.8em'}}/> : <PlayArrowRoundedIcon style={{fontSize: '.8em'}}/>
     let dotStyle = {fontSize: '.4em', paddingBottom: '.2em', marginLeft: '2em', marginRight: '2em'}
     let artist = <h5>{song.artists[0].name}</h5>
-    let image = (song.album.images.length > 0) ? song.album.images[1].url : 'https://via.placeholder.com/150'
+    let image = (song.album !== undefined && song.album.images.length > 0)
+            ? song.album.images[1].url : 'https://via.placeholder.com/150'
     let backgroundStyle = {backgroundImage: `url(${image})`,}
     return (
             <div key={idx} className="song-block">

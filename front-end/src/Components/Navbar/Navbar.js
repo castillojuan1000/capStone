@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
 import '../../App.css';
+import { fontSize } from '@material-ui/system';
 
 function Navbar(props) {
 	const handleSignOut = () => {
@@ -12,15 +13,24 @@ function Navbar(props) {
 		fetch('/api/signout');
 		props.history.go('/');
 	};
+	let color;
+	var page = window.location.pathname.split('/')[1];
+	if (['album', 'artist', 'playlist'].includes(page)) {
+		color = props.player.secondaryColors.DarkVibrant
+	}
+	else {
+		//color = props.player.colors.vibrant
+		color = '#000000 '
+	}
 	return (
-		<Toolbar>
+		<Toolbar style={{background: `linear-gradient(50deg,${color} 15%, rgba(0,0,0, 1) 15%)`}}>
 			<ToolbarNavigation>
 				<div>
 					<DrawerToggleButton toggleButton={props.draweronClick} />
 				</div>
 
 				<ToolbarLogo>
-					<NavLink to='/'>THE LOGO</NavLink>
+					<NavLink to='/' style={{fontWeight:100, fontFamily:'roboto', fontSize: '2vw'}}>THE LOGO</NavLink>
 				</ToolbarLogo>
 
 				<Spacer></Spacer>
@@ -28,17 +38,29 @@ function Navbar(props) {
 				<ToolbarNavItems>
 					<ul>
 						<li>
-							<NavLink className="nav-link" activeClassName='active' to='/room/1'>
+							<NavLink 
+								activeStyle={{color: props.player.colors.vibrant, borderBottom: `2px solid ${props.player.colors.vibrant}`}} 
+								className="nav-link" 
+								activeClassName='active' 
+								to='/room/1'>
 								ROOM
 							</NavLink>
 						</li>
 						<li>
-							<NavLink className="nav-link" activeClassName='active' to='/search'>
+							<NavLink 
+								activeStyle={{color: props.player.colors.vibrant, borderBottom: `2px solid ${props.player.colors.vibrant}`}} 
+								className="nav-link" 
+								activeClassName='active' 
+								to='/search'>
 								SEARCH
 							</NavLink>
 						</li>
 						<li>
-							<NavLink className="nav-link" activeClassName='active' to='/library'>
+							<NavLink 
+								activeStyle={{color: props.player.colors.vibrant, borderBottom: `2px solid ${props.player.colors.vibrant}`}} 
+								className="nav-link" 
+								activeClassName='active' 
+								to='/library'>
 								LIBRARY
 							</NavLink>
 						</li>
@@ -72,7 +94,7 @@ const Toolbar = styled.header`
 	width: 100%;
 	top: 0;
 	left: 0;
-	background: black;
+	background: linear-gradient(160deg,#0b1313 25%, rgba(0,0,0, 1) 75%);
 	height: 8vh;
 `;
 
@@ -121,20 +143,12 @@ const ToolbarNavItems = styled.div`
 			font-weight: 300;
 			color: white;
 			&:hover {
-				color: #fa923f;
 				cursor: pointer;
 			}
 			a {
 				color: inherit;
 				text-decoration: none;
 
-				&:hover {
-					color: #fa923f;
-				}
-
-				&.active {
-					color: #fa923f;
-				}
 			}
 		}
 	}

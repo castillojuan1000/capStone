@@ -95,7 +95,7 @@ export class Spotify {
 
 	playSong = song => {
 		let url = `https://api.spotify.com/v1/me/player/play`;
-		let data = `{"uris": ["${song}"]}`;
+		let data = `{"uris": ${song}}`;
 		return this.PUTBodyParamter(url, data, 'Play specific song');
 	};
 
@@ -131,8 +131,8 @@ export class Spotify {
 		return this.GET(url, 'got artist Albums');
 	};
 
-	getArtistTopTracks = (id, offset = 0, limit = 100) => {
-		let url = `https://api.spotify.com/v1/artists/${id}/top-tracks?offset=${offset}&limit=${limit}`;
+	getArtistTopTracks = (id, offset = 0, limit = 50) => {
+		let url = `https://api.spotify.com/v1/artists/${id}/top-tracks?offset=${offset}&limit=${limit}&market=US`;
 		return this.GET(url, 'got top tracks by artist');
 	};
 
@@ -247,7 +247,8 @@ export class Spotify {
 	};
 
 	getPersonalizedTopTracks = type => {
-		let url = `https://api.spotify.com/v1/me/top/${type}`;
+		console.debug(type)
+		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=5&offset=0`;
 		return this.GET(url, 'got personalized top tracks');
 	};
 

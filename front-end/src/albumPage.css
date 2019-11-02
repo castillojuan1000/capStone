@@ -124,19 +124,21 @@
 
 
 
-.btn-primary {
+
+.btn-primary2 {
     border-radius: 25px;
-    border: 0px solid;
+    border: 2px solid black !important;
     background: green;
     padding: .25em 2em .25em 2em;
     letter-spacing: 2px;
     font-weight: 100;
     margin-top: 10%;
     margin-bottom: 1.5em;
+    color: white;
 }
 
 
-.btn-primary:hover {
+.btn-primary2:hover {
    transform: scale(1.05);
    transition: all .5s;
    animation-name: huerotate;

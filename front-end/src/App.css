@@ -1,6 +1,7 @@
 body {
 	max-height: 100vh;
 	max-width: 100vw;
+	width: 100vw;
 	overflow: hidden;
 }
 
@@ -11,6 +12,7 @@ body {
 .App {
 	margin: 0;
 	padding: 0;
+	width: 100vw;
 	text-align: center;
 }
 
@@ -30,6 +32,7 @@ body {
 	background: linear-gradient(#0b1313 25%, #000000 75%);
 	height: 85vh;
 	width: 100%;
+	width: 100vw;
 }
 
 .btn-primary {
@@ -82,9 +85,6 @@ body {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	animation-name: huerotate;
-	animation-duration: 15s;
-	animation-iteration-count: infinite;
 }
 
 .search-icon {
@@ -339,9 +339,6 @@ body {
 	height: 5vh;
 	background: rgba(0, 0, 0, 0);
 	border-radius: 10px;
-	animation-name: huerotate;
-	animation-duration: 15s;
-	animation-iteration-count: infinite;
 }
 
 .search-filter ul {
@@ -639,7 +636,10 @@ App.main-chatroom {
   }
 
 
-
+.nav-link:focus {
+	border: 0px solid transparent;
+	outline: 0px solid transparent
+}
 
 .nav-link {
 	color: rgba(255, 255, 255, 0.4);

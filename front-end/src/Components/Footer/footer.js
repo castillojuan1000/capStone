@@ -5,6 +5,7 @@ import {
 	getColor
 } from '../../utilityFunctions/util.js';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded';
 
@@ -91,6 +92,7 @@ class Footer extends React.Component {
 			volume: 100,
 			QueueActive: false,
 			songLength: this.props.player.songLength,
+			pageOn: false,
 		};
 
 		this.toggleSound = this.toggleSound.bind(this);
@@ -257,7 +259,6 @@ class Footer extends React.Component {
 }
 
 	setupSpotifyPlayer() {
-		alert(1)
 			let {TransferPlayback, getTrack, getPlayer} = this.props.spotifyData.player;
 			const token = this.props.spotifyData.userToken;
 			this.setTabID()
@@ -306,7 +307,6 @@ class Footer extends React.Component {
 				console.debug('Failed to initialize', message);
 			  });
 			window.addEventListener('storage', () => {
-				alert(2)
 				let item = (this.state.currentTab !== localStorage.getItem("tabID")
 				) ? player.disconnect().then(() => window.close()): '';
 			   });
@@ -335,7 +335,18 @@ class Footer extends React.Component {
 			}
 	}
 
+	updatePageOn = (pageOn) => {
+		this.setState({
+			...this.state,
+			pageOn: pageOn
+		})
+	}
+
 	render() {
+		var item = ['album', 'artist', 'playlist']
+		var location = this.props.location.pathname.split('/')[1]
+		let status = (item.indexOf(location) > -1) ? true : false;
+		let result = (status != this.state.pageOn) ? this.updatePageOn(status) : null
 		let scriptTag = []
 		if (window.Spotify === undefined) {
 			console.error(1)
@@ -348,7 +359,7 @@ class Footer extends React.Component {
 		let iconStyle = { fontSize: '4em' };
 		let alert = this.state.NewLike? <Alert 
 					img={this.props.player.songImg} 
-					color={this.state.Vibrant}
+					color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 					songName={this.props.player.songName}
 					artistName={this.props.player.artist}
 					colors={this.state.colors}
@@ -356,12 +367,13 @@ class Footer extends React.Component {
 		return (
 			<div className='footer'>
 				<Queue 
-					color={this.state.Vibrant}
+					color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 					isActive={this.state.QueueActive}
 					toggleQ={this.toggleQueue}
 					playlists={this.state.playlists}
 					queue={this.props.player.queue}
 					currentURI = {this.props.player.currentSong.uri}
+					isPlaying = {this.props.player.isPlaying}
 					/>
 					
 				{alert}
@@ -389,7 +401,7 @@ class Footer extends React.Component {
 								liked={this.state.liked}
 								onClick={this.toggleLike}
 								className='action-icon'
-								color={this.state.Vibrant}
+								color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 							/>
 						</div>
 						<div>
@@ -402,8 +414,8 @@ class Footer extends React.Component {
 									style={{
 										fontSize: '1.7em',
 										marginRight: '1.5em',
-										color: (this.props.player.shuffle) ? this.state.Vibrant : 'rgba(255,255,255, 0.4)',
-										borderBottom: (this.props.player.shuffle) ? `2px solid ${this.state.Vibrant}` : '2px solid transparent',
+										color: (this.props.player.shuffle) ? (this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant : 'rgba(255,255,255, 0.4)',
+										borderBottom: (this.props.player.shuffle) ? `2px solid ${(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}` : '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 									}}
@@ -413,8 +425,11 @@ class Footer extends React.Component {
 							<ArrowLeftRoundedIcon
 								onClick={() => this.playNext(false)}
 								className='action-icon'
-								style={iconStyle}
-								color={this.state.Vibrant}
+								style={{
+									...iconStyle, 
+									color: (this.props.player.previousBtn || this.state.currentTime > 4) ? 'white' : 'rgba(255,255,255,0.2)',
+									cursor : (this.props.player.previousBtn || this.state.currentTime > 4) ? 'pointer' : 'not-allowed' 
+								}}
 							/>
 							<div
 								className='play-holder'
@@ -429,13 +444,13 @@ class Footer extends React.Component {
 								<IsPlaying
 									className='action-icon'
 									IsPlaying={this.props.player.isPlaying}
-									color={this.state.Vibrant}
+									color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 								/>
 							</div>
 							<ArrowRightRoundedIcon
 								onClick={() => this.playNext(true)}
 								className='action-icon'
-								color={this.state.Vibrant}
+								color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 								style={iconStyle}
 							/>
 							<div>
@@ -444,8 +459,8 @@ class Footer extends React.Component {
 									style={{
 										fontSize: '1.7em',
 										marginLeft: '1.5em',
-										color: (this.props.player.repeat) ? this.state.Vibrant : 'rgba(255,255,255, 0.4)',
-										borderBottom: (this.props.player.repeat) ? `2px solid ${this.state.Vibrant}` : '2px solid transparent',
+										color: (this.props.player.repeat) ? (this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant : 'rgba(255,255,255, 0.4)',
+										borderBottom: (this.props.player.repeat) ? `2px solid ${(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}` : '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 									}}
@@ -458,8 +473,8 @@ class Footer extends React.Component {
 								style={{
 									fontSize: '1.7em',
 									marginLeft: '1.5em',
-									color: this.state.Vibrant,
-									borderBottom: (this.props.player.repeat) ? `2px solid ${this.state.Vibrant}` : '2px solid transparent',
+									color: (this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant,
+									borderBottom: (this.props.player.repeat) ? `2px solid ${(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}` : '2px solid transparent',
 									borderRadius: '50px',
 									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 								}}
@@ -468,22 +483,15 @@ class Footer extends React.Component {
 					</div>
 					{scriptTag}
 					<ProgressSlider
-						color={this.state.Vibrant}
+						color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 						current={this.state.currentTime}
 						max={this.props.player.songLength}
 					/>
 				</div>
 				<div className='icon-section'>
-					<ScreenShareRoundedIcon
-					style={{
-						fontSize: '1.7em',
-						borderRadius: '50px',
-						color: 'rgba(255,255,255, 0.6)'
-					}}
-					/>
 				</div>
 				<SoundSlider 
-					color={this.state.Vibrant}
+					color={(this.pageOn) ? this.props.player.secondaryColors.Vibrant : this.props.player.colors.vibrant}
 					current={this.state.volume}
 					toggleSound={this.toggleSound}
 					muted={this.state.muted}
@@ -496,4 +504,4 @@ class Footer extends React.Component {
 	}
 }
 
-export default Footer;
+export default withRouter(Footer);

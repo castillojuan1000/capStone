@@ -1,10 +1,6 @@
 import React from 'react';
-import {StoreAPIToken, setupSpotify, getCategoriesList} from '../utilityFunctions/util.js';
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
-import {Search, playSong, StopPlayer, ResumePlayer, getAlbumTracks, 
-    getAlbum, getArtist, getArtistTopTracks, getArtistAlbums} from '../utilityFunctions/util.js';
-
+import {getArtist, getArtistTopTracks, getArtistAlbums} from '../utilityFunctions/util.js';
+import {getColor} from '../utilityFunctions/util.js'
 
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/albumSongs';
@@ -14,13 +10,6 @@ import '../App.css';
 import '../artistPage.css';
 
 import * as Vibrant from 'node-vibrant'
-let searchFilters = ['Overview', 'Related Artists', 'About'];
-
-let FilterItem = ({name, isActive, onClick}) => {
-    let className = (isActive === name.replace(" ", "").toLowerCase()) ? 'active' : '';
-    return <li onClick={() => onClick(name.replace(" ", "").toLowerCase())}className={className}>{name}</li>
-
-}
 
 
 let Loader = ({loading}) => {
@@ -40,6 +29,7 @@ class artistPage extends React.Component {
         result: [],
         tracks: [],
         vibrant: 'green',
+        colors: {},
 
       }
       this.PlaySong = this.PlaySong.bind(this)
@@ -61,10 +51,40 @@ class artistPage extends React.Component {
                     albums: albums,
                 })
              this.setColor(tracks.tracks[0].album.images[0].url)
-                })
+              })
+          })
+      }) 
+    }
+      
+      PlayArtist = (active = false) => {
+        let {playSong, ResumePlayer, StopPlayer} = this.props.spotifyData.player
+        if (!active) {
+            let newItems = [];
+            this.state.tracks.forEach((track, idx) => {
+              track.order = idx;
+              newItems.push(track)
             })
-        }) 
+            this.props.ResetQueue(newItems)
+            let uris = JSON.stringify(
+              this.state.tracks.map(track => {
+                return track.uri;
+              })
+            );
+            
+            playSong(uris).then(success =>
+              this.setState({
+                ...this.state,
+                currentSong: this.state.tracks[0].id,
+                isPlaying: true
+              })
+            );
+
+        } else if ((active, this.state.isPlaying === false)) {
+          ResumePlayer();
+        } else {
+          StopPlayer();
         }
+      };
 
 
     setColor = (url) => {
@@ -74,24 +94,27 @@ class artistPage extends React.Component {
         img.src = url
         img.addEventListener('load', function() {
             Vibrant.from(img, 5).getPalette((err, palette) => {
-                let rgb = palette.Vibrant._rgb
-                let dark = palette.DarkMuted._rgb
-                let muted = palette.LightVibrant._rgb
-                console.log(palette)
-                dark = `RGBA(${dark[0]}, ${dark[1]}, ${dark[2]}, 1)`;
-                let color = `RGBA(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
-                muted = `RGBA(${muted[0]}, ${muted[1]}, ${muted[2]}, 1)`;
+                let colors = {
+                  Vibrant: getColor(palette, 'Vibrant'),
+                  DarkMuted: getColor(palette, 'DarkMuted'),
+                  DarkVibrant: getColor(palette, 'DarkVibrant'),
+                  LightVibrant: getColor(palette, 'LightVibrant'),
+                  Muted: getColor(palette, 'Muted'),
+                };
+                _.props.SetSecondaryColors(colors)
                 _.setState({
                     ...this.state,
-                    vibrant: color,
-                    dark: dark,
-                    muted,
+                    vibrant: colors.vibrant,
+                    dark: colors.DarkMuted,
+                    muted: colors.Muted,
+                    colors: colors,
                 })
             })
         })
     }
 
     PlaySong = (uri, active) => {
+      let {playSong, ResumePlayer, StopPlayer} = this.props.spotifyData.player
       if(!active) {
         let index = this.state.tracks.findIndex(track => track.uri === uri)
         this.setColor(this.state.tracks[index].album.images[0].url)
@@ -104,6 +127,15 @@ class artistPage extends React.Component {
             currentSong: uri,
             isPlaying: true,
           }))
+        let newItems = [];
+        this.state.tracks
+          .slice(index, this.state.tracks.length)
+          .concat(this.state.tracks.slice(0, index-1))
+          .forEach((track, idx) => {
+          track.order = idx;
+          newItems.push(track)
+        })
+        this.props.ResetQueue(newItems)
         }
       else if (active, this.state.isPlaying === false) {
         ResumePlayer().then(() => 
@@ -126,6 +158,7 @@ class artistPage extends React.Component {
     }
   
     PlayAlbum = (id, active=false) => {
+      let {getAlbumTracks, getAlbum, playSong, ResumePlayer, StopPlayer} = this.props.spotifyData.player
       if(!active) {
         getAlbumTracks(id).then((result) => {
           let uris = JSON.stringify(result.items
@@ -137,6 +170,19 @@ class artistPage extends React.Component {
               currentSong: id,
               isPlaying: true,
             }))
+          getAlbum(id).then(data => {
+            let newItems = [];
+            result.items
+              .forEach((track, idx) => {
+              track.order = idx;
+              track.album = {
+                images: data.images,
+              }
+              newItems.push(track)
+            })
+            this.props.ResetQueue(newItems)
+
+          })
         })
       }
       else if (active, this.state.isPlaying === false) {
@@ -199,7 +245,7 @@ class artistPage extends React.Component {
     }
   
     render() {
-        let backStyle = {background: `linear-gradient(160deg, ${this.state.dark} 15%, rgba(0,0,0, 0.9) 70%)`}
+        let backStyle = {background: `linear-gradient(160deg, ${this.state.colors.DarkVibrant} 15%, rgba(0,0,0, 0.9) 70%)`}
         let bannerStyle = {backgroundImage: `url('${this.state.artistImg}')`}
         let vibrantStyle = {backgroundColor: "rgba(0,0,0, 0.75)", color: this.state.vibrant}
         let scrollStyle = {scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`}
@@ -215,7 +261,7 @@ class artistPage extends React.Component {
                     <h1>{this.state.artistName}</h1>
                     <div className="artist-btn-row"> 
                         <div>
-                            <button className="btn btn-primary" >Play</button>
+                            <button className="btn btn-primary" onClick={() => {this.PlayArtist()}}>Play</button>
                         </div>
                        <div>
                             <button className="btn btn-secondary">Follow</button>

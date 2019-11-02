@@ -14,6 +14,14 @@ export const getSongSeconds = seconds => {
 	}
 };
 
+export const searchArray = (nameKey, myArray) => {
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].id === nameKey) {
+            return myArray[i].images
+        }
+    }
+}
+
 export const getColor = (palette, key) => {
 	if (key in palette && palette[key] !== null){
 		return  palette[key].getHex()
@@ -47,10 +55,11 @@ export const setupSpotify = () => {
 		'streaming',
 		'user-read-private',
 		'user-read-currently-playing',
-		'user-modify-playback-state'
+		'user-modify-playback-state',
+		'user-top-read',
 		// 'user-read-birthdate'
 		// 'user-read-email',
-		// 'user-library-read',
+		// 'user-library-read,
 		// 'user-library-modify'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;

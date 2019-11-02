@@ -4,7 +4,7 @@
 
   .artist-page {
     height: 90vh;
-    width: 95%;
+    width: 100%;
     padding-left: 4%;
     padding-right: 1%;
     display: flex;
@@ -84,7 +84,6 @@
 
 
 .btn-primary:hover {
-
    transform: scale(1.05);
    transition: all .5s;
    animation-name: huerotate;
@@ -94,8 +93,8 @@
 
 
 .btn-secondary {
+    color: white !important;
     border-radius: 25px;
-    color: white;
     border: 3px solid white;
     background: rgba(0,0,0, 0.6);
     padding: .6em 2em .6em 2em;
@@ -109,9 +108,6 @@
 .btn-secondary:hover {
    transform: scale(1.05);
    transition: all .5s;
-   animation-name: huerotate;
-   animation-duration: 15s;
-   animation-iteration-count: infinite;
 }
 
 

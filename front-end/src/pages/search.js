@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-	StoreAPIToken,
-	setupSpotify,
-	getCategoriesList
+	searchArray,
 } from '../utilityFunctions/util.js';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
@@ -13,12 +11,11 @@ import {
 	ResumePlayer,
 	getAlbumTracks
 } from '../utilityFunctions/util.js';
-import { withRouter, Redirect, push } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs';
 
-import history from '../history';
 
 import '../App.css';
 import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
@@ -50,6 +47,8 @@ let Loader = ({ loading }) => {
 	);
 };
 
+
+
 class SearchSection extends React.Component {
 	constructor(props) {
 		super(props);
@@ -64,6 +63,7 @@ class SearchSection extends React.Component {
 		this.handleSearch = this.handleSearch.bind(this);
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
+		this.PlayArtist = this.PlayArtist.bind(this)
 	}
 	componentDidMount() {
 		// document
@@ -134,8 +134,13 @@ class SearchSection extends React.Component {
 					})
 			);
 			playSong(uris).then(data => {
+				let newItems = [];
 				let queue = this.props.searchState.result.tracks.items.slice(index, this.props.searchState.result.tracks.items.length)
-				this.props.ResetQueue(queue)
+				queue.forEach((track, idx) => {
+					track.order = idx;
+					newItems.push(track)
+				})
+				this.props.ResetQueue(newItems)
 			});
 		} else if ((active, this.state.isPlaying === false)) {
 			ResumePlayer();
@@ -147,8 +152,51 @@ class SearchSection extends React.Component {
 	PlayAlbum = (id, active = false) => {
 		if (!active) {
 			getAlbumTracks(id).then(result => {
+				let images = searchArray(id, this.props.searchState.result.albums.items);
+				console.debug(images)
+				let newItems = []
+				result.items.forEach((track, idx) => {
+					track.order = idx;
+					track.album = {
+						images: images
+					}
+					newItems.push(track)
+				})
+				console.debug(newItems)
+				this.props.ResetQueue(newItems)
 				let uris = JSON.stringify(
 					result.items.map(track => {
+						return track.uri;
+					})
+				);
+				
+				playSong(uris).then(success =>
+					this.setState({
+						...this.state,
+						currentSong: id,
+						isPlaying: true
+					})
+				);
+			});
+		} else if ((active, this.state.isPlaying === false)) {
+			ResumePlayer();
+		} else {
+			StopPlayer();
+		}
+	};
+
+	PlayArtist = (id, active = false) => {
+		if (!active) {
+			this.props.spotifyData.player.getArtistTopTracks(id).then(result => {
+				let newItems = [];
+				console.debug(result)
+				result.tracks.forEach((track, idx) => {
+					track.order = idx;
+					newItems.push(track)
+				})
+				this.props.ResetQueue(newItems)
+				let uris = JSON.stringify(
+					result.tracks.map(track => {
 						return track.uri;
 					})
 				);
@@ -172,7 +220,11 @@ class SearchSection extends React.Component {
 		let artists = [];
 		if ('artists' in this.props.searchState.result) {
 			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist artist={artist} idx={idx} />);
+				artists.push(<Artist 
+					artist={artist} 
+					idx={idx} 
+					handleClick={this.PlayArtist}
+					/>);
 			});
 		}
 		return artists;
@@ -310,7 +362,7 @@ class SearchSection extends React.Component {
 					</div>
 					<Loader loading={this.props.searchState.loading} />
 				</div>
-				<Footer />
+				
 			</div>
 		);
 	}

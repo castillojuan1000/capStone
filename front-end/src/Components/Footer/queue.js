@@ -79,7 +79,7 @@ class Queue extends React.Component {
 					<Song
 						handleClick={this.PlaySong}
 						active={active}
-						isPlaying={this.state.isPlaying}
+						isPlaying={this.props.isPlaying}
 						song={track}
 						idx={idx}
 					/>
