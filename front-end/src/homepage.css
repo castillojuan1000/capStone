@@ -213,8 +213,8 @@
 
 .playlist {
     cursor: pointer;
-    height: 25em;
-    width: 24em;
+    height: 18em;
+    width: 17em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -279,12 +279,11 @@
   
   .playlist img {
     width: 101%;
-    height: 85%;
-    border-radius: 0;
-    top: -8%;
+    height: 90%;
+    top: -12%;
     position: absolute;
     z-index: 1000;
-    border-radius: 25px;
+    border-radius: 15px;
     box-shadow: 1px 1px 15px 1px rgba(0,0,0, 0.6);
   }
   
