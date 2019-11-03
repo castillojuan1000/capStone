@@ -2,7 +2,7 @@ import ApolloClient from 'apollo-boost';
 import { gql } from 'apollo-boost';
 
 const client = new ApolloClient({
-	uri: 'http://10.150.40.202:4000/graphql'
+	uri: '/graphql'
 });
 
 export default client;
@@ -21,6 +21,15 @@ export const GET_ROOM = gql`
 				}
 				message
 			}
+			likes{
+				room{
+					id
+				}
+				user{
+				  id
+				}
+				spotifyId
+			  }
 		}
 	}
 `;
@@ -34,3 +43,20 @@ export const GET_ALL_ROOMS = gql`
 		}
 	}
 `;
+
+// *** Mutations
+
+export const CREATE_LIKE = gql`
+	mutation createLike($userId: Int! $roomId: Int! $spotifyId: String!){
+		createLike(userId: $userId roomId: $roomId spotifyId: $spotifyId){
+			room{
+			  likes{
+				user{
+				  username
+				}
+			  }
+			}
+		  }
+	}
+
+`

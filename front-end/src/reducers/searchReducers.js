@@ -1,4 +1,3 @@
-import { stat } from "fs";
 
 const initialState = {
 	token: '',
@@ -15,43 +14,43 @@ const searchReducer = (state = initialState, action) => {
 	switch (type) {
 		case 'SET_SEARCH':
 			return {
-				...state, 
-				search: 
-				payload.value, 
-				loading: true, 
+				...state,
+				search:
+					payload.value,
+				loading: true,
 				result: {},
-				scroll: 0};
+				scroll: 0
+			};
 		case 'SEARCH_RESULT_RETURNED':
 			return {
-				...state, 
-				result: payload, 
-				loading: false, 
+				...state,
+				result: payload,
+				loading: false,
 				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
 				total: payload[state.activeFilter.toLowerCase() + 's'].total,
 				scroll: 0,
 			};
 		case 'EXTEND_SEARCH_RESULTS':
-				return {
-					...state, 
-					result: payload, 
-					loading: false, 
-					offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
-					total: payload[state.activeFilter.toLowerCase() + 's'].total,
-					result: {
-						...state.result,
-						[state.activeFilter.toLowerCase() + 's']: {
+			return {
+				...state,
+				loading: false,
+				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
+				total: payload[state.activeFilter.toLowerCase() + 's'].total,
+				result: {
+					...state.result,
+					[state.activeFilter.toLowerCase() + 's']: {
+						...state.result[
+						state.activeFilter.toLowerCase() + 's'
+						],
+						items: [
 							...state.result[
 								state.activeFilter.toLowerCase() + 's'
-							],
-							items: [
-								...state.result[
-									state.activeFilter.toLowerCase() + 's'
-								].items,
-								...payload[state.activeFilter.toLowerCase() + 's'].items
-							]
-						}
+							].items,
+							...payload[state.activeFilter.toLowerCase() + 's'].items
+						]
 					}
-				};
+				}
+			};
 		case 'CLEAR_SEARCH_STATE':
 			return {
 				...state,
@@ -73,7 +72,7 @@ const searchReducer = (state = initialState, action) => {
 				...state,
 				scroll: payload,
 			}
-		
+
 		default:
 			return state;
 	}

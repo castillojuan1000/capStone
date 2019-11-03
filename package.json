@@ -17,5 +17,8 @@
 		"url": "https://github.com/castillojuan1000/capStone/issues"
 	},
 	"homepage": "https://github.com/castillojuan1000/capStone#readme",
-	"proxy": "http://localhost:4000"
+	"proxy": "http://localhost:4000",
+	"dependencies": {
+		"bcrypt-nodejs": "0.0.3"
+	}
 }

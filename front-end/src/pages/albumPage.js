@@ -41,7 +41,7 @@ class AlbumPage extends React.Component {
 			vibrant: 'green'
 		};
 		this.PlaySong = this.PlaySong.bind(this);
-		
+
 	}
 	componentDidMount() {
 		var albumId = window.location.pathname.split('/')[2];
@@ -70,7 +70,7 @@ class AlbumPage extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),
@@ -78,14 +78,14 @@ class AlbumPage extends React.Component {
 					DarkVibrant: getColor(palette, 'DarkVibrant'),
 					LightVibrant: getColor(palette, 'LightVibrant'),
 					Muted: getColor(palette, 'Muted'),
-				  };
-				  _.setState({
-                    ...this.state,
-                    vibrant: colors.vibrant,
-                    dark: colors.DarkMuted,
+				};
+				_.setState({
+					...this.state,
+					vibrant: colors.vibrant,
+					dark: colors.DarkMuted,
 					muted: colors.Muted,
 					darkvibrant: colors.DarkVibrant,
-                    colors: colors,
+					colors: colors,
 				})
 				_.props.SetSecondaryColors(colors)
 			});
@@ -103,14 +103,14 @@ class AlbumPage extends React.Component {
 			let newItems = [];
 			this.state.tracks
 				.slice(index, this.state.tracks.length)
-				.concat(this.state.tracks.slice(0, index-1))
+				.concat(this.state.tracks.slice(0, index - 1))
 				.forEach((track, idx) => {
-				track.order = idx;
-				track.album = {
-					images: this.state.albumObj.images,
-				}
-				newItems.push(track)
-			})
+					track.order = idx;
+					track.album = {
+						images: this.state.albumObj.images,
+					}
+					newItems.push(track)
+				})
 			this.props.ResetQueue(newItems)
 			let previousSongs = this.state.tracks.slice(0, index).map(track => {
 				return track.uri;
@@ -123,7 +123,7 @@ class AlbumPage extends React.Component {
 					isPlaying: true
 				})
 				//hege.slice(1).concat(stale.slice(1)).forEach((item, idx) => list.push(item + idx))
-				
+
 			);
 		} else if ((active, this.props.player.isPlaying === false)) {
 			ResumePlayer();
@@ -140,19 +140,19 @@ class AlbumPage extends React.Component {
 		if (!active) {
 			let uris = JSON.stringify(
 				this.state.tracks.map(track => {
-						return track.uri;
-					})
-				);
+					return track.uri;
+				})
+			);
 			playSong(uris);
 			let newItems = [];
 			this.state.tracks
 				.forEach((track, idx) => {
-				track.order = idx;
-				track.album = {
-					images: this.state.albumObj.images,
-				}
-				newItems.push(track)
-			})
+					track.order = idx;
+					track.album = {
+						images: this.state.albumObj.images,
+					}
+					newItems.push(track)
+				})
 			this.props.ResetQueue(newItems)
 		} else if ((active, this.props.player.isPlaying === false)) {
 			ResumePlayer();
@@ -210,11 +210,6 @@ class AlbumPage extends React.Component {
 		let backStyle = {
 			background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`
 		};
-		let vibrantStyle = {
-			backgroundColor: 'rgba(0,0,0, 0.75)',
-			color: 'white',
-			border: `2px solid ${this.state.vibrant}`
-		};
 		let scrollStyle = {
 			scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`
 		};
@@ -224,7 +219,7 @@ class AlbumPage extends React.Component {
 				<div className='album-container'>
 					<div className='album-image'>
 						<div className='img-wrapper'>
-							<img src={this.state.albumImg}></img>
+							<img src={this.state.albumImg} alt={`cover art for ${this.state.albumName}`} />
 						</div>
 						<div className='album-description-holder'>
 							<h1>{this.state.albumName}</h1>

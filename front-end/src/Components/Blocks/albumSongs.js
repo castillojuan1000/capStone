@@ -1,9 +1,5 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
-
-import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
-import LensIcon from '@material-ui/icons/Lens';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
@@ -26,14 +22,14 @@ let Song = ({
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-		);
-	let dotStyle = {
-		fontSize: '.4em',
-		paddingBottom: '.2em',
-		marginLeft: '2em',
-		marginRight: '2em'
-	};
+				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+			);
+	// let dotStyle = {
+	// 	fontSize: '.4em',
+	// 	paddingBottom: '.2em',
+	// 	marginLeft: '2em',
+	// 	marginRight: '2em'
+	// };
 	let artist = song.artists.map(artist => {
 		return (
 			<Link className='album-link' to={{ pathname: '/artist/' + artist.id }}>
@@ -45,8 +41,8 @@ let Song = ({
 	let explicit = song.explicit ? (
 		<h5 className='explicit-tag'>EXPLICIT</h5>
 	) : (
-		''
-	);
+			''
+		);
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>

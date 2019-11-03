@@ -28,8 +28,8 @@ const resolvers = {
 			};
 			return models.user.create(user);
 		},
-		async createLike(root, { userId, roomId, songId }, { models }) {
-			return models.like.create({ userId, roomId, songId });
+		async createLike(root, { userId, roomId, spotifyId }, { models }) {
+			return models.like.create({ userId, roomId, spotifyId });
 		}
 	},
 	User: {
@@ -77,14 +77,11 @@ const resolvers = {
 		async user(user) {
 			return user.getUser();
 		},
-		async song(song) {
-			return song.getSong();
-		}
 	}
 };
 const hashPass = password => {
 	return new Promise((resolve, reject) => {
-		bcrypt.hash(password, 10, function(err, hash) {
+		bcrypt.hash(password, 10, function (err, hash) {
 			if (err) {
 				return reject(err);
 			} else {

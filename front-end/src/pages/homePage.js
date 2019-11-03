@@ -11,25 +11,25 @@ import '../homepage.css';
 import FeaturedArtist from '../Components/Blocks/featuredArtist'
 import FeaturedPlaylist from '../Components/Blocks/featuredPlaylist'
 
-let Loader = ({ loading }) => {
-	let display = loading ? 'block' : 'none';
-	let loaderStyle = { display: display };
-	return (
-		<div className='loader' style={loaderStyle}>
-			Loading...
-		</div>
-	);
-};
+// let Loader = ({ loading }) => {
+// 	let display = loading ? 'block' : 'none';
+// 	let loaderStyle = { display: display };
+// 	return (
+// 		<div className='loader' style={loaderStyle}>
+// 			Loading...
+// 		</div>
+// 	);
+// };
 
 class Home extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
+    constructor(props) {
+        super(props);
+        this.state = {
             result: [],
             tracks: [],
-		};
-	}
-	componentDidMount() {
+        };
+    }
+    componentDidMount() {
         this.props.spotifyData.player.getPersonalizedTopTracks('artists').then((result) => {
             this.props.spotifyData.player.getPersonalizedTopTracks('tracks').then((data) => {
                 this.setState({
@@ -39,42 +39,44 @@ class Home extends React.Component {
                 })
             })
         })
-	}
+    }
 
-	render() {
+    render() {
         let topArtists = [];
         let topTracks = [];
-        this.state.result.forEach(item => {
+        this.state.result.forEach((item, i) => {
             topArtists.push(
-                <FeaturedArtist 
-                        url={item.images[0].url}
-                        name={item.name}
-                        />
+                <FeaturedArtist
+                    url={item.images[0].url}
+                    name={item.name}
+                    key={i}
+                />
             )
         })
-        this.state.tracks.forEach(item => {
+        this.state.tracks.forEach((item, i) => {
             topTracks.push(
-                <FeaturedPlaylist 
-                        url={item.album.images[0].url}
-                        name={item.name}
-                        artistName={item.artists[0].name}
-                        />
+                <FeaturedPlaylist
+                    url={item.album.images[0].url}
+                    name={item.name}
+                    key={i}
+                    artistName={item.artists[0].name}
+                />
             )
         })
-		return (
-			<div className='main'>
+        return (
+            <div className='main'>
                 <h1>Recommended Artists</h1>
                 <div className="recomended-artists">
-                        {topArtists}
+                    {topArtists}
                 </div>
                 <h1>Recently Played</h1>
                 <div className="recomended-artists">
                     {topTracks}
-                    
-                </div> 
-			</div>
-		);
-	}
+
+                </div>
+            </div>
+        );
+    }
 }
 
 export default withRouter(Home);

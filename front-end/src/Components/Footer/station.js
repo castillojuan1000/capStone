@@ -23,7 +23,6 @@ class Station extends React.Component {
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
 		img.addEventListener('load', () => {
-			var vibrant = new Vibrant(img);
 			Vibrant.from(img).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),

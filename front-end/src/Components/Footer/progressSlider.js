@@ -3,8 +3,7 @@ import { withStyles,  } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 
 import {getSongSeconds} from '../../utilityFunctions/util.js';
-import { pink } from '@material-ui/core/colors';
-import { withTheme } from '@material-ui/styles';
+
 
 
 
@@ -45,9 +44,9 @@ const PrettoSlider = withStyles({
     },
   })(Slider);
   
-  function valuetext(value) {
-    return `${value}°C`;
-  }
+  // function valuetext(value) {
+  //   return `${value}°C`;
+  // }
 
   export default function ProgressSlider( {max, current, color}) {
     let currentTime = getSongSeconds(current)

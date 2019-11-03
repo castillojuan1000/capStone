@@ -1,10 +1,7 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
-
 import { withRouter } from 'react-router-dom';
-
-import { fontSize } from '@material-ui/system';
 import { Link } from 'react-router-dom';
 
 let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
@@ -13,8 +10,8 @@ let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-		);
+				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+			);
 	let image =
 		album.images.length > 0
 			? album.images[1].url
@@ -35,7 +32,7 @@ let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
 					to={{ pathname: '/album/' + album.id, state: { ...searchState } }}>
 					<h3>{album.name}</h3>
 				</Link>
-				<Link className="album-link" to={{pathname: '/artist/'+ album.artists[0].id}}><h5>{album.artists[0].name}</h5></Link>
+				<Link className="album-link" to={{ pathname: '/artist/' + album.artists[0].id }}><h5>{album.artists[0].name}</h5></Link>
 			</div>
 		</div>
 	);

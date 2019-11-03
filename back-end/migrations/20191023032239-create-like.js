@@ -16,8 +16,8 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false
 			},
-			songId: {
-				type: Sequelize.INTEGER,
+			spotifyId: {
+				type: Sequelize.STRING,
 				allowNull: false
 			},
 			createdAt: {

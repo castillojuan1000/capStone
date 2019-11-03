@@ -32,7 +32,7 @@ const typDefs = gql`
 	}
 	type Like {
 		user: User
-		song: Song
+		spotifyId: String!
 		room: Room
 	}
 	type Query {
@@ -47,7 +47,7 @@ const typDefs = gql`
 		createUser(email: String!, password: String!): User
 		createRoom(hostId: Int!, roomName: String!): Room
 		createMessage(userId: Int!, roomId: Int!, message: String!): Message
-		createLike(userId: Int!, roomId: Int!, songId: Int!): Like
+		createLike(userId: Int!, roomId: Int!, spotifyId: String!): Like
 		createSong(
 			roomId: Int!
 			spotifyId: Int!

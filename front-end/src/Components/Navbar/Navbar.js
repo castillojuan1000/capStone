@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link, withRouter, NavLink } from 'react-router-dom';
+import { withRouter, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
 import '../../App.css';
-import { fontSize } from '@material-ui/system';
 
 function Navbar(props) {
 	const handleSignOut = () => {
@@ -34,8 +33,8 @@ function Navbar(props) {
 				<ToolbarLogo>
 					<NavLink
 						to='/'
-						style={{ fontWeight: 100, fontFamily: 'roboto', fontSize: '2vw' }}>
-						THE LOGO
+						style={{ fontWeight: 100, fontFamily: 'roboto', fontSize: '2vw', textTransform: 'capitalize' }}>
+						Sound Good Music
 					</NavLink>
 				</ToolbarLogo>
 
@@ -70,25 +69,25 @@ function Navbar(props) {
 						{props.user.isLoggedIn ? (
 							<li onClick={handleSignOut}>SIGN OUT</li>
 						) : (
-							<>
-								<li>
-									<NavLink
-										className='nav-link'
-										activeClassName='active'
-										to='/login'>
-										SIGN IN
+								<>
+									<li>
+										<NavLink
+											className='nav-link'
+											activeClassName='active'
+											to='/login'>
+											SIGN IN
 									</NavLink>
-								</li>
-								<li>
-									<NavLink
-										className='nav-link'
-										activeClassName='active'
-										to='/signup'>
-										SIGN UP
+									</li>
+									<li>
+										<NavLink
+											className='nav-link'
+											activeClassName='active'
+											to='/signup'>
+											SIGN UP
 									</NavLink>
-								</li>
-							</>
-						)}
+									</li>
+								</>
+							)}
 					</ul>
 				</ToolbarNavItems>
 			</ToolbarNavigation>

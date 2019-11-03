@@ -1,9 +1,7 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
 import '../../App.css';
 
-import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import LensIcon from '@material-ui/icons/Lens';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
@@ -19,8 +17,8 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-		);
+				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+			);
 	let dotStyle = {
 		fontSize: '.4em',
 		paddingBottom: '.2em',

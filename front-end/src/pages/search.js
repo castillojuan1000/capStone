@@ -18,15 +18,14 @@ import Song from '../Components/Blocks/songs';
 
 
 import '../App.css';
-import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
-let FilterItem = ({ name, isActive, onClick, color}) => {
+let FilterItem = ({ name, isActive, onClick, color }) => {
 	let className =
 		isActive === name.replace(' ', '').toLowerCase() ? 'active' : '';
-	let border = 
-		(isActive === name.replace(' ', '').toLowerCase()) ? {borderBottom: `2px solid ${color}`} : {};
+	let border =
+		(isActive === name.replace(' ', '').toLowerCase()) ? { borderBottom: `2px solid ${color}` } : {};
 	return (
 		<li
 			style={border}
@@ -169,7 +168,7 @@ class SearchSection extends React.Component {
 						return track.uri;
 					})
 				);
-				
+
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -200,7 +199,7 @@ class SearchSection extends React.Component {
 						return track.uri;
 					})
 				);
-				
+
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -220,11 +219,11 @@ class SearchSection extends React.Component {
 		let artists = [];
 		if ('artists' in this.props.searchState.result) {
 			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist 
-					artist={artist} 
-					idx={idx} 
+				artists.push(<Artist
+					artist={artist}
+					idx={idx}
 					handleClick={this.PlayArtist}
-					/>);
+				/>);
 			});
 		}
 		return artists;
@@ -275,7 +274,7 @@ class SearchSection extends React.Component {
 		this.props.setCurrentScroll(wrappedElement.scrollTop);
 		if (
 			wrappedElement.scrollHeight - wrappedElement.scrollTop <
-				wrappedElement.clientHeight + 300 &&
+			wrappedElement.clientHeight + 300 &&
 			this.props.searchState.offset * 50 < this.props.searchState.total &&
 			this.state.firing !== true
 		) {
@@ -362,7 +361,7 @@ class SearchSection extends React.Component {
 					</div>
 					<Loader loading={this.props.searchState.loading} />
 				</div>
-				
+
 			</div>
 		);
 	}

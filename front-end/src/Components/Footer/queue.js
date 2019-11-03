@@ -1,8 +1,8 @@
 import React from 'react';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
-import * as Vibrant from 'node-vibrant';
+// import * as Vibrant from 'node-vibrant';
 import { connect } from 'react-redux';
-import { getColor } from '../../utilityFunctions/util.js';
+// import { getColor } from '../../utilityFunctions/util.js';
 import Playlist from './playlist';
 import Song from '../../Components/Blocks/songshort';
 import Station from './station.js';
@@ -47,7 +47,6 @@ class Queue extends React.Component {
 		fetch('/graphql', opts)
 			.then(res => res.json())
 			.then(res => {
-				debugger;
 				const { getAllRooms: rooms } = res.data;
 				this.setState({ rooms });
 			});
@@ -62,11 +61,12 @@ class Queue extends React.Component {
 	getFilterItems = () => {
 		let searchFilters = ['Queue', 'Playlists', 'Stations'];
 		let ListItems = [];
-		searchFilters.forEach(name => {
+		searchFilters.forEach((name, i) => {
 			ListItems.push(
 				<QueueFilter
 					onClick={this.setSearchFilter}
 					name={name}
+					key={i}
 					isActive={this.state.activeFilter}
 					color={this.props.color}
 				/>
@@ -110,6 +110,7 @@ class Queue extends React.Component {
 			let active = this.props.currentURI === track.uri ? true : false;
 			tracks.push(
 				<Song
+					key={idx}
 					handleClick={this.PlaySong}
 					active={active}
 					isPlaying={this.props.isPlaying}

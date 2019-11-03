@@ -65,8 +65,10 @@ const mapDispatchToProps = dispatch => ({
 		console.debug(payload);
 		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
 	},
-	setPlayer: payload =>
+	setPlayer: payload => {
 		dispatch({ type: 'PLAYER_SET_STATE_FROM_HOST', payload })
+	},
+	setRoom: payload => dispatch({ type: 'SET_ROOM', payload })
 });
 
 export const FooterContainer = connect(

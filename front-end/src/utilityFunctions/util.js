@@ -1,5 +1,4 @@
 import axios from 'axios';
-import moment, { min } from 'moment';
 
 export const getSongSeconds = seconds => {
 	let minutes = `${Math.floor(seconds / 60)}`;

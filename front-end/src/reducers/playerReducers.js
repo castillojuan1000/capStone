@@ -1,5 +1,4 @@
-import { stat } from 'fs';
-import { duration } from 'moment';
+
 
 const initialState = {
 	currentSong: {},
