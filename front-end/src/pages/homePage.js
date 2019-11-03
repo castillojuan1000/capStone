@@ -30,8 +30,8 @@ class Home extends React.Component {
 		};
 	}
 	componentDidMount() {
-        this.props.spotifyData.player.getPersonalizedTopTracks('artists').then((result) => {
-            this.props.spotifyData.player.getPersonalizedTopTracks('tracks').then((data) => {
+        this.props.spotifyData.player.getPersonalizedTopTracks('artists', 20, 5).then((result) => {
+            this.props.spotifyData.player.getPersonalizedTopTracks('tracks', 20, 5).then((data) => {
                 this.setState({
                     ...this.state,
                     result: result.items,

@@ -47,9 +47,11 @@ class Queue extends React.Component {
 		fetch('/graphql', opts)
 			.then(res => res.json())
 			.then(res => {
-				debugger;
+                //debugger;
+                if (res.data !== undefined) {
 				const { getAllRooms: rooms } = res.data;
-				this.setState({ rooms });
+                this.setState({ rooms });
+                }
 			});
 	}
 	setSearchFilter = name => {
@@ -82,7 +84,9 @@ class Queue extends React.Component {
 				playlists.push(
 					<Playlist
 						playlist={playlist}
-						id={idx}
+                        id={idx}
+                        playSong={this.props.playSong}
+                        ResetQueue={this.props.ResetQueue}
 						getPlaylistTracks={this.props.getPlaylistTracks}
 					/>
 				);
@@ -110,6 +114,7 @@ class Queue extends React.Component {
 			let active = this.props.currentURI === track.uri ? true : false;
 			tracks.push(
 				<Song
+                    PlaySong={this.props.PlaySong}
 					handleClick={this.PlaySong}
 					active={active}
 					isPlaying={this.props.isPlaying}

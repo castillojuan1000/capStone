@@ -246,9 +246,9 @@ export class Spotify {
 		return this.PUT(url, 'ADD Album');
 	};
 
-	getPersonalizedTopTracks = type => {
+	getPersonalizedTopTracks = (type, limit=10, offset=0) => {
 		console.debug(type);
-		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=10&offset=0`;
+		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'got personalized top tracks');
 	};
 

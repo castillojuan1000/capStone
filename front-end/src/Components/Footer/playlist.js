@@ -72,13 +72,40 @@ class Playlist extends React.Component {
         this.setColor(this.props.playlist.images[0].url)
     }
 
+    handleClick = (id) => {
+        let index = this.state.tracks.findIndex(track => track.id === id);
+			let currentSongs = this.state.tracks
+				.slice(index, this.state.tracks.length)
+				.map(track => {
+					return track.uri;
+				});
+			let newItems = [];
+			this.state.tracks
+				.slice(index, this.state.tracks.length)
+				.concat(this.state.tracks.slice(0, index-1))
+				.forEach((track, idx) => {
+                console.debug(track)
+				track.order = idx;
+				track.album = {
+					images: track.track.album.images,
+				}
+				newItems.push(track)
+			})
+			this.props.ResetQueue(newItems)
+			let previousSongs = this.state.tracks.slice(0, index).map(track => {
+				return track.uri;
+			});
+			let uris = JSON.stringify([...currentSongs, ...previousSongs]);
+			this.props.playSong(uris)
+        }
+
     buildTracks = () => {
 		let tracks = [];
 			this.state.tracks.forEach((track, idx) => {
 				let active = this.props.currentURI === track.uri ? true : false;
 				tracks.push(
 					<Song
-						handleClick={this.PlaySong}
+						handleClick={this.handleClick}
 						active={active}
 						isPlaying={this.props.isPlaying}
 						song={track.track}

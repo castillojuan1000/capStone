@@ -101,12 +101,17 @@
   
   .block:hover {
     transform: rotate(-90deg);
-    transition: all 3s;
+    
+  }
+
+.block img:hover {
+    transform: rotate(90deg);
+    
   }
   
   .block:hover img {
     transform: rotate(90deg);
-    transition: all 3s;
+    
   }
   
   .inner1 {
@@ -213,14 +218,14 @@
 
 .playlist {
     cursor: pointer;
-    height: 18em;
-    width: 17em;
+    height: 25em;
+    width: 25em;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    border-radius: 25px;
+    border-radius: 5px;
     margin: 2%;
     margin-top: 5%;
     transition: all 1s;
@@ -278,13 +283,13 @@
 }
   
   .playlist img {
-    width: 101%;
-    height: 90%;
-    top: -12%;
+    width: 90%;
+    height: 75%;
+    top: 5%;
     position: absolute;
     z-index: 1000;
-    border-radius: 15px;
-    box-shadow: 1px 1px 15px 1px rgba(0,0,0, 0.6);
+    border-radius: 5px;
+    box-shadow: 1px 1px 15px 1px rgba(255,255,255, 0.3);
   }
   
   .triangle-left {
