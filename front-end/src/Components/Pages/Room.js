@@ -10,7 +10,7 @@ function Room({ match, player, user, setRoom, spotifyData }) {
 	return (
 		<MainRoom>
 			<div className='main_room_header'>
-				<h1>SoungGoodMusic</h1>
+				<h1>{user.room && user.room.roomName}</h1>
 			</div>
 			<QueryRoom
 				id={Number(match.params.id)}
@@ -33,6 +33,7 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 	let host;
 	let likes = [];
 	let messages = [];
+	let roomName = ''
 	if (loading) {
 		return (
 			<MainContainer style={{ display: 'flex', alignItems: 'center' }}>
@@ -58,6 +59,7 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 				roomId: like.room.id
 			}
 		})
+		roomName = getRoom.roomName
 		host = getRoom.host;
 		isHost = Number(getRoom.host.id) === user.id;
 		console.log(likes)
@@ -75,12 +77,14 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 					player={player}
 					likes={likes}
 					playSong={playSong}
+					roomName={roomName}
 				/>
 			) : (
 					<ListenerView
 						queue={player.queue}
 						messages={messages}
 						roomId={id}
+						roomName={roomName}
 						isHost={isHost ? 1 : 0}
 						setRoom={setRoom}
 						host={host}
@@ -96,10 +100,10 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 
 
 
-function HostView({ messages, queue, player, roomId, isHost, host, setRoom, likes, playSong }) {
+function HostView({ messages, queue, player, roomId, isHost, host, setRoom, likes, playSong, roomName }) {
 	useEffect(() => {
-		setRoom({ roomId, host: { isHost, ...host } });
-	}, [setRoom, roomId, isHost, host]);
+		setRoom({ roomId, roomName, host: { isHost, ...host } });
+	}, [setRoom, roomId, isHost, host, roomName]);
 	return (
 		<>
 			<h1>Host!</h1>
@@ -141,12 +145,15 @@ function ListenerView({
 	likes,
 	user,
 	playSong
+	, roomName
 }) {
 	useEffect(() => {
-		setRoom({ roomId, host: { isHost, ...host } });
-	}, [setRoom, roomId, isHost, host]);
+		setRoom({ roomId, roomName, host: { isHost, ...host } });
+	}, [setRoom, roomId, isHost, host, roomName]);
 	const [createLike] = useMutation(CREATE_LIKE)
 	const handleClick = (roomId, userId, spotifyId) => {
+		debugger;
+
 		const like = {
 			roomId, userId, spotifyId
 		}
