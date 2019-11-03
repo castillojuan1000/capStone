@@ -96,7 +96,7 @@ class Footer extends React.Component {
 		});
 		this.socket.on('RECEIVE_PLAYER_STATE', data => {
 			const { player: hostPlayer, roomId, socketId } = data;
-			if (this.props.user.room.subscribed && roomId) {
+			if (this.props.user.room && this.props.user.room.subscribed && roomId) {
 				this.props.setPlayer(hostPlayer);
 				this.props.spotifyData.player
 					.playSong(JSON.stringify(hostPlayer.queue.map(s => s.uri)))
@@ -126,6 +126,9 @@ class Footer extends React.Component {
 				this.socket.emit('SEND_PLAYER_STATE', { roomId: this.props.user.room.roomId, player })
 			}
 		};
+	}
+	sendStateFromHost = () => {
+		this.socket.emit('SEND_PLAYER_STATE', { roomId: this.props.user.room.roomId, player: this.props.player })
 	}
 	requestPlayerState = socketId => {
 		console.log(socketId);
@@ -654,7 +657,7 @@ class Footer extends React.Component {
 									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 								}} />))}
 					{this.props.user.room && this.props.user.room.host.isHost && (
-						<SettingsInputComponentRounded onClick={() => this.sendPlayerState()}
+						<SettingsInputComponentRounded onClick={this.sendStateFromHost}
 							style={{
 								fontSize: '1.7em',
 								marginLeft: '1.5em',

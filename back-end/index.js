@@ -129,8 +129,9 @@ io.on('connection', socket => {
 	});
 	socket.on('SEND_PLAYER_STATE', data => {
 		const { socketId, player, roomId } = data;
+		console.log(data)
 		if (roomId) {
-			socket.broadcast('RECEIVE_PLAYER_STATE', { player })
+			io.emit('RECEIVE_PLAYER_STATE', { player, roomId })
 		}
 		io.to(socketId).emit('RECEIVE_PLAYER_STATE', { player, socketId });
 	});

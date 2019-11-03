@@ -143,7 +143,7 @@ function ListenerView({
 	playSong
 }) {
 	useEffect(() => {
-		setRoom({ roomId, subscribed: true, host: { isHost, ...host } });
+		setRoom({ roomId, host: { isHost, ...host } });
 	}, [setRoom, roomId, isHost, host]);
 	const [createLike] = useMutation(CREATE_LIKE)
 	const handleClick = (roomId, userId, spotifyId) => {
