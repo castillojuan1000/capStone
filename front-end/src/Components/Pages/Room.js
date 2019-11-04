@@ -4,11 +4,11 @@ import Song from '../../Components/Blocks/songshort';
 import styled from 'styled-components';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_ROOM, CREATE_LIKE } from '../../Apollo';
-import Chatroom from '../Pages/Chatroom'
+import Chatroom from '../Pages/Chatroom';
 function Room({ match, player, user, setRoom, spotifyData }) {
-	const { playSong } = spotifyData.player
+	const { playSong } = spotifyData.player;
 	return (
-		<MainRoom>
+		<MainRoom color={player.colors.darkVibrant}>
 			<div className='main_room_header'>
 				<h1>{user.room && user.room.roomName}</h1>
 			</div>
@@ -33,7 +33,7 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 	let host;
 	let likes = [];
 	let messages = [];
-	let roomName = ''
+	let roomName = '';
 	if (loading) {
 		return (
 			<MainContainer style={{ display: 'flex', alignItems: 'center' }}>
@@ -57,12 +57,12 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 				spotifyId: like.spotifyId,
 				userId: like.user.id,
 				roomId: like.room.id
-			}
-		})
-		roomName = getRoom.roomName
+			};
+		});
+		roomName = getRoom.roomName;
 		host = getRoom.host;
 		isHost = Number(getRoom.host.id) === user.id;
-		console.log(likes)
+		console.log(likes);
 	}
 	return (
 		<MainContainer>
@@ -80,27 +80,36 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 					roomName={roomName}
 				/>
 			) : (
-					<ListenerView
-						queue={player.queue}
-						messages={messages}
-						roomId={id}
-						roomName={roomName}
-						isHost={isHost ? 1 : 0}
-						setRoom={setRoom}
-						host={host}
-						likes={likes}
-						player={player}
-						user={user}
-						playSong={playSong}
-					/>
-				)}
+				<ListenerView
+					queue={player.queue}
+					messages={messages}
+					roomId={id}
+					roomName={roomName}
+					isHost={isHost ? 1 : 0}
+					setRoom={setRoom}
+					host={host}
+					likes={likes}
+					player={player}
+					user={user}
+					playSong={playSong}
+				/>
+			)}
 		</MainContainer>
 	);
 }
 
-
-
-function HostView({ messages, queue, player, roomId, isHost, host, setRoom, likes, playSong, roomName }) {
+function HostView({
+	messages,
+	queue,
+	player,
+	roomId,
+	isHost,
+	host,
+	setRoom,
+	likes,
+	playSong,
+	roomName
+}) {
 	useEffect(() => {
 		setRoom({ roomId, roomName, host: { isHost, ...host } });
 	}, [setRoom, roomId, isHost, host, roomName]);
@@ -118,14 +127,19 @@ function HostView({ messages, queue, player, roomId, isHost, host, setRoom, like
 							active={active}
 							handleClick={() => {
 								const newQueue = queue.filter(s => s.uri === song.uri);
-								return playSong(JSON.stringify([song.uri, player.currentSong.uri, ...newQueue.map(s => s.uri)]));
+								return playSong(
+									JSON.stringify([
+										song.uri,
+										player.currentSong.uri,
+										...newQueue.map(s => s.uri)
+									])
+								);
 							}}
 							idx={i}
 							isPlaying={player.isPlaying}
 							showLikes={1}
 							likes={likes.filter(e => e.spotifyId === song.id).length}
 						/>
-
 					);
 				})}
 			</div>
@@ -144,27 +158,36 @@ function ListenerView({
 	setRoom,
 	likes,
 	user,
-	playSong
-	, roomName
+	playSong,
+	roomName
 }) {
 	useEffect(() => {
 		setRoom({ roomId, roomName, host: { isHost, ...host } });
 	}, [setRoom, roomId, isHost, host, roomName]);
-	const [createLike] = useMutation(CREATE_LIKE)
+	const [createLike] = useMutation(CREATE_LIKE);
 	const handleClick = (roomId, userId, spotifyId) => {
 		debugger;
 
 		const like = {
-			roomId, userId, spotifyId
-		}
-		if (likes.findIndex(l => Number(l.userId) === userId && l.spotifyId === spotifyId && Number(l.roomId) === roomId) > -1) {
-			console.log('Already Liked')
-			return
+			roomId,
+			userId,
+			spotifyId
+		};
+		if (
+			likes.findIndex(
+				l =>
+					Number(l.userId) === userId &&
+					l.spotifyId === spotifyId &&
+					Number(l.roomId) === roomId
+			) > -1
+		) {
+			console.log('Already Liked');
+			return;
 		} else {
-			likes = [...likes, like]
-			return createLike({ variables: { roomId, userId, spotifyId } })
+			likes = [...likes, like];
+			return createLike({ variables: { roomId, userId, spotifyId } });
 		}
-	}
+	};
 	return (
 		<>
 			<h1>Queue</h1>
@@ -178,7 +201,13 @@ function ListenerView({
 							active={active}
 							handleClick={() => {
 								const newQueue = queue.filter(s => s.uri === song.uri);
-								return playSong(JSON.stringify([song.uri, player.currentSong.uri, ...newQueue.map(s => s.uri)]));
+								return playSong(
+									JSON.stringify([
+										song.uri,
+										player.currentSong.uri,
+										...newQueue.map(s => s.uri)
+									])
+								);
 							}}
 							idx={i}
 							showLikes={1}
@@ -195,11 +224,12 @@ function ListenerView({
 }
 
 const MainRoom = styled.div`
-	background: rgba(0, 0, 0, 0.5);
 	width: 100vw;
 	height: 100vh;
 	margin: auto;
 	padding-top: 30px;
+	background: ${props =>
+		`linear-gradient(160deg, ${props.color} 15%, rgba(0,0,0, 0.9) 70%)`};
 	h1 {
 		font-size: 25px;
 		color: rgba(255, 255, 255, 0.75);
@@ -219,6 +249,9 @@ const MainContainer = styled.div`
 	overflow-y: scroll;
 	display: flex;
 	flex-direction: column;
+	::-webkit-scrollbar {
+		background-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1);
+	}
 	.song-block {
 		width: 100%;
 	}

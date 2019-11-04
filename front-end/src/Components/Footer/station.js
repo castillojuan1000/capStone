@@ -51,9 +51,17 @@ class Station extends React.Component {
 	};
 
 	render = () => {
+		let containerStyle = {
+			backgroundSize: '800vw 800vw',
+			animation: 'rotate 20s ease infinite',
+			background: `linear-gradient(160deg, 
+                ${this.state.colors.Vibrant}, 
+				${this.state.colors.DarkMuted})`,
+			border: this.props.isHost && '1px solid red'
+		};
 		return (
 			<div
-				style={{ border: this.props.isHost && '1px solid red' }}
+				style={containerStyle}
 				className='playlist-section'
 				onClick={() => this.setActive()}>
 				<div
