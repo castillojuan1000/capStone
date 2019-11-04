@@ -8,24 +8,24 @@ import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 import './App.css';
 import './reset.css';
-// *** Spotify Context Imports
-import { SpotifyContext } from './utilityFunctions/SpotifyContext';
-import { Spotify } from './utilityFunctions/util';
-//
 import {
 	AlbumContainer as Album,
 	ArtistContainer as Artist,
 	FooterContainer as Footer,
 	SearchSectionContainer as SearchSection,
-	LibrarySectionContainer as LibrarySection
+	LibrarySectionContainer as LibrarySection,
+	HomePageContainer as Home
 } from './Components/Containers/MainContainer';
 import {
 	SignInContainer as SignInSide,
 	SignUpContainer as SignUp
 } from './Components/Containers/SignInContainer';
 import Login from './Components/login';
+
+import Room from './Components/Pages/Room';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
-let HomePage = () => <SearchSection />;
+let SearchPage = () => <SearchSection />;
+let HomePage = () => <Home />;
 let LibraryPage = () => <LibrarySection />;
 let AlbumPage = () => <Album />;
 let ArtistPage = () => <Artist />;
@@ -34,10 +34,9 @@ let SignIN = () => <SignInSide />;
 function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 	const style = {
-		marginTop: '8vh',
 		color: 'black',
-		width: '100%'
-	};
+		width: '100vw',
+	}
 	const drawerToggleClickHandler = () => {
 		setSideDrawerOpen(prevState => {
 			return !sideDrawerOpen;
@@ -64,18 +63,16 @@ function App(props) {
 						<Route exact path='/signup' component={SignUp} />
 						{props.spotifyData.userToken ? (
 							<>
+								<Route exact path='/room/:id' component={Room} />
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
-
-
-
-								<Route path='/library' component={LibraryPage} />
-
-								<Route path='/' component={HomePage} />
+								<Route exact path='/library' component={LibraryPage} />
+								<Route exact path='/search' component={SearchPage} />
+								<Route exact path='/' component={HomePage} />
 							</>
 						) : (
-								<Redirect to='/login' />
-							)}
+							<Redirect to='/login' />
+						)}
 					</Switch>
 				</main>
 				{props.spotifyData.userToken && (
