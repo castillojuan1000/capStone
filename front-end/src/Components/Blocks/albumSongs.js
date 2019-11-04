@@ -7,32 +7,20 @@ import { Link } from 'react-router-dom';
 
 import { getSongSeconds } from '../../utilityFunctions/util.js';
 
-let Song = ({
-	song,
-	idx,
-	handleClick,
-	active,
-	isPlaying,
-	albumName,
-	image,
-	searchState
-}) => {
+let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-			);
-	// let dotStyle = {
-	// 	fontSize: '.4em',
-	// 	paddingBottom: '.2em',
-	// 	marginLeft: '2em',
-	// 	marginRight: '2em'
-	// };
-	let artist = song.artists.map(artist => {
+			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+		);
+	let artist = song.artists.map((artist, ind) => {
 		return (
-			<Link className='album-link' to={{ pathname: '/artist/' + artist.id }}>
+			<Link
+				key={`link-album-${ind}`}
+				className='album-link'
+				to={{ pathname: '/artist/' + artist.id }}>
 				<h5>{artist.name}</h5>
 			</Link>
 		);
@@ -41,8 +29,8 @@ let Song = ({
 	let explicit = song.explicit ? (
 		<h5 className='explicit-tag'>EXPLICIT</h5>
 	) : (
-			''
-		);
+		''
+	);
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>

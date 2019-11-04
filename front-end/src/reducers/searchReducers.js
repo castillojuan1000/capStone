@@ -1,4 +1,3 @@
-
 const initialState = {
 	token: '',
 	search: '',
@@ -6,7 +5,7 @@ const initialState = {
 	activeFilter: 'artist',
 	result: {},
 	firing: false,
-	scroll: 0,
+	scroll: 0
 };
 
 const searchReducer = (state = initialState, action) => {
@@ -15,8 +14,7 @@ const searchReducer = (state = initialState, action) => {
 		case 'SET_SEARCH':
 			return {
 				...state,
-				search:
-					payload.value,
+				search: payload.value,
 				loading: true,
 				result: {},
 				scroll: 0
@@ -28,7 +26,7 @@ const searchReducer = (state = initialState, action) => {
 				loading: false,
 				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
 				total: payload[state.activeFilter.toLowerCase() + 's'].total,
-				scroll: 0,
+				scroll: 0
 			};
 		case 'EXTEND_SEARCH_RESULTS':
 			return {
@@ -39,13 +37,9 @@ const searchReducer = (state = initialState, action) => {
 				result: {
 					...state.result,
 					[state.activeFilter.toLowerCase() + 's']: {
-						...state.result[
-						state.activeFilter.toLowerCase() + 's'
-						],
+						...state.result[state.activeFilter.toLowerCase() + 's'],
 						items: [
-							...state.result[
-								state.activeFilter.toLowerCase() + 's'
-							].items,
+							...state.result[state.activeFilter.toLowerCase() + 's'].items,
 							...payload[state.activeFilter.toLowerCase() + 's'].items
 						]
 					}
@@ -57,7 +51,7 @@ const searchReducer = (state = initialState, action) => {
 				search: '',
 				result: {},
 				loading: false,
-				scroll: 0,
+				scroll: 0
 			};
 		case 'SET_SEARCH_FILTER':
 			return {
@@ -65,13 +59,13 @@ const searchReducer = (state = initialState, action) => {
 				result: {},
 				activeFilter: payload,
 				loading: false,
-				scroll: 0,
+				scroll: 0
 			};
 		case 'SET_CURRENT_SCROLL':
 			return {
 				...state,
-				scroll: payload,
-			}
+				scroll: payload
+			};
 
 		default:
 			return state;

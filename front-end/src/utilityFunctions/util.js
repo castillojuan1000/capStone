@@ -38,7 +38,7 @@ export const StoreAPIToken = () => {
 		});
 	}
 	if (hashMap.access_token) {
-		console.log('token retreived from url');
+		//console.log('token retreived from url');
 		return hashMap.access_token;
 	}
 };
@@ -399,7 +399,6 @@ export const RestartSong = (spotify = null) => {
 };
 
 export const TransferPlayback = (device_id, play = true, spotify) => {
-	console.log(device_id);
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/player`;
@@ -433,7 +432,6 @@ export const Search = (query, type, limit = 50, offset = 0, spotify = null) => {
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	query = query.replace(' ', '%20') + '*';
 	let url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&q=${query}&limit=${limit}&offset=${offset}`;
-	console.log(url);
 	return spotify.GET(url, 'Search Spotify');
 };
 

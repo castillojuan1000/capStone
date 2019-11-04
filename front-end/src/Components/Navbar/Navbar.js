@@ -13,6 +13,7 @@ function Navbar(props) {
 		props.history.go('/');
 	};
 	let color;
+	let percentage = '15%';
 	var page = window.location.pathname.split('/')[1];
 	if (['album', 'artist', 'playlist'].includes(page)) {
 		color = props.player.secondaryColors.DarkVibrant;
@@ -20,10 +21,13 @@ function Navbar(props) {
 		//color = props.player.colors.vibrant
 		color = '#000000 ';
 	}
+	if (window.innerWidth < 1100) {
+		percentage = '30%';
+	}
 	return (
 		<Toolbar
 			style={{
-				background: `linear-gradient(50deg,${color} 15%, rgba(0,0,0, 1) 15%)`
+				background: `linear-gradient(50deg,${color} ${percentage}, rgba(0,0,0, 1) ${percentage})`
 			}}>
 			<ToolbarNavigation>
 				<div>
@@ -33,7 +37,12 @@ function Navbar(props) {
 				<ToolbarLogo>
 					<NavLink
 						to='/'
-						style={{ fontWeight: 100, fontFamily: 'roboto', fontSize: '2vw', textTransform: 'capitalize' }}>
+						style={{
+							fontWeight: 100,
+							fontFamily: 'roboto',
+							fontSize: '2vw',
+							textTransform: 'capitalize'
+						}}>
 						Sound Good Music
 					</NavLink>
 				</ToolbarLogo>
@@ -69,25 +78,25 @@ function Navbar(props) {
 						{props.user.isLoggedIn ? (
 							<li onClick={handleSignOut}>SIGN OUT</li>
 						) : (
-								<>
-									<li>
-										<NavLink
-											className='nav-link'
-											activeClassName='active'
-											to='/login'>
-											SIGN IN
+							<>
+								<li>
+									<NavLink
+										className='nav-link'
+										activeClassName='active'
+										to='/login'>
+										SIGN IN
 									</NavLink>
-									</li>
-									<li>
-										<NavLink
-											className='nav-link'
-											activeClassName='active'
-											to='/signup'>
-											SIGN UP
+								</li>
+								<li>
+									<NavLink
+										className='nav-link'
+										activeClassName='active'
+										to='/signup'>
+										SIGN UP
 									</NavLink>
-									</li>
-								</>
-							)}
+								</li>
+							</>
+						)}
 					</ul>
 				</ToolbarNavItems>
 			</ToolbarNavigation>

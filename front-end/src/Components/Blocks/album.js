@@ -10,8 +10,8 @@ let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-			);
+			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+		);
 	let image =
 		album.images.length > 0
 			? album.images[1].url
@@ -28,15 +28,20 @@ let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
 			</div>
 			<div className='album-description'>
 				<Link
+					key={`link-album-${idx}`}
 					className='album-link'
 					to={{ pathname: '/album/' + album.id, state: { ...searchState } }}>
 					<h3>{album.name}</h3>
 				</Link>
-				<Link className="album-link" to={{ pathname: '/artist/' + album.artists[0].id }}><h5>{album.artists[0].name}</h5></Link>
+				<Link
+					key={`link-artist-${idx}`}
+					className='album-link'
+					to={{ pathname: '/artist/' + album.artists[0].id }}>
+					<h5>{album.artists[0].name}</h5>
+				</Link>
 			</div>
 		</div>
 	);
 };
 
-
-export default withRouter(Album)
+export default withRouter(Album);

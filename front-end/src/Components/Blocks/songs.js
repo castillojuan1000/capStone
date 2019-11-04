@@ -17,17 +17,20 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 		active && isPlaying ? (
 			<PauseRoundedIcon style={{ fontSize: '.8em' }} />
 		) : (
-				<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-			);
+			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+		);
 	let dotStyle = {
 		fontSize: '.4em',
 		paddingBottom: '.2em',
 		marginLeft: '2em',
 		marginRight: '2em'
 	};
-	let artist = song.artists.map(artist => {
+	let artist = song.artists.map((artist, ind) => {
 		return (
-			<Link className='album-link' to={{ pathname: '/artist/' + artist.id }}>
+			<Link
+				className='album-link'
+				key={`artist-link-${ind}`}
+				to={{ pathname: '/artist/' + artist.id }}>
 				<h5>{artist.name}</h5>
 			</Link>
 		);
@@ -54,6 +57,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 						<LensIcon style={dotStyle} />
 					</h5>
 					<Link
+						key={`album-link2-${idx}`}
 						className='album-link'
 						to={{ pathname: '/album/' + song.album.id }}>
 						<h5>{song.album.name}</h5>

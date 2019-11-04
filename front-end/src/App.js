@@ -33,8 +33,8 @@ function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 	const style = {
 		color: 'black',
-		width: '100vw',
-	}
+		width: '100vw'
+	};
 	const drawerToggleClickHandler = () => {
 		setSideDrawerOpen(prevState => {
 			return !sideDrawerOpen;
@@ -69,8 +69,8 @@ function App(props) {
 								<Route exact path='/' component={HomePage} />
 							</>
 						) : (
-								<Redirect to='/login' />
-							)}
+							<Redirect to='/login' />
+						)}
 					</Switch>
 				</main>
 				{props.spotifyData.userToken && (
