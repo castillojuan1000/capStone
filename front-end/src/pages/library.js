@@ -2,6 +2,7 @@ import React from 'react';
 import '.././style/library.css'
 import PlaylistPage from '../pages/Playlist'
 import { Link } from 'react-router-dom';
+import Playlist from '../Components/Blocks/Playlistblock'
 
 import {
 	playSong,
@@ -200,10 +201,11 @@ class LibrarySection extends React.Component {
 	buildPlaylist = () => {
 		let playlists = [];
 		if (this.state.result) {
-			this.state.result.playlist.forEach((playlist, idx) => {
+			console.log(this.state.playlists)
+			playlists = this.state.playlists.map((playlist, idx) => {
 				let active = (this.props.player.playlistId === playlist.id) ? true : false;
 
-				playlists.push(
+				return (
 					<Playlist
 						handleClick={this.PlayPlaylist}
 						active={active}
@@ -215,6 +217,7 @@ class LibrarySection extends React.Component {
 			})
 
 		}
+		return playlists;
 	}
 
 
@@ -249,9 +252,10 @@ class LibrarySection extends React.Component {
 					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
 					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
 					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}
-					<Link  {...this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} to={{ pathname: '/playlist/:id' }} >
+					{/* <Link  {...this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} to={{ pathname: '/playlist/:id' }} >
 
-					</Link>
+					</Link> */}
+
 
 
 
