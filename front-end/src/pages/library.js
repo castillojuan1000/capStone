@@ -1,6 +1,7 @@
 import React from 'react';
 import '.././style/library.css'
-
+import PlaylistPage from '../pages/Playlist'
+import { Link } from 'react-router-dom';
 
 import {
 	playSong,
@@ -75,7 +76,7 @@ class LibrarySection extends React.Component {
 			this.setState({ ...this.state, artists: data.artists.items })
 		})
 		getLikedTracks().then(data => this.setState({ ...this.state, likes: data.items }))
-		debugger
+
 		GetMyPlaylists().then(data =>
 
 			this.setState({ ...this.state, playlists: data.items }))
@@ -198,12 +199,22 @@ class LibrarySection extends React.Component {
 	};
 	buildPlaylist = () => {
 		let playlists = [];
-		if (this.state.playlists) {
-			playlists = this.state.playlists.map((playlist, idx) => {
-				return (<div playlists={playlist} idx={idx} />)
+		if (this.state.result) {
+			this.state.result.playlist.forEach((playlist, idx) => {
+				let active = (this.props.player.playlistId === playlist.id) ? true : false;
+
+				playlists.push(
+					<Playlist
+						handleClick={this.PlayPlaylist}
+						active={active}
+						isPlaying={this.props.player.isPlaying}
+						playlist={playlist}
+						idx={idx}
+					/>
+				)
 			})
+
 		}
-		return playlists;
 	}
 
 
@@ -238,7 +249,12 @@ class LibrarySection extends React.Component {
 					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
 					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
 					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}
-					{this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()}
+					<Link  {...this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} to={{ pathname: '/playlist/:id' }} >
+
+					</Link>
+
+
+
 
 					<Loader loading={this.props.searchState.loading} />
 				</div>

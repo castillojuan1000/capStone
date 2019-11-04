@@ -69,7 +69,7 @@ export class Spotify {
 		let url = `https://api.spotify.com/v1/users/${user_id}/playlists?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'Get Users Playlists');
 	};
-	GetMyPlaylists = (limit = 100, offset = 0) => {
+	GetMyPlaylists = (limit = 50, offset = 0) => {
 		let url = `https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'Get All my Playlists');
 	};

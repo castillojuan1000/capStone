@@ -11,6 +11,7 @@ import './reset.css';
 // *** Spotify Context Imports
 import { SpotifyContext } from './utilityFunctions/SpotifyContext';
 import { Spotify } from './utilityFunctions/util';
+import PlaylistPage from './pages/Playlist'
 //
 import {
 	AlbumContainer as Album,
@@ -66,6 +67,7 @@ function App(props) {
 							<>
 								<Route path='/album/:id' component={AlbumPage} />
 								<Route path='/artist/:id' component={ArtistPage} />
+								<Route path='/playlist/:id' component={PlaylistPage} />
 
 
 

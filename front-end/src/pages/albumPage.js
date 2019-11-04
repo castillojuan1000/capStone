@@ -88,7 +88,7 @@ class AlbumPage extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let rgb = palette.Vibrant._rgb;
 				let dark = palette.DarkMuted._rgb;
@@ -148,7 +148,7 @@ class AlbumPage extends React.Component {
 						return track.uri;
 					})
 				);
-				
+
 				playSong(uris)
 			});
 		} else if ((active, this.props.player.isPlaying === false)) {
@@ -182,7 +182,7 @@ class AlbumPage extends React.Component {
 	buildTracks = () => {
 		let tracks = [];
 		this.state.tracks.forEach((track, idx) => {
-			let active = this.props.player.currentSongId === track.id ? true : false;
+			let active = this.props.player.currentSong === track.id ? true : false;
 			tracks.push(
 				<Song
 					albumName={this.state.albumName}
