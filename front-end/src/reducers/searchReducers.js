@@ -1,4 +1,4 @@
-import { stat } from "fs";
+//import { stat } from "fs";
 
 const initialState = {
 	token: '',
@@ -33,7 +33,6 @@ const searchReducer = (state = initialState, action) => {
 		case 'EXTEND_SEARCH_RESULTS':
 				return {
 					...state, 
-					result: payload, 
 					loading: false, 
 					offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
 					total: payload[state.activeFilter.toLowerCase() + 's'].total,

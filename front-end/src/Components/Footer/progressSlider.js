@@ -3,8 +3,7 @@ import { withStyles,  } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 
 import {getSongSeconds} from '../../utilityFunctions/util.js';
-import { pink } from '@material-ui/core/colors';
-import { withTheme } from '@material-ui/styles';
+
 
 
 
@@ -45,23 +44,25 @@ const PrettoSlider = withStyles({
     },
   })(Slider);
   
-  function valuetext(value) {
-    return `${value}°C`;
-  }
+  export default function ProgressSlider( {max, current, color, ChangeTime, handleTimeChange, height}) {
 
-  export default function ProgressSlider( {max, current, color}) {
+    
     let currentTime = getSongSeconds(current)
     let totalTime = getSongSeconds(max)
     if (currentTime === 'NaN:NaN') {
       currentTime = `00:00`;
       totalTime = `00:00`;
     }
+  
     return (
         <div className="slider-holder">
             <div className="label current-label">
                 <p>{currentTime}</p>
             </div>
-            <PrettoSlider 
+            <PrettoSlider
+                onChange={ChangeTime}
+                width={'100vw'}
+                onChangeCommitted={({value}) => handleTimeChange(value)}
                 getAriaValueText={() => { return currentTime}}
                 getAriaLabel={() => {return currentTime}}
                 valueLabelDisplay="off" 

@@ -1,8 +1,6 @@
 import React from 'react';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
-import * as Vibrant from 'node-vibrant';
 import { connect } from 'react-redux';
-import { getColor } from '../../utilityFunctions/util.js';
 import Playlist from './playlist';
 import Song from '../../Components/Blocks/songshort';
 import Station from './station.js';
@@ -64,9 +62,10 @@ class Queue extends React.Component {
 	getFilterItems = () => {
 		let searchFilters = ['Queue', 'Playlists', 'Stations'];
 		let ListItems = [];
-		searchFilters.forEach(name => {
+		searchFilters.forEach((name, idx) => {
 			ListItems.push(
 				<QueueFilter
+					key={`queue-filter-${idx}`}
 					onClick={this.setSearchFilter}
 					name={name}
 					isActive={this.state.activeFilter}
@@ -75,15 +74,58 @@ class Queue extends React.Component {
 			);
 		});
 		return ListItems;
-	};
+    };
+    
+    handleClick = (id, active) => {
+        if (!active) {
+            let index = this.props.player.queue.findIndex(track => {
+                if ('track' in track){
+                    track = track.track;
+                }
+                return track.id === id
+            });
+                let currentSongs = this.props.player.queue
+                    .slice(index, this.props.player.queue.length)
+                    .map(track => {
+                        if ('track' in track){
+                            track = track.track;
+                        }
+                        return track.uri;
+                    });
+                let newItems = [];
+                this.props.player.queue
+                    .slice(index, this.props.player.queue.length)
+                    .forEach((track, idx) => {
+                    if ('track' in track){
+                        track = track.track;
+                    }
+                    track.order = idx;
+                    track.album = {
+                        images: track.album.images,
+                    }
+                    newItems.push(track)
+                })
+                this.props.ResetQueue(newItems)
+                let uris = JSON.stringify([...currentSongs])
+                this.props.playSong(uris)
+        } else if ((active, this.props.isPlaying === false)) {
+			this.props.spotifyData.player.ResumePlayer();
+		} else {
+			this.props.spotifyData.player.StopPlayer();
+		}
+        }
 
 	renderPlaylists = () => {
 		let playlists = [];
 		if (this.props.playlists !== undefined) {
 			this.props.playlists.forEach((playlist, idx) => {
+
 				playlists.push(
 					<Playlist
-						playlist={playlist}
+                        player={this.props.spotifyData.player}
+                        playlist={playlist}
+                        isPlaying={this.props.isPlaying}
+                        currentURI={this.props.currentURI}
                         id={idx}
                         playSong={this.props.playSong}
                         ResetQueue={this.props.ResetQueue}
@@ -111,18 +153,22 @@ class Queue extends React.Component {
 	buildTracks = () => {
 		let tracks = [];
 		this.props.queue.forEach((track, idx) => {
-			let active = this.props.currentURI === track.uri ? true : false;
+            if ('track' in track){
+                track = track.track
+            }
+            let active = this.props.currentURI === track.uri ? true : false;
 			tracks.push(
 				<Song
+					key={`que-song-${idx}`}
                     PlaySong={this.props.PlaySong}
-					handleClick={this.PlaySong}
+					handleClick={this.handleClick}
 					active={active}
 					isPlaying={this.props.isPlaying}
 					song={track}
 					idx={idx}
 				/>
 			);
-		});
+        });
 		return tracks;
 	};
 
@@ -131,7 +177,7 @@ class Queue extends React.Component {
 		let tracks = [];
 		let stations = [];
 		let queueStyle = {
-			opacity: this.props.isActive ? 1 : 0,
+			opacity: this.props.isActive ? 1 : 1,
 			height: this.props.isActive ? '' : 0
 		};
 		let arrowStyle = {
@@ -147,8 +193,8 @@ class Queue extends React.Component {
 		let ListItems = this.getFilterItems();
 		return (
 			<div className='queue' style={queueStyle}>
-				<div className='queue-header'>
-					<div className='queue-list'>
+				<div className='queue-header' style={queueStyle}>
+					<div className='queue-list' style={queueStyle}>
 						<ul>{ListItems}</ul>
 					</div>
 				</div>

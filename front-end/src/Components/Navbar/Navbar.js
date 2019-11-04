@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link, withRouter, NavLink } from 'react-router-dom';
+import {withRouter, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
 import '../../App.css';
-import { fontSize } from '@material-ui/system';
+
 
 function Navbar(props) {
 	const handleSignOut = () => {
@@ -14,6 +14,7 @@ function Navbar(props) {
 		props.history.go('/');
 	};
 	let color;
+	let percentage = '15%';
 	var page = window.location.pathname.split('/')[1];
 	if (['album', 'artist', 'playlist'].includes(page)) {
 		color = props.player.secondaryColors.DarkVibrant;
@@ -21,10 +22,13 @@ function Navbar(props) {
 		//color = props.player.colors.vibrant
 		color = '#000000 ';
 	}
+	if (window.innerWidth < 1100) {
+		percentage = '30%';
+	}
 	return (
 		<Toolbar
 			style={{
-				background: `linear-gradient(50deg,${color} 15%, rgba(0,0,0, 1) 15%)`
+				background: `linear-gradient(50deg,${color} ${percentage}, rgba(0,0,0, 1) ${percentage})`
 			}}>
 			<ToolbarNavigation>
 				<div>

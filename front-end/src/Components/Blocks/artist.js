@@ -1,6 +1,5 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
 
 import { Link } from 'react-router-dom'
 

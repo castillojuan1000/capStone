@@ -163,31 +163,13 @@ class AlbumPage extends React.Component {
 		}
 	};
 
-	buildAlbums = () => {
-		let albums = [];
-		if ('albums' in this.state.result) {
-			this.state.result.albums.items.forEach((album, idx) => {
-				let active = this.props.player.albumId === album.id ? true : false;
-				albums.push(
-					<Album
-						handleClick={this.PlayAlbum}
-						active={active}
-						isPlaying={this.props.player.isPlaying}
-						album={album}
-						idx={idx}
-					/>
-				);
-			});
-		}
-		return albums;
-	};
-
 	buildTracks = () => {
 		let tracks = [];
 		this.state.tracks.forEach((track, idx) => {
 			let active = this.props.player.currentSongId === track.id ? true : false;
 			tracks.push(
 				<Song
+					key={`link-song-${idx}`}
 					albumName={this.state.albumName}
 					image={this.state.albumImg}
 					handleClick={this.PlaySong}
@@ -210,11 +192,7 @@ class AlbumPage extends React.Component {
 		let backStyle = {
 			background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`
 		};
-		let vibrantStyle = {
-			backgroundColor: 'rgba(0,0,0, 0.75)',
-			color: 'white',
-			border: `2px solid ${this.state.vibrant}`
-		};
+		
 		let scrollStyle = {
 			scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`
 		};
@@ -224,7 +202,7 @@ class AlbumPage extends React.Component {
 				<div className='album-container'>
 					<div className='album-image'>
 						<div className='img-wrapper'>
-							<img src={this.state.albumImg}></img>
+							<img alt="album-cover"  src={this.state.albumImg}></img>
 						</div>
 						<div className='album-description-holder'>
 							<h1>{this.state.albumName}</h1>

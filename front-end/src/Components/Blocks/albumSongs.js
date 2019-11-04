@@ -1,9 +1,6 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
 
-import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
-import LensIcon from '@material-ui/icons/Lens';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
@@ -17,9 +14,7 @@ let Song = ({
 	handleClick,
 	active,
 	isPlaying,
-	albumName,
 	image,
-	searchState
 }) => {
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
@@ -28,15 +23,9 @@ let Song = ({
 		) : (
 			<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
 		);
-	let dotStyle = {
-		fontSize: '.4em',
-		paddingBottom: '.2em',
-		marginLeft: '2em',
-		marginRight: '2em'
-	};
-	let artist = song.artists.map(artist => {
+	let artist = song.artists.map((artist, ind) => {
 		return (
-			<Link className='album-link' to={{ pathname: '/artist/' + artist.id }}>
+			<Link key={`link-album-${ind}`} className='album-link' to={{ pathname: '/artist/' + artist.id }}>
 				<h5>{artist.name}</h5>
 			</Link>
 		);

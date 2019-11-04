@@ -11,15 +11,6 @@ import '../homepage.css';
 import FeaturedArtist from '../Components/Blocks/featuredArtist'
 import FeaturedPlaylist from '../Components/Blocks/featuredPlaylist'
 
-let Loader = ({ loading }) => {
-	let display = loading ? 'block' : 'none';
-	let loaderStyle = { display: display };
-	return (
-		<div className='loader' style={loaderStyle}>
-			Loading...
-		</div>
-	);
-};
 
 class Home extends React.Component {
 	constructor(props) {
@@ -27,11 +18,11 @@ class Home extends React.Component {
 		this.state = {
             result: [],
             tracks: [],
-		};
+        };
 	}
 	componentDidMount() {
-        this.props.spotifyData.player.getPersonalizedTopTracks('artists', 20, 5).then((result) => {
-            this.props.spotifyData.player.getPersonalizedTopTracks('tracks', 20, 5).then((data) => {
+        this.props.spotifyData.player.getPersonalizedTopTracks('artists', 10, 0).then((result) => {
+            this.props.spotifyData.player.getPersonalizedTopTracks('tracks', 10, 0).then((data) => {
                 this.setState({
                     ...this.state,
                     result: result.items,
@@ -39,31 +30,55 @@ class Home extends React.Component {
                 })
             })
         })
-	}
+    }
+
 
 	render() {
         let topArtists = [];
         let topTracks = [];
-        this.state.result.forEach(item => {
+        this.state.result.forEach((item, idx) => {
+            let active = false;
+            if (this.props.player.artistId === item.id){
+                active = true
+            }
             topArtists.push(
                 <FeaturedArtist 
+                        player={this.props.spotifyData}
+                        ResetQueue={this.props.ResetQueue}
+                        key={`featured-artist-${idx}`}
                         url={item.images[0].url}
                         name={item.name}
+                        active={active}
+                        artistId={item.id}
+                        isPlaying={this.props.player.isPlaying}
                         />
             )
         })
-        this.state.tracks.forEach(item => {
+        this.state.tracks.forEach((item, idx) => {
+            let active = false;
+            if (this.props.player.currentSong.id === item.id){
+                active = true
+            }
             topTracks.push(
                 <FeaturedPlaylist 
+                        key={`featured-playlist-${idx}`}
                         url={item.album.images[0].url}
                         name={item.name}
                         artistName={item.artists[0].name}
+                        player={this.props.spotifyData}
+                        ResetQueue={this.props.ResetQueue}
+                        active={active}
+                        songUri={item.uri}
+                        isPlaying={this.props.player.isPlaying}
                         />
             )
         })
 		return (
+            
 			<div className='main'>
-                <h1>Recommended Artists</h1>
+                <div className="favorites-title">
+                <h1>Favorite Artists</h1>
+                </div>
                 <div className="recomended-artists">
                         {topArtists}
                 </div>

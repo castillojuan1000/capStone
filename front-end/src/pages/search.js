@@ -18,7 +18,7 @@ import Song from '../Components/Blocks/songs';
 
 
 import '../App.css';
-import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
+//import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
@@ -153,7 +153,7 @@ class SearchSection extends React.Component {
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let images = searchArray(id, this.props.searchState.result.albums.items);
-				console.debug(images)
+				
 				let newItems = []
 				result.items.forEach((track, idx) => {
 					track.order = idx;
@@ -162,7 +162,7 @@ class SearchSection extends React.Component {
 					}
 					newItems.push(track)
 				})
-				console.debug(newItems)
+
 				this.props.ResetQueue(newItems)
 				let uris = JSON.stringify(
 					result.items.map(track => {
@@ -189,7 +189,6 @@ class SearchSection extends React.Component {
 		if (!active) {
 			this.props.spotifyData.player.getArtistTopTracks(id).then(result => {
 				let newItems = [];
-				console.debug(result)
 				result.tracks.forEach((track, idx) => {
 					track.order = idx;
 					newItems.push(track)
@@ -220,7 +219,8 @@ class SearchSection extends React.Component {
 		let artists = [];
 		if ('artists' in this.props.searchState.result) {
 			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist 
+				artists.push(<Artist
+					key={`artist-${idx}`}
 					artist={artist} 
 					idx={idx} 
 					handleClick={this.PlayArtist}
@@ -237,6 +237,7 @@ class SearchSection extends React.Component {
 				let active = this.props.player.albumId === album.id ? true : false;
 				albums.push(
 					<Album
+						key={`album-${idx}`}
 						handleClick={this.PlayAlbum}
 						active={active}
 						isPlaying={this.state.isPlaying}
@@ -258,6 +259,7 @@ class SearchSection extends React.Component {
 					this.props.player.currentSong.uri === track.uri ? true : false;
 				tracks.push(
 					<Song
+						key={`song-${idx}`}
 						handleClick={this.PlaySong}
 						active={active}
 						isPlaying={this.state.isPlaying}
@@ -322,9 +324,10 @@ class SearchSection extends React.Component {
 			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
 
 		let ListItems = [];
-		searchFilters.forEach(name => {
+		searchFilters.forEach((name, idx) => {
 			ListItems.push(
 				<FilterItem
+					key={`filter-${idx}`}
 					onClick={this.setSearchFilter}
 					name={name}
 					isActive={this.props.searchState.activeFilter}

@@ -5,7 +5,7 @@ export class Spotify {
 		this.token = token;
 	}
 
-	GET = async (url, successMsg) => {
+	GET = async (url) => {
 		let response = await axios({
 			method: 'GET',
 			url: url,
@@ -14,7 +14,7 @@ export class Spotify {
 		return response.data;
 	};
 
-	POST = async (url, successMsg) => {
+	POST = async (url) => {
 		let response = await axios({
 			method: 'POST',
 			url: url,
@@ -23,7 +23,7 @@ export class Spotify {
 		return response;
 	};
 
-	PUT = async (url, successMsg) => {
+	PUT = async (url) => {
 		let response = await axios({
 			method: 'PUT',
 			url: url,
@@ -32,7 +32,7 @@ export class Spotify {
 		return response;
 	};
 
-	DELETE = async (url, successMsg) => {
+	DELETE = async (url) => {
 		let response = await axios({
 			method: 'DELETE',
 			url: url,
@@ -41,7 +41,7 @@ export class Spotify {
 		return response;
 	};
 
-	PUTBodyParamter = async (url, data, successMsg) => {
+	PUTBodyParamter = async (url, data) => {
 		let response = await axios({
 			method: 'PUT',
 			url: url,
@@ -247,7 +247,6 @@ export class Spotify {
 	};
 
 	getPersonalizedTopTracks = (type, limit=10, offset=0) => {
-		console.debug(type);
 		let url = `https://api.spotify.com/v1/me/top/${type}?time_range=short_term&limit=${limit}&offset=${offset}`;
 		return this.GET(url, 'got personalized top tracks');
 	};
@@ -317,7 +316,6 @@ export class Spotify {
 	};
 
 	TransferPlayback = device_id => {
-		console.log(device_id);
 		let url = `https://api.spotify.com/v1/me/player`;
 		let data = { device_ids: [device_id], play: true };
 		return this.PUTBodyParamter(url, data, 'Transfer Playback');
@@ -341,7 +339,7 @@ export class Spotify {
 	Search = (query, type, limit = 50, offset = 0) => {
 		query = query.replace(' ', '%20') + '*';
 		let url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&q=${query}&limit=${limit}&offset=${offset}`;
-		console.log(url);
+
 		return this.GET(url, 'Search Spotify');
 	};
 

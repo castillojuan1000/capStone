@@ -89,7 +89,7 @@ class artistPage extends React.Component {
 
     setColor = (url) => {
         let _ = this;
-        let img = new Image;
+        let img = new Image();
         img.crossOrigin = "Anonymous";
         img.src = url
         img.addEventListener('load', function() {
@@ -137,7 +137,7 @@ class artistPage extends React.Component {
         })
         this.props.ResetQueue(newItems)
         }
-      else if (active, this.state.isPlaying === false) {
+      else if (active && this.props.player.isPlaying === false) {
         ResumePlayer().then(() => 
         this.setState({
           ...this.state,
@@ -185,7 +185,7 @@ class artistPage extends React.Component {
           })
         })
       }
-      else if (active, this.state.isPlaying === false) {
+      else if (active && this.props.player.isPlaying === false) {
         ResumePlayer().then(() => 
         this.setState({
           ...this.state,
@@ -218,17 +218,17 @@ class artistPage extends React.Component {
             if (album.album_group === 'album' && albumCount < 10) {
               albumCount ++;
               let active = (this.props.player.albumId === album.id) ? true : false;
-              albums.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+              albums.push(<Album key={`album-${idx}`} handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
             }
             else if (album.album_group === 'single' && singleCount < 10) {
               singleCount ++;
               let active = (this.props.player.albumId === album.id) ? true : false;
-              singles.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+              singles.push(<Album key={`album-${idx}`} handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
             }
             else if (album.album_group === 'appears_on' && featureCount < 10) {
               featureCount ++;
               let active = (this.props.player.albumId === album.id) ? true : false;
-              features.push(<Album handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
+              features.push(<Album key={`album-${idx}`} handleClick={this.PlayAlbum} active={active} isPlaying={this.state.isPlaying} album={album} idx={idx}/>)
             }
         })
       }
@@ -239,7 +239,7 @@ class artistPage extends React.Component {
       let tracks = []
         this.state.tracks.forEach((track, idx) => {
           let active = (this.props.player.currentSongId === track.id) ? true : false;
-          tracks.push(<Song albumName={this.state.albumName} image={track.album.images[0].url} handleClick={this.PlaySong} active={active} isPlaying={this.state.isPlaying} song={track} idx={idx}/>)
+          tracks.push(<Song key={`artist-song-${idx}`} albumName={this.state.albumName} image={track.album.images[0].url} handleClick={this.PlaySong} active={active} isPlaying={this.state.isPlaying} song={track} idx={idx}/>)
         })
       return tracks
     }
@@ -247,7 +247,7 @@ class artistPage extends React.Component {
     render() {
         let backStyle = {background: `linear-gradient(160deg, ${this.state.colors.DarkVibrant} 15%, rgba(0,0,0, 0.9) 70%)`}
         let bannerStyle = {backgroundImage: `url('${this.state.artistImg}')`}
-        let vibrantStyle = {backgroundColor: "rgba(0,0,0, 0.75)", color: this.state.vibrant}
+        //let vibrantStyle = {backgroundColor: "rgba(0,0,0, 0.75)", color: this.state.vibrant}
         let scrollStyle = {scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`}
         let tracks = this.buildTracks();
         let [albums, singles, features] = this.buildAlbums();

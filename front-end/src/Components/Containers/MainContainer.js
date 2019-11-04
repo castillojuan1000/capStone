@@ -58,11 +58,9 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'SET_PLAYER_COLORS', payload });
 	},
 	ResetQueue: payload => {
-		console.debug(payload);
 		dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
 	},
 	SetSecondaryColors: payload => {
-		console.debug(payload);
 		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
 	},
 	setPlayer: payload =>

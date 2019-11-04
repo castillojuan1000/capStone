@@ -98,6 +98,7 @@ app.use(express.static('./src/Components/Pages'));
 var http = require('http').createServer(app);
 http.listen(4001);
 var io = require('socket.io')(http);
+io.origins('*:*')
 io.of('/rooms').on('connection', socket => {
 	socket.on('JOIN_ROOM', function(data) {
 		const { roomId } = data;

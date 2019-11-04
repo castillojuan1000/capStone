@@ -5,6 +5,9 @@ import * as Vibrant from 'node-vibrant';
 import {getColor} from '../../utilityFunctions/util.js'
 
 
+import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
+import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
+
 class FeaturedPlaylist extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,12 +27,11 @@ class FeaturedPlaylist extends React.Component {
     }
 
     setColor = (url) => {
-        console.debug(0)
         let img = new Image();
         img.crossOrigin = 'Anonymous';
         img.src = url;
         img.addEventListener('load', () => {         
-            var vibrant = new Vibrant(img);
+           
             Vibrant.from(img).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),
@@ -38,7 +40,7 @@ class FeaturedPlaylist extends React.Component {
 					LightVibrant: getColor(palette, 'LightVibrant'),
 					Muted: getColor(palette, 'Muted'),
 				};
-				console.log(colors)
+				
 				this.setState({
 					...this.state,
 					colors: colors,
@@ -63,7 +65,12 @@ class FeaturedPlaylist extends React.Component {
                 </div>
                 <div className="triangle-right" style={{borderTop: `22em solid rgba(0,0,0,.1)`}}></div>
                 </div>
-                <img src={this.props.url}></img>
+                <div className="artist-hover-state" /* onClick={() => handleClick(artist.id)} */>
+                        <div className="artist-icon-holder">
+                            <PlayArrowRoundedIcon style={{fontSize: '.8em'}}/>
+                        </div>
+                    </div>
+                <img alt="playlist-cover" src={this.props.url}></img>
                 <div className="playlist-cover">
                     <h1>{this.props.name}</h1>
                     <h3>{this.props.artistName}</h3>
