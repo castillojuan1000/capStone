@@ -7,7 +7,7 @@ back-end/.env
 front-end/.env
 /.pnp
 .pnp.js
-
+build/
 # testing
 /coverage
 
@@ -27,3 +27,4 @@ yarn-error.log*
 /back-end/.env
 /front-end/.env
 /front-end/build/
+../back-end/.env
