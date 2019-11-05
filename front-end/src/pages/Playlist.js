@@ -118,6 +118,7 @@ class PlaylistPage extends Component {
                     };
                     newItems.push(track.track);
                 });
+            console.info('newitems new', newItems)
             this.props.ResetQueue(newItems)
             let previousSongs = this.state.tracks.slice(0, index).map(track => {
                 return track.track.uri;

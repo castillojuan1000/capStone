@@ -8,7 +8,6 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
 const authServer = require('./routes/authServer');
 const createUsers = require('./fakerData');
-const path = require('path');
 const app = express();
 const myStore = new SequelizeStore({
 	db: db.sequelize
@@ -93,8 +92,8 @@ app.post('/api/createroom/', (req, res) => {
 
 //! CHARTROOM SERVER
 var http = require('http').createServer(app);
-http.listen(process.env.PORT || 4000, () =>
-	console.log('Server running! \n http://localhost:4000')
+http.listen(process.env.PORT || 3000, () =>
+	console.log('Server running! \n http://localhost:3000')
 );
 var io = require('socket.io')(http);
 io.origins('*:*');

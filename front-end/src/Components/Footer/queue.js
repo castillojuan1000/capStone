@@ -91,9 +91,9 @@ class Queue extends React.Component {
 			this.props.player.queue
 				.slice(index, this.props.player.queue.length)
 				.forEach((track, idx) => {
-					if ('track' in track) {
-						track = track.track;
-					}
+					// if ('track' in track) {
+					// 	track = track.track;
+					// }
 					track.order = idx;
 					track.album = {
 						images: track.album.images

@@ -21,9 +21,6 @@ const buildTracks = (
 ) => {
 	let tracks = [];
 	queue.forEach((track, idx) => {
-		if ('track' in track) {
-			track = track.track;
-		}
 		tracks.push(
 			<Song
 				key={`que-song-${idx}`}
@@ -43,7 +40,7 @@ const buildTracks = (
 };
 const handleClick = (id, queue, player, ResetQueue) => {
 	let index = queue.findIndex(track => {
-		if ('track' in track) {
+		if ('added_at' in track) {
 			track = track.track;
 		}
 		return track.id === id;
@@ -65,6 +62,7 @@ const handleClick = (id, queue, player, ResetQueue) => {
 		};
 		newItems.push(track);
 	});
+	console.debug(newItems, 'newItems')
 	ResetQueue(newItems);
 	let uris = JSON.stringify([...currentSongs]);
 	player.playSong(uris);
