@@ -44,11 +44,9 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'PLAYER_TOGGLE_PLAY', payload });
 	},
 	initializeSpotify: payload => {
-		alert(2);
 		dispatch({ type: 'INITIALIZE_SPOTIFY_KEYS', payload });
 	},
 	PlayNext: payload => {
-		alert(2);
 		dispatch({ type: 'PLAYER_PLAY_NEXT', payload });
 	},
 	SyncFromHost: () => {

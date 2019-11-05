@@ -15,7 +15,7 @@ let Album = ({ album, idx, active, isPlaying, handleClick, searchState }) => {
 	let image =
 		album.images.length > 0
 			? album.images[1].url
-			: 'https://via.placeholder.com/150';
+			: '/music-placeholder.png';
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='album-block'>

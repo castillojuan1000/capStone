@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 
 let Artist = ({ artist, idx, handleClick }) => {
-  let image = (artist.images.length > 0) ? artist.images[1].url : 'https://via.placeholder.com/150'
+  let image = (artist.images.length > 0) ? artist.images[1].url : '/music-placeholder.png'
   let backgroundStyle = { backgroundImage: `url(${image})`, }
   return (
     <div key={idx} className="artist-block">

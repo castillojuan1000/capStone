@@ -13,11 +13,15 @@ function Navbar(props) {
 		props.history.go('/');
 	};
 	let color;
-	let percentage = '15%';
+	let percentage = '18%';
 	var page = window.location.pathname.split('/')[1];
-	if (['album', 'artist', 'playlist'].includes(page)) {
+	if (['album', 'artist'].includes(page)) {
 		color = props.player.secondaryColors.DarkVibrant;
-	} else {
+	}
+	else if (page === 'library' || page === 'playlist') {
+		color = props.player.colors.darkVibrant;
+	}
+	else {
 		//color = props.player.colors.vibrant
 		color = '#000000 ';
 	}
@@ -55,7 +59,7 @@ function Navbar(props) {
 							<li>
 								<NavLink
 									activeStyle={{
-										color: props.player.colors.vibrant,
+										color: 'white',
 										borderBottom: `2px solid ${props.player.colors.vibrant}`
 									}}
 									className='nav-link'
@@ -68,7 +72,7 @@ function Navbar(props) {
 						<li>
 							<NavLink
 								activeStyle={{
-									color: props.player.colors.vibrant,
+									color: 'white',
 									borderBottom: `2px solid ${props.player.colors.vibrant}`
 								}}
 								className='nav-link'
@@ -80,7 +84,7 @@ function Navbar(props) {
 						<li>
 							<NavLink
 								activeStyle={{
-									color: props.player.colors.vibrant,
+									color: 'white',
 									borderBottom: `2px solid ${props.player.colors.vibrant}`
 								}}
 								className='nav-link'

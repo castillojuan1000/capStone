@@ -1,6 +1,8 @@
 import React from 'react';
 import '../../footer.css';
-import { ChangeVolume, getColor } from '../../utilityFunctions/util.js';
+import { ChangeVolume } from '../../utilityFunctions/util.js';
+import { getColor } from '../../utilityFunctions/util.js';
+
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -293,13 +295,13 @@ class Footer extends React.Component {
 		let NewLike = this.state.liked ? false : true;
 		!this.state.liked
 			? AddSong([this.props.player.currentSongId]).then(result => {
-					setTimeout(() => {
-						this.setState({
-							...this.state,
-							NewLike: false
-						});
-					}, 2500);
-			  })
+				setTimeout(() => {
+					this.setState({
+						...this.state,
+						NewLike: false
+					});
+				}, 2500);
+			})
 			: DeleteSong([this.props.player.currentSongId]);
 		this.setState({
 			...this.state,
@@ -314,7 +316,7 @@ class Footer extends React.Component {
 		img.src = url;
 		img.addEventListener(
 			'load',
-			function() {
+			function () {
 				Vibrant.from(img).getPalette((err, palette) => {
 					//console.error(err)
 					let color = getColor(palette, 'Vibrant');
@@ -360,7 +362,7 @@ class Footer extends React.Component {
 			if (
 				action === null &&
 				this.props.player.songImg !==
-					state.track_window.current_track.album.images[2].url
+				state.track_window.current_track.album.images[2].url
 			) {
 				getTrack(state.track_window.current_track.id).then(result => {
 					document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
@@ -457,8 +459,8 @@ class Footer extends React.Component {
 				colors={this.state.colors}
 			/>
 		) : (
-			''
-		);
+				''
+			);
 		return (
 			<div className='footer'>
 				<Queue
@@ -539,10 +541,10 @@ class Footer extends React.Component {
 											: 'rgba(255,255,255, 0.4)',
 										borderBottom: this.props.player.shuffle
 											? `2px solid ${
-													this.pageOn
-														? this.props.player.secondaryColors.Vibrant
-														: this.props.player.colors.vibrant
-											  }`
+											this.pageOn
+												? this.props.player.secondaryColors.Vibrant
+												: this.props.player.colors.vibrant
+											}`
 											: '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
@@ -603,10 +605,10 @@ class Footer extends React.Component {
 											: 'rgba(255,255,255, 0.4)',
 										borderBottom: this.props.player.repeat
 											? `2px solid ${
-													this.pageOn
-														? this.props.player.secondaryColors.Vibrant
-														: this.props.player.colors.vibrant
-											  }`
+											this.pageOn
+												? this.props.player.secondaryColors.Vibrant
+												: this.props.player.colors.vibrant
+											}`
 											: '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
@@ -652,10 +654,10 @@ class Footer extends React.Component {
 										: this.props.player.colors.vibrant,
 									borderBottom: this.props.player.repeat
 										? `2px solid ${
-												this.pageOn
-													? this.props.player.secondaryColors.Vibrant
-													: this.props.player.colors.vibrant
-										  }`
+										this.pageOn
+											? this.props.player.secondaryColors.Vibrant
+											: this.props.player.colors.vibrant
+										}`
 										: '2px solid transparent',
 									borderRadius: '50px',
 									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'

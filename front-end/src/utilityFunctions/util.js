@@ -197,7 +197,7 @@ export const getRecommendations = (spotify = null, offset = 0, limit = 100) => {
 	return spotify.GET(url, 'got recommendations');
 };
 
-export const getFollowedArtists = (spotify = null, limit = 100) => {
+export const getFollowedArtists = (spotify = null, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/following?type=artist&limit=${limit}`;
