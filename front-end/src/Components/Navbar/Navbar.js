@@ -30,6 +30,7 @@ function Navbar(props) {
 	}
 	return (
 		<Toolbar
+			className="tool-bar"
 			style={{
 				background: `linear-gradient(50deg,${color} ${percentage}, rgba(0,0,0, 1) ${percentage})`
 			}}>
