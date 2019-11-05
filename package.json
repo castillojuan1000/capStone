@@ -18,5 +18,8 @@
 	"bugs": {
 		"url": "https://github.com/castillojuan1000/capStone/issues"
 	},
-	"homepage": "https://github.com/castillojuan1000/capStone#readme"
+	"homepage": "https://github.com/castillojuan1000/capStone#readme",
+	"dependencies": {
+		"sequelize": "^5.21.2"
+	}
 }
