@@ -166,8 +166,6 @@ function ListenerView({
 	}, [setRoom, roomId, isHost, host, roomName]);
 	const [createLike] = useMutation(CREATE_LIKE);
 	const handleClick = (roomId, userId, spotifyId) => {
-		debugger;
-
 		const like = {
 			roomId,
 			userId,

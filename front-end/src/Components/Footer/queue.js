@@ -4,20 +4,14 @@ import { connect } from 'react-redux';
 import Playlist from './playlist';
 import Song from '../../Components/Blocks/songshort';
 import Station from './station.js';
+import { withApollo } from 'react-apollo';
+import { GET_ALL_ROOMS } from '../../Apollo/index';
 
-const query = `query{
-    getAllRooms{
-        id
-        roomName
-        host{
-            id
-        }
-    }
-}`;
-const opts = {
-	method: 'POST',
-	headers: { 'Content-Type': 'application/json' },
-	body: JSON.stringify({ query })
+const querySubcribe = client => {
+	return client.watchQuery({
+		query: GET_ALL_ROOMS,
+		fetchPolicy: 'cache-and-network'
+	});
 };
 let QueueFilter = ({ name, isActive, onClick, color }) => {
 	let className = isActive === name ? 'active' : '';
@@ -42,14 +36,18 @@ class Queue extends React.Component {
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 	}
 	componentDidMount() {
-		fetch('/graphql', opts)
-			.then(res => res.json())
-			.then(res => {
-				if (res.data !== undefined) {
-					const { getAllRooms: rooms } = res.data;
+		querySubcribe(this.props.client).subscribe({
+			next: ({ data }) => {
+				if (data !== undefined) {
+					const { getAllRooms: rooms } = data;
 					this.setState({ rooms });
 				}
-			});
+			},
+			error: e => console.error(e)
+		});
+	}
+	componentWillUnmount() {
+		querySubcribe(this.props.client).unsubscribe();
 	}
 	setSearchFilter = name => {
 		this.setState({
@@ -125,6 +123,7 @@ class Queue extends React.Component {
 						isPlaying={this.props.isPlaying}
 						currentURI={this.props.currentURI}
 						id={idx}
+						userId={this.props.user.id}
 						playSong={this.props.playSong}
 						ResetQueue={this.props.ResetQueue}
 						getPlaylistTracks={this.props.getPlaylistTracks}
@@ -224,4 +223,4 @@ const mapState = state => {
 export default connect(
 	mapState,
 	null
-)(Queue);
+)(withApollo(Queue));

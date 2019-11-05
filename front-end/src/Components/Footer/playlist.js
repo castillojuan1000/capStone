@@ -1,7 +1,7 @@
 import React from 'react';
 
 import * as Vibrant from 'node-vibrant';
-
+import CreateRoombutton from './CreateRoomButton';
 import { getColor } from '../../utilityFunctions/util.js';
 import Song from '../../Components/Blocks/songshort';
 
@@ -128,6 +128,11 @@ class Playlist extends React.Component {
 		};
 		return (
 			<div className='playlist-section' style={containerStyle}>
+				<CreateRoombutton
+					userId={this.props.userId}
+					playlistName={this.props.playlist.name}
+					active={this.state.active}
+				/>
 				<div className='queue-block' onClick={() => this.setActive()}>
 					<div className='cover'>
 						<h1>{this.props.playlist.name}</h1>

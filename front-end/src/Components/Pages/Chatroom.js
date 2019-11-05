@@ -13,12 +13,12 @@ class Chatroom extends Component {
 			messages: this.props.messages || [],
 			currentTyper: ''
 		};
-		this.socket = io(`localhost:4001/rooms`);
-		this.socket.on('connect', function (data) {
+		this.socket = io(`localhost:4000/rooms`);
+		this.socket.on('connect', function(data) {
 			joinRoom();
 		});
 		// once the client recieve a message send it to the server
-		this.socket.on('RECEIVE_MESSAGE', function (data) {
+		this.socket.on('RECEIVE_MESSAGE', function(data) {
 			addMessage(data);
 		});
 		const joinRoom = () => {
@@ -50,7 +50,7 @@ class Chatroom extends Component {
 		};
 
 		// whenever someone is typing a messgae, everyone in the chatroom will be able to see it
-		this.socket.on('typing', function (data) {
+		this.socket.on('typing', function(data) {
 			addFeedback();
 		});
 
@@ -81,7 +81,10 @@ class Chatroom extends Component {
 							<h4>{this.state.currentTyper} is typing...</h4>
 						)}
 						<figure className='avatar'>
-							<img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg' alt='' />
+							<img
+								src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg'
+								alt=''
+							/>
 						</figure>
 					</div>
 					<div
@@ -94,7 +97,10 @@ class Chatroom extends Component {
 							return (
 								<div className='message new' key={i}>
 									<figure className='avatar'>
-										<img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg' alt='' />
+										<img
+											src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg'
+											alt=''
+										/>
 									</figure>
 									{message.author}:
 									<br />

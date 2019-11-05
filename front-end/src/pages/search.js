@@ -95,6 +95,7 @@ class SearchSection extends React.Component {
 						? 'album,artist,playlist,track'
 						: this.props.searchState.activeFilter;
 				Search(this.props.searchState.search, type).then(result => {
+					result['type'] = this.state.activeFilter.toLowerCase() + 's';
 					this.props.setSearchResult(result);
 				});
 			}, 500)
@@ -324,6 +325,10 @@ class SearchSection extends React.Component {
 		let artists = this.buildArtists();
 		let albums = this.buildAlbums();
 		let tracks = this.buildTracks();
+		let topResultsSection =
+			this.state.activeFilter === 'topresults'
+				? { height: '80%' }
+				: { height: '0' };
 		let sectionStyle =
 			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
 
@@ -365,6 +370,7 @@ class SearchSection extends React.Component {
 					</div>
 				</div>
 				<div className='search-body' id='search-body'>
+					<div className='topResultsSection' style={topResultsSection}></div>
 					{artists}
 					{albums}
 					<div className='songs-container' style={sectionStyle}>

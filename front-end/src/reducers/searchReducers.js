@@ -20,6 +20,7 @@ const searchReducer = (state = initialState, action) => {
 				scroll: 0
 			};
 		case 'SEARCH_RESULT_RETURNED':
+			alert(payload.type.toLowerCase());
 			return {
 				...state,
 				result: payload,

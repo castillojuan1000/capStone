@@ -35,6 +35,46 @@ class Home extends React.Component {
 			});
 	}
 
+	handleClick = (uri, active) => {
+		let { playSong, ResumePlayer, StopPlayer } = this.props.spotifyData.player;
+		if (!active) {
+			let index = this.state.tracks.findIndex(track => track.uri === uri);
+			let currentSongs = this.state.tracks
+				.slice(index, this.state.tracks.length)
+				.map(track => {
+					return track.uri;
+				});
+			let newItems = [];
+			this.state.tracks
+				.slice(index, this.state.tracks.length)
+				.concat(this.state.tracks.slice(0, index - 1))
+				.forEach((track, idx) => {
+					track.order = idx;
+					newItems.push(track);
+				});
+			this.props.ResetQueue(newItems);
+			let previousSongs = this.state.tracks.slice(0, index).map(track => {
+				return track.uri;
+			});
+			let uris = JSON.stringify([...currentSongs, ...previousSongs]);
+			playSong(uris).then(
+				result =>
+					this.setState({
+						...this.state,
+						currentSong: uri,
+						isPlaying: true
+					})
+				//hege.slice(1).concat(stale.slice(1)).forEach((item, idx) => list.push(item + idx))
+			);
+		} else if ((active, this.props.player.isPlaying === false)) {
+			ResumePlayer();
+			this.props.togglePlay();
+		} else {
+			StopPlayer();
+			this.props.togglePlay();
+		}
+	};
+
 	render() {
 		let topArtists = [];
 		let topTracks = [];
@@ -71,6 +111,8 @@ class Home extends React.Component {
 					ResetQueue={this.props.ResetQueue}
 					active={active}
 					songUri={item.uri}
+					item={item}
+					handleClick={this.handleClick}
 					isPlaying={this.props.player.isPlaying}
 				/>
 			);

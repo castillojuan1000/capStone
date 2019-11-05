@@ -21,15 +21,19 @@ const resolvers = {
 		}
 	},
 	Mutation: {
-		async createUser(root, { email, password }, { models }) {
+		async createUser(root, { email, password, username }, { models }) {
 			const user = {
 				email: email.toLowerCase(),
-				password: await hashPass(password)
+				password: await hashPass(password),
+				username
 			};
 			return models.user.create(user);
 		},
 		async createLike(root, { userId, roomId, spotifyId }, { models }) {
 			return models.like.create({ userId, roomId, spotifyId });
+		},
+		async createRoom(root, { hostId, roomName }, { models }) {
+			return models.room.create({ hostId, roomName });
 		}
 	},
 	User: {
@@ -76,12 +80,12 @@ const resolvers = {
 		},
 		async user(user) {
 			return user.getUser();
-		},
+		}
 	}
 };
 const hashPass = password => {
 	return new Promise((resolve, reject) => {
-		bcrypt.hash(password, 10, function (err, hash) {
+		bcrypt.hash(password, 10, function(err, hash) {
 			if (err) {
 				return reject(err);
 			} else {

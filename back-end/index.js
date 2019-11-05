@@ -45,7 +45,7 @@ app.get('/createUsers', (req, res) => {
 	res.send('Created!');
 });
 if (process.env.NODE_ENV == 'development') {
-	app.use(function (req, res, next) {
+	app.use(function(req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
 			req.path === '/api/login' ||
@@ -89,18 +89,20 @@ app.post('/api/createroom/', (req, res) => {
 		});
 	}
 });
-app.listen(4000, () => {
-	console.log('Server running! \n http://localhost:4000');
-});
+// app.listen(4000, () => {
+// 	console.log('Server running! \n http://localhost:4000');
+// });
 
 //! CHARTROOM SERVER
 app.use(express.static('./src/Components/Pages'));
 var http = require('http').createServer(app);
-http.listen(4001);
+http.listen(4000, () =>
+	console.log('Server running! \n http://localhost:4000')
+);
 var io = require('socket.io')(http);
-io.origins('*:*')
+io.origins('*:*');
 io.of('/rooms').on('connection', socket => {
-	socket.on('JOIN_ROOM', function (data) {
+	socket.on('JOIN_ROOM', function(data) {
 		const { roomId } = data;
 		socket.join(`room${roomId}`);
 	});
@@ -108,7 +110,7 @@ io.of('/rooms').on('connection', socket => {
 	//once it get then "chat" message it will call the function
 
 	//! save the messages to the data base
-	socket.on('SEND_MESSAGE', function (data) {
+	socket.on('SEND_MESSAGE', function(data) {
 		db.message.create({
 			userId: data.authorId,
 			roomId: data.roomId,
@@ -118,41 +120,21 @@ io.of('/rooms').on('connection', socket => {
 		socket.to(`room${data.roomId}`).emit('RECEIVE_MESSAGE', data);
 	});
 
-	socket.on('typing', function (data) {
+	socket.on('typing', function(data) {
 		// this is broadcasting the message once a person is typing but not to the person typing the message
 		socket.emit('typing', data);
 	});
 });
 io.on('connection', socket => {
 	socket.on('REQUEST_PLAYER_STATE', data => {
-		console.log(data);
 		io.emit('SYNC_PLAYER', data);
 	});
 	socket.on('SEND_PLAYER_STATE', data => {
 		const { socketId, player, roomId } = data;
-		console.log(data)
+		console.log(data);
 		if (roomId) {
-			io.emit('RECEIVE_PLAYER_STATE', { player, roomId })
+			io.emit('RECEIVE_PLAYER_STATE', { player, roomId });
 		}
 		io.to(socketId).emit('RECEIVE_PLAYER_STATE', { player, socketId });
 	});
-	// // console.log('made socket connection', socket.id);
-	// socket.on('JOIN_ROOM');
-	// //socket is waiting for that connection on the client side
-	// //once it get then "chat" message it will call the function
-	// //! save the messages to the data base
-	// socket.on('SEND_MESSAGE', function(data) {
-	// 	console.log(data);
-	// 	db.message.create({
-	// 		userId: data.authorId,
-	// 		roomId: 1,
-	// 		message: data.message
-	// 	});
-	// 	//then grabbing all the sockets and calling a event and then send the data
-	// 	io.sockets.emit('RECEIVE_MESSAGE', data);
-	// });
-	// socket.on('typing', function(data) {
-	// 	// this is broadcasting the message once a person is typing but not to the person typing the message
-	// 	socket.broadcast.emit('typing', data);
-	// });
 });

@@ -67,12 +67,10 @@ class FeaturedPlaylist extends React.Component {
 					/>
 				</div>
 				<div
-					className='triangle-right'
-					style={{ borderTop: `22em solid rgba(0,0,0,.1)` }}
-				/>
-				<div
-					className='artist-hover-state' /* onClick={() => handleClick(artist.id)} */
-				>
+					className='artist-hover-state'
+					onClick={() =>
+						this.props.handleClick(this.props.item.uri, this.props.active)
+					}>
 					<div className='artist-icon-holder'>
 						<PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
 					</div>
