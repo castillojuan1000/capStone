@@ -9,7 +9,7 @@ function Navbar(props) {
 	const handleSignOut = () => {
 		localStorage.removeItem('jwtTokens');
 		props.logOut();
-		fetch('/api/signout');
+		fetch('/api/signout', { method: 'DELETE' });
 		props.history.go('/');
 	};
 	let color;
@@ -43,7 +43,7 @@ function Navbar(props) {
 							fontSize: '2vw',
 							textTransform: 'capitalize'
 						}}>
-						Sound Good Music
+						JustMusic.live
 					</NavLink>
 				</ToolbarLogo>
 
@@ -51,6 +51,20 @@ function Navbar(props) {
 
 				<ToolbarNavItems>
 					<ul>
+						{props.user.room && (
+							<li>
+								<NavLink
+									activeStyle={{
+										color: props.player.colors.vibrant,
+										borderBottom: `2px solid ${props.player.colors.vibrant}`
+									}}
+									className='nav-link'
+									activeClassName='active'
+									to={'/room/' + props.user.room.roomId}>
+									STATION
+								</NavLink>
+							</li>
+						)}
 						<li>
 							<NavLink
 								activeStyle={{

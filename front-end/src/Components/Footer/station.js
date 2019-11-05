@@ -47,10 +47,11 @@ class Station extends React.Component {
 		this.props.history.push('/room/' + this.props.roomId);
 	};
 	componentDidMount = () => {
-		this.setColor('https://picsum.photos/200');
+		this.setColor(this.props.image);
 	};
 
 	render = () => {
+		let bodyStyle = { height: '0em', background: 'rgba(0,0,0, 0)' };
 		let containerStyle = {
 			backgroundSize: '800vw 800vw',
 			animation: 'rotate 20s ease infinite',
@@ -64,21 +65,12 @@ class Station extends React.Component {
 				style={containerStyle}
 				className='playlist-section'
 				onClick={() => this.setActive()}>
-				<div
-					className='queue-block'
-					style={{ background: this.state.colors.DarkMuted }}>
-					<div
-						className='circle1'
-						style={{ background: this.state.colors.Vibrant }}></div>
-					<div
-						className='circle4'
-						style={{ background: this.state.colors.Muted }}></div>
+				<div className='queue-block' onClick={() => this.setActive()}>
 					<div className='cover'>
-						<h1 style={{ textTransform: 'capitalize' }}>
-							{this.props.roomName}
-						</h1>
+						<h1>{this.props.roomName}</h1>
 					</div>
 				</div>
+				<div className='playlist-body' style={bodyStyle}></div>
 			</div>
 		);
 	};

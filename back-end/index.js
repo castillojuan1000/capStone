@@ -6,7 +6,10 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
+<<<<<<< HEAD
 const authServer = require('./routes/authServer');
+=======
+>>>>>>> Staging
 const createUsers = require('./fakerData');
 const path = require('path')
 const app = express();
@@ -26,10 +29,19 @@ const apolloServ = new ApolloServer({
 apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
+<<<<<<< HEAD
 app.use(express.static(__dirname + './../front-end/build'));
 app.get('*', function (request, response) {
 	response.sendFile('index.html', { root: './../front-end/build' })
 })
+=======
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(__dirname + './../front-end/build'));
+	app.get('*', function(request, response) {
+		response.sendFile('index.html', { root: './../front-end/build' });
+	});
+}
+>>>>>>> Staging
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
@@ -88,14 +100,18 @@ app.post('/api/createroom/', (req, res) => {
 		});
 	}
 });
-// app.listen(4000, () => {
-// 	console.log('Server running! \n http://localhost:4000');
-// });
 
 //! CHARTROOM SERVER
+<<<<<<< HEAD
 var http = require('http').createServer(app);
 http.listen(process.env.PORT || 3000, () =>
 	console.log('Server running! \n http://localhost:3000')
+=======
+
+var http = require('http').createServer(app);
+http.listen(process.env.PORT || 4000, () =>
+	console.log('Server running! \n http://localhost:4000')
+>>>>>>> Staging
 );
 var io = require('socket.io')(http);
 io.origins('*:*');
@@ -129,7 +145,6 @@ io.on('connection', socket => {
 	});
 	socket.on('SEND_PLAYER_STATE', data => {
 		const { socketId, player, roomId } = data;
-		console.log(data);
 		if (roomId) {
 			io.emit('RECEIVE_PLAYER_STATE', { player, roomId });
 		}

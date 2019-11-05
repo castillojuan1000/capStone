@@ -71,7 +71,14 @@ function SignInSide(props) {
 	const onChange = e => {
 		return setState({ ...state, [e.target.name]: e.target.value });
 	};
-	const { spotifyToken, initiatePlayer, history, authUser, spotifyData, user } = props
+	const {
+		spotifyToken,
+		initiatePlayer,
+		history,
+		authUser,
+		spotifyData,
+		user
+	} = props;
 	useEffect(() => {
 		const authTokens = localStorage.getItem('jwtTokens') || null;
 		const abortController = new AbortController();
@@ -117,7 +124,15 @@ function SignInSide(props) {
 		return () => {
 			abortController.abort(loginWithToken);
 		};
-	}, [SpotifyToken, history, authUser, initiatePlayer, user, spotifyData, spotifyToken]);
+	}, [
+		SpotifyToken,
+		history,
+		authUser,
+		initiatePlayer,
+		user,
+		spotifyData,
+		spotifyToken
+	]);
 	const handleSubmit = e => {
 		e.preventDefault();
 		setError('');
@@ -142,25 +157,30 @@ function SignInSide(props) {
 				if (tokens && state.remember) {
 					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
-				authUser({ ...data, isLoggedIn: true });
+				if (data) {
+					authUser({ ...data, isLoggedIn: true });
+				}
+				return data;
 			})
-			.then(() => {
-				let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
-				const expirationTS =
-					(localStorage.getItem('expiration') - Date.now()) / 1000;
-				if (SpotifyToken) {
-					localStorage.setItem('token', SpotifyToken);
-					localStorage.setItem('expiration', expiration);
-					spotifyToken(SpotifyToken);
-					initiatePlayer(new Spotify(SpotifyToken));
-					history.push('/');
-				} else if (expirationTS < 60 || !spotifyData.userToken) {
-					localStorage.setItem('token', '');
-					localStorage.setItem('expiration', 0);
-					setupSpotify();
+			.then(data => {
+				if (data) {
+					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+					const expirationTS =
+						(localStorage.getItem('expiration') - Date.now()) / 1000;
+					if (SpotifyToken) {
+						localStorage.setItem('token', SpotifyToken);
+						localStorage.setItem('expiration', expiration);
+						spotifyToken(SpotifyToken);
+						initiatePlayer(new Spotify(SpotifyToken));
+						history.push('/');
+					} else if (expirationTS < 60 || !spotifyData.userToken) {
+						localStorage.setItem('token', '');
+						localStorage.setItem('expiration', 0);
+						setupSpotify();
+					}
+					e.target.reset();
 				}
 			});
-		e.target.reset();
 	};
 	return (
 		<Grid container component='main' className={classes.root}>
