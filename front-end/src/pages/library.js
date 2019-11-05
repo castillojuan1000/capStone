@@ -128,7 +128,7 @@ class LibrarySection extends React.Component {
 
 	PlaySong = (uri, active) => {
 		if (!active) {
-			let index = this.state.likes.items.findIndex(
+			let index = this.state.likes.findIndex(
 				track => track.uri === uri
 			);
 			let uris = JSON.stringify(

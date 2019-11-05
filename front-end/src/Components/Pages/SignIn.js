@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { setupSpotify, StoreAPIToken } from '../../utilityFunctions/util';
 import { Spotify } from '../../utilityFunctions/util2';
 import { withRouter } from 'react-router-dom';
+import '../../App.css'
 
 function Copyright() {
 	return (
@@ -31,8 +32,10 @@ function Copyright() {
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		height: '100hv',
-		background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)'
+		paddingTop: '1%',
+		position: "absolute",
+		height: '100vh',
+		background: 'linear-gradient(120deg, #BA55D3 25%, #000000 85%)'
 	},
 	image: {
 		backgroundImgae: 'url(http://127.0.0.1:5501/img/card1.jpg)',
@@ -41,6 +44,7 @@ const useStyles = makeStyles(theme => ({
 		backgroundPosition: 'center'
 	},
 	paper: {
+		height: '40vh',
 		margin: theme.spacing(8, 4),
 		display: 'flex',
 		flexDirection: 'column',
@@ -51,8 +55,9 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.secondary.main
 	},
 	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing(1)
+		width: '90%', // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
+		color: 'white'
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2)
@@ -64,7 +69,7 @@ function SignInSide(props) {
 	const [state, setState] = useState({
 		email: '',
 		password: '',
-		remember: false,
+		remember: true,
 		isLoggedIn: false
 	});
 	const [error, setError] = useState('');
@@ -178,15 +183,16 @@ function SignInSide(props) {
 						localStorage.setItem('expiration', 0);
 						setupSpotify();
 					}
-					//e.target.reset();
+
 				}
 			});
 	};
 	return (
 		<Grid container component='main' className={classes.root}>
-			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+
+			<CssBaseline className="base"/>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
+			<Grid item xs={12} sm={8} md={4} component={Paper} style={{borderRadius: '5px', top:' 10%', left: '33.333%', position: 'absolute'}} elevation={6} square>
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>
 						<LockOutlinedIcon />
@@ -228,6 +234,7 @@ function SignInSide(props) {
 									onClick={() =>
 										setState({ ...state, remember: !state.remember })
 									}
+									checked="true"
 									value='remember'
 									color='primary'
 								/>
@@ -249,7 +256,7 @@ function SignInSide(props) {
 								</Link>
 							</Grid>
 							<Grid item>
-								<Link href='#' variant='body2'>
+								<Link href='signup/' variant='body2'>
 									{"Don't have an account? Sign Up"}
 								</Link>
 							</Grid>
@@ -260,8 +267,8 @@ function SignInSide(props) {
 					</form>
 				</div>
 			</Grid>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
 		</Grid>
 	);
 }
-
 export default withRouter(SignInSide);

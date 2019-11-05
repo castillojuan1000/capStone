@@ -290,7 +290,21 @@ body {
 .library-block .playlist-icon-holder {
 	width: 3.2em;
 	height: 3.2em;
+}
 
+.wave {
+	bottom: -0%;
+	width: 100%;
+	position: absolute;
+	z-index: 0;
+  }
+
+  .form-item {
+	  color: white;
+  }
+
+.base {
+	background: red;
 }
 
 .ppage .Playlist-container {
@@ -474,6 +488,13 @@ body {
 	height: 5vh;
 	background: rgba(0, 0, 0, 0);
 	border-radius: 10px;
+}
+
+
+.tool-bar .nav-link {
+	width: 100%;
+	white-space: nowrap;
+	text-overflow: nowrap !important;
 }
 
 .search-filter ul {
