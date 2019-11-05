@@ -1,7 +1,7 @@
 const faker = require('faker');
 const times = require('lodash/times');
 const random = require('lodash/random');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const createData = db => {
 	db.user.bulkCreate(
 		times(10, () => ({

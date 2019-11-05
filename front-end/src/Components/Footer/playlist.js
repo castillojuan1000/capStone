@@ -107,6 +107,7 @@ class Playlist extends React.Component {
 					isPlaying={this.props.isPlaying}
 					song={track.track}
 					idx={idx}
+					key={idx}
 				/>
 			);
 		});
@@ -130,8 +131,10 @@ class Playlist extends React.Component {
 			<div className='playlist-section' style={containerStyle}>
 				<CreateRoombutton
 					userId={this.props.userId}
-					playlistName={this.props.playlist.name}
 					active={this.state.active}
+					playlist={this.props.playlist}
+					rooms={this.props.rooms}
+					toggleQ={this.props.toggleQ}
 				/>
 				<div className='queue-block' onClick={() => this.setActive()}>
 					<div className='cover'>

@@ -24,7 +24,7 @@ let Song = ({
 		) : (
 			<PlayArrowRounded style={{ fontSize: '.8em' }} />
 		);
-	let artist = <h5>{song.artists[0].name}</h5>;
+	let artist = song.artists && <h5>{song.artists[0].name}</h5>;
 	let image =
 		song.album !== undefined && song.album.images.length > 0
 			? song.album.images[1].url

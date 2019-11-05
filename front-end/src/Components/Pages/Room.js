@@ -62,7 +62,6 @@ export function QueryRoom({ id, player, user, setRoom, playSong }) {
 		roomName = getRoom.roomName;
 		host = getRoom.host;
 		isHost = Number(getRoom.host.id) === user.id;
-		console.log(likes);
 	}
 	return (
 		<MainContainer>
@@ -115,21 +114,21 @@ function HostView({
 	}, [setRoom, roomId, isHost, host, roomName]);
 	return (
 		<>
-			<h1>Host!</h1>
 			<h1>Queue</h1>
 			<div>
 				{queue.map((song, i) => {
+					debugger;
 					const active = player.currentSongId === song.id;
 					return (
 						<Song
 							key={i}
-							song={song}
+							song={song.track}
 							active={active}
 							handleClick={() => {
 								const newQueue = queue.filter(s => s.uri === song.uri);
 								return playSong(
 									JSON.stringify([
-										song.uri,
+										song.track.uri,
 										player.currentSong.uri,
 										...newQueue.map(s => s.uri)
 									])
@@ -143,6 +142,7 @@ function HostView({
 					);
 				})}
 			</div>
+
 			<Chatroom messages={messages} roomId={roomId} isHost={isHost ? 1 : 0} />
 		</>
 	);
@@ -195,13 +195,13 @@ function ListenerView({
 					return (
 						<Song
 							key={i}
-							song={song}
+							song={song.track}
 							active={active}
 							handleClick={() => {
 								const newQueue = queue.filter(s => s.uri === song.uri);
 								return playSong(
 									JSON.stringify([
-										song.uri,
+										song.track.uri,
 										player.currentSong.uri,
 										...newQueue.map(s => s.uri)
 									])
@@ -225,7 +225,7 @@ const MainRoom = styled.div`
 	width: 100vw;
 	height: 100vh;
 	margin: auto;
-	padding-top: 30px;
+	padding: 30px;
 	background: ${props =>
 		`linear-gradient(160deg, ${props.color} 15%, rgba(0,0,0, 0.9) 70%)`};
 	h1 {
@@ -239,9 +239,10 @@ const MainRoom = styled.div`
 	}
 `;
 const MainContainer = styled.div`
-	width: 60vw;
+	width: 30vw;
 	height: 60vh;
 	padding: 20px;
+	border-radius: 10px;
 	background: rgba(0, 0, 0, 0.5);
 	margin-top: 5vh;
 	overflow-y: scroll;

@@ -1,19 +1,12 @@
 module.exports = function(db) {
 	const router = require('express').Router();
 	const { createToken, verifyToken } = require('../utils');
-	const bcrypt = require('bcrypt');
+	const bcrypt = require('bcryptjs');
 	let refreshTokens = [];
-	// *** GET ROUTES
-	// router.get('/api/createUsers', (req, res, next) => {
-	// 	createData(db);
-	// 	res.send('Done!');
-	// });
 
 	// *** Delete ROUTES
 	router.delete('/api/signout', (req, res) => {
 		req.session.destroy();
-		const refreshToken = null;
-		refreshTokens = refreshTokens.filter(token => token !== req.body.token);
 		res.status(200);
 		res.send({ data: 'Successfully logged out' });
 	});
@@ -31,7 +24,7 @@ module.exports = function(db) {
 				})
 				.then(user => {
 					if (user === null) {
-						return res.send({ error: 'User not found!' });
+						return res.status(401).send({ error: 'User not found!' });
 					}
 					bcrypt.compare(password, user.password, (err, matched) => {
 						if (err) {

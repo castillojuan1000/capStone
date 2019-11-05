@@ -10,7 +10,8 @@ import { GET_ALL_ROOMS } from '../../Apollo/index';
 const querySubcribe = client => {
 	return client.watchQuery({
 		query: GET_ALL_ROOMS,
-		fetchPolicy: 'cache-and-network'
+		fetchPolicy: 'cache-and-network',
+		pollInterval: 2500
 	});
 };
 let QueueFilter = ({ name, isActive, onClick, color }) => {
@@ -46,7 +47,6 @@ class Queue extends React.Component {
 			error: e => console.error(e)
 		});
 	}
-
 	setSearchFilter = name => {
 		this.setState({
 			...this.state,
@@ -121,10 +121,13 @@ class Queue extends React.Component {
 						isPlaying={this.props.isPlaying}
 						currentURI={this.props.currentURI}
 						id={idx}
+						key={idx}
 						userId={this.props.user.id}
 						playSong={this.props.playSong}
 						ResetQueue={this.props.ResetQueue}
 						getPlaylistTracks={this.props.getPlaylistTracks}
+						rooms={this.state.rooms}
+						toggleQ={this.props.toggleQ}
 					/>
 				);
 			});
@@ -133,6 +136,14 @@ class Queue extends React.Component {
 	};
 	buildStations = () => {
 		const rooms = this.state.rooms.map((room, i) => {
+			let img =
+				(this.props.currentSong &&
+					this.props.currentSong.album.images[0].url) ||
+				'https://source.unsplash.com/random';
+			if (this.props.queue[i].track) {
+				img = this.props.queue[i].track.album.images[0].url;
+			}
+
 			const isHost = this.props.user.id === Number(room.host.id);
 			return (
 				<Station
@@ -140,6 +151,7 @@ class Queue extends React.Component {
 					roomName={room.roomName}
 					key={i}
 					isHost={isHost ? 1 : 0}
+					image={img}
 				/>
 			);
 		});

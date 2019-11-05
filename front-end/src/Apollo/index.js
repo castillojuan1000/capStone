@@ -60,6 +60,7 @@ export const CREATE_LIKE = gql`
 export const CREATE_ROOM = gql`
 	mutation createRoom($hostId: Int!, $roomName: String!) {
 		createRoom(hostId: $hostId, roomName: $roomName) {
+			id
 			host {
 				username
 			}
