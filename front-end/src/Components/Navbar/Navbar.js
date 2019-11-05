@@ -9,7 +9,7 @@ function Navbar(props) {
 	const handleSignOut = () => {
 		localStorage.removeItem('jwtTokens');
 		props.logOut();
-		fetch('/api/signout');
+		fetch('/api/signout', { method: 'DELETE' });
 		props.history.go('/');
 	};
 	let color;

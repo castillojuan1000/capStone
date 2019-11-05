@@ -1,13 +1,11 @@
 const express = require('express');
 const session = require('express-session');
-//const io = require('socketio');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
-const authRouter = require('./routes/authServer');
 const createUsers = require('./fakerData');
 const app = express();
 const myStore = new SequelizeStore({
@@ -26,6 +24,12 @@ const apolloServ = new ApolloServer({
 apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
+if (process.env.NODE_ENV === 'production') {
+	app.use(express.static(__dirname + './../front-end/build'));
+	app.get('*', function(request, response) {
+		response.sendFile('index.html', { root: './../front-end/build' });
+	});
+}
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
@@ -89,15 +93,12 @@ app.post('/api/createroom/', (req, res) => {
 		});
 	}
 });
-// app.listen(4000, () => {
-// 	console.log('Server running! \n http://localhost:4000');
-// });
 
 //! CHARTROOM SERVER
-app.use(express.static('./src/Components/Pages'));
+
 var http = require('http').createServer(app);
-http.listen(4000, () =>
-	console.log('Server running! \n http://localhost:4000')
+http.listen(process.env.PORT || 3000, () =>
+	console.log('Server running! \n http://localhost:3000')
 );
 var io = require('socket.io')(http);
 io.origins('*:*');
