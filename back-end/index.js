@@ -92,7 +92,7 @@ app.post('/api/createroom/', (req, res) => {
 
 //! CHARTROOM SERVER
 var http = require('http').createServer(app);
-http.listen(process.env.PORT || 4000, () =>
+http.listen(process.env.PORT || 3000, () =>
 	console.log('Server running! \n http://localhost:3000')
 );
 var io = require('socket.io')(http);
