@@ -1,30 +1,37 @@
 import React from 'react';
-import { Link, withRouter, NavLink } from 'react-router-dom';
+import { withRouter, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DrawerToggleButton from './SideDrawer/DrawerToggleButton';
 import styled from 'styled-components';
 import '../../App.css';
-import { fontSize } from '@material-ui/system';
 
 function Navbar(props) {
 	const handleSignOut = () => {
 		localStorage.removeItem('jwtTokens');
 		props.logOut();
-		fetch('/api/signout');
+		fetch('/api/signout', { method: 'DELETE' });
 		props.history.go('/');
 	};
 	let color;
+	let percentage = '18%';
 	var page = window.location.pathname.split('/')[1];
-	if (['album', 'artist', 'playlist'].includes(page)) {
+	if (['album', 'artist'].includes(page)) {
 		color = props.player.secondaryColors.DarkVibrant;
-	} else {
+	}
+	else if (page === 'library' || page === 'playlist') {
+		color = props.player.colors.darkVibrant;
+	}
+	else {
 		//color = props.player.colors.vibrant
 		color = '#000000 ';
+	}
+	if (window.innerWidth < 1100) {
+		percentage = '30%';
 	}
 	return (
 		<Toolbar
 			style={{
-				background: `linear-gradient(50deg,${color} 15%, rgba(0,0,0, 1) 15%)`
+				background: `linear-gradient(50deg,${color} ${percentage}, rgba(0,0,0, 1) ${percentage})`
 			}}>
 			<ToolbarNavigation>
 				<div>
@@ -34,8 +41,13 @@ function Navbar(props) {
 				<ToolbarLogo>
 					<NavLink
 						to='/'
-						style={{ fontWeight: 100, fontFamily: 'roboto', fontSize: '2vw' }}>
-						THE LOGO
+						style={{
+							fontWeight: 100,
+							fontFamily: 'roboto',
+							fontSize: '2vw',
+							textTransform: 'capitalize'
+						}}>
+						JustMusic.live
 					</NavLink>
 				</ToolbarLogo>
 
@@ -43,10 +55,24 @@ function Navbar(props) {
 
 				<ToolbarNavItems>
 					<ul>
+						{props.user.room && (
+							<li>
+								<NavLink
+									activeStyle={{
+										color: 'white',
+										borderBottom: `2px solid ${props.player.colors.vibrant}`
+									}}
+									className='nav-link'
+									activeClassName='active'
+									to={'/room/' + props.user.room.roomId}>
+									STATION
+								</NavLink>
+							</li>
+						)}
 						<li>
 							<NavLink
 								activeStyle={{
-									color: props.player.colors.vibrant,
+									color: 'white',
 									borderBottom: `2px solid ${props.player.colors.vibrant}`
 								}}
 								className='nav-link'
@@ -58,7 +84,7 @@ function Navbar(props) {
 						<li>
 							<NavLink
 								activeStyle={{
-									color: props.player.colors.vibrant,
+									color: 'white',
 									borderBottom: `2px solid ${props.player.colors.vibrant}`
 								}}
 								className='nav-link'

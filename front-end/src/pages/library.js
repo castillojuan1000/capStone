@@ -4,6 +4,10 @@ import PlaylistPage from '../pages/Playlist'
 import { Link } from 'react-router-dom';
 import PlaylistBlock from '../Components/Blocks/Playlistblock'
 
+
+import * as Vibrant from 'node-vibrant';
+import { getColor } from '../utilityFunctions/util.js';
+
 import {
 	playSong,
 	StopPlayer,
@@ -23,15 +27,18 @@ import Song from '../Components/Blocks/songs2';
 import '../App.css';
 import { element } from 'prop-types';
 
-let searchFilters = ['PLAYLISTS', 'MADE FOR YOU', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
+let searchFilters = ['PLAYLISTS', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
 
-let FilterItem = ({ name, isActive, onClick }) => {
+let FilterItem = ({ name, isActive, onClick, color}) => {
+	let borderBottom = (isActive) ? {borderBottom: `3px solid ${color}`} : {}
 	let className =
 		isActive === name ? 'active' : '';
 	return (
 		<li
 			onClick={() => onClick(name)}
-			className={className}>
+			className={className}
+			style={borderBottom}
+			>
 			{name}
 		</li>
 	);
@@ -55,7 +62,7 @@ class LibrarySection extends React.Component {
 		this.state = {
 			token: this.props.spotifyData.token,
 			loading: this.props.searchState.loading,
-			activeFilter: searchFilters,
+			activeFilter: 'LIKED SONGS',
 			result: this.props.searchState.result,
 			likes: [],
 			artists: [],
@@ -63,10 +70,36 @@ class LibrarySection extends React.Component {
 			personalized: []
 
 		};
-		console.info("these are your props", props)
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
 	}
+
+	setColor = url => {
+		let _ = this;
+		let img = new Image();
+		img.crossOrigin = 'Anonymous';
+		img.src = url;
+		img.addEventListener('load', function() {
+			Vibrant.from(img, 5).getPalette((err, palette) => {
+				let colors = {
+					Vibrant: getColor(palette, 'Vibrant'),
+					DarkMuted: getColor(palette, 'DarkMuted'),
+					DarkVibrant: getColor(palette, 'DarkVibrant'),
+					LightVibrant: getColor(palette, 'LightVibrant'),
+					Muted: getColor(palette, 'Muted')
+				};
+				_.props.SetSecondaryColors(colors);
+				_.setState({
+					...this.state,
+					vibrant: colors.vibrant,
+					dark: colors.DarkMuted,
+					muted: colors.Muted,
+					colors: colors
+				});
+			});
+		});
+	};
+
 
 	componentDidMount = () => {
 		getLikedAlbums().then(data => {
@@ -105,23 +138,15 @@ class LibrarySection extends React.Component {
 						return track.uri;
 					})
 			);
-			console.log(uris);
-			playSong(uris).then(result =>
-				console.log(result)
-			);
+			playSong(uris)
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				console.log(0)
-			);
+			ResumePlayer()
 		} else {
-			StopPlayer().then(() =>
-				console.log(1)
-			);
+			StopPlayer()
 		}
 	};
 
 	PlayPlaylist = (id, active = false) => {
-		alert(id)
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let uris = JSON.stringify(
@@ -129,7 +154,6 @@ class LibrarySection extends React.Component {
 						return track.uri;
 					})
 				);
-				console.log(result);
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -139,13 +163,9 @@ class LibrarySection extends React.Component {
 				);
 			});
 		} else if ((active, this.state.isPlaying === false)) {
-			ResumePlayer().then(() =>
-				console.log(1)
-			);
+			ResumePlayer()
 		} else {
-			StopPlayer().then(() =>
-				console.log(2)
-			);
+			StopPlayer()
 		}
 	};
 
@@ -182,8 +202,7 @@ class LibrarySection extends React.Component {
 
 	buildTracks = () => {
 		let tracks = [];
-		if (this.state.likes) {
-
+		if (this.state.likes.length > 0) {
 			this.state.likes.forEach((track, idx) => {
 				let active = this.props.player.currentSong.uri === track.uri ? true : false;
 				tracks.push(
@@ -200,7 +219,6 @@ class LibrarySection extends React.Component {
 		return tracks;
 	};
 	buildPlaylist = () => {
-		console.log(this.state.playlists)
 		const playlists = this.state.playlists.map((playlist, idx) => {
 			let active = (this.props.player.playlistId === playlist.id) ? true : false;
 			return (
@@ -220,36 +238,35 @@ class LibrarySection extends React.Component {
 
 
 	render() {
-		console.info('likes below')
-		console.info(this.state)
-		console.info('likes above')
 		let tracks = this.buildTracks();
 		let sectionStyle =
 			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
 
 		let ListItems = [];
 		searchFilters.forEach(name => {
+			let isActive = (name === this.state.activeFilter) ? true : false
 			ListItems.push(
 				<FilterItem
 					onClick={this.setSearchFilter}
 					name={name}
-					isActive={this.state.activeFilter}
+					isActive={isActive}
+					color={this.props.player.colors.vibrant}
 				/>
 			);
 		});
-
-
-
+		let backStyle = {
+			background: `linear-gradient(160deg, ${this.props.player.colors.darkVibrant} 15%, rgba(0,0,0, 0.9) 70%)`
+		};
 		return (
-			<div className='main'>
+			<div className='main' style={backStyle}>
 				<div className='search-filter'>
 					<ul >{ListItems}</ul>
 				</div>
-				<div className='search-body' id='search-body'>
+				<div className='search-body' id='search-body' style={{paddingLeft: '10%'}}>
 					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
 					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
 					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}
-					{this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} >
+					{this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()}
 					<Loader loading={this.props.searchState.loading} />
 				</div>
 			</div>

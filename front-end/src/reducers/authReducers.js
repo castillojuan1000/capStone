@@ -26,7 +26,7 @@ const authReducer = (state = initialState, action) => {
 		case 'SET_ROOM':
 			return {
 				...state,
-				room: { ...payload }
+				room: { ...state.room, ...payload }
 			};
 		default:
 			return state;

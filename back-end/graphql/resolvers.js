@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const resolvers = {
 	Query: {
 		async getUser(root, { id }, { models }) {
@@ -21,15 +21,19 @@ const resolvers = {
 		}
 	},
 	Mutation: {
-		async createUser(root, { email, password }, { models }) {
+		async createUser(root, { email, password, username }, { models }) {
 			const user = {
 				email: email.toLowerCase(),
-				password: await hashPass(password)
+				password: await hashPass(password),
+				username
 			};
 			return models.user.create(user);
 		},
-		async createLike(root, { userId, roomId, songId }, { models }) {
-			return models.like.create({ userId, roomId, songId });
+		async createLike(root, { userId, roomId, spotifyId }, { models }) {
+			return models.like.create({ userId, roomId, spotifyId });
+		},
+		async createRoom(root, { hostId, roomName }, { models }) {
+			return models.room.create({ hostId, roomName });
 		}
 	},
 	User: {
@@ -76,9 +80,6 @@ const resolvers = {
 		},
 		async user(user) {
 			return user.getUser();
-		},
-		async song(song) {
-			return song.getSong();
 		}
 	}
 };

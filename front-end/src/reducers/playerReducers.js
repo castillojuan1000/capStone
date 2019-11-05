@@ -1,6 +1,3 @@
-import { stat } from 'fs';
-import { duration } from 'moment';
-
 const initialState = {
 	currentSong: {},
 	nextSong: {},
@@ -15,12 +12,13 @@ const initialState = {
 	songName: '',
 	playlistId: '',
 	colors: {
-		vibrant: 'black'
+		vibrant: 'green'
 	},
 	secondaryColors: {
 		vibrant: 'black'
 	}
 };
+
 
 const playerReducer = (state = initialState, action) => {
 	const { type, payload } = action;

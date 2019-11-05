@@ -98,6 +98,7 @@ body {
 }
 
 .input-holder {
+	width: 100%;
 	padding-top: 1%;
 	display: flex;
 	flex-direction: row;
@@ -153,6 +154,18 @@ body {
 	scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0,0,0, 0.1);
 }
 
+
+.search-body-holder {
+	width: 100%;
+	margin-top: 2%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
 .artist-block {
 	display: flex;
 	flex-direction: column;
@@ -161,6 +174,7 @@ body {
 	align-items: center;
 	margin-left: 2%;
 	margin-right: 2%;
+	overflow: hidden;
 	margin-bottom: 4%;
 }
 
@@ -246,18 +260,58 @@ body {
 	margin-bottom: 4%;
 }
 .playlist-block:hover .hover-state{
+	opacity: 1;
+	transition: all 1s;
+}
+
+.library-block .playlist-img {
+	width: 15em;
+	height: 15em;
+}
+
+.playlist-link {
+	color: rgba(255, 255, 255, .8);
+	font-weight: 300;
+	letter-spacing: 2px;
+}
+
+.playlist-block .hover-state {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-content: center;
 	align-items: center;
-	margin-left: 2%;
-	margin-right: 2%;
-	margin-bottom: 4%;
-	opacity: 1;
-	transition: all 1s;
 }
 
+.library-block  {
+	margin: 2em;
+}
+
+.library-block .playlist-icon-holder {
+	width: 3.2em;
+	height: 3.2em;
+
+}
+
+.ppage .Playlist-container {
+	padding-top: 3%;
+}
+
+.ppage  .song-icon-holder {
+	font-size: 3em;
+	color: white;
+	cursor: pointer;
+}
+
+.ppage .track-hover-state {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+}
 
 .album-description {
 	width: 100%;
@@ -375,8 +429,10 @@ body {
 .hover-state {
 	background-color: rgba(0, 0, 0, 0.507);
 	opacity: 0;
-	height: 11em;
-	width: 11em;
+	width: 15em;
+	height: 15em;
+	margin: 0;
+	padding: 0;
 	position: relative;
 	transition: all 1s;
 }
@@ -572,7 +628,7 @@ body {
 	padding-right: 1em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	margin-right: 25%;
+	margin-right: 5%;
 
 }
 
@@ -746,4 +802,74 @@ App.main-chatroom {
 	border-bottom: 2px solid green;
 	color: rgba(255, 255, 255, 0.75);
 	transition: all 0.6s;
+}
+
+
+.topResultsSection {
+
+	margin-left: 5%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.top-result-left {
+	
+}
+
+.topResultsSection .song-block {
+	width: 90%;
+	margin-bottom: 0;
+}
+
+.topResultsSection h1 {
+	margin-top: 5em;
+	padding-left: 3% !important;
+	margin-left: 0;
+	text-align: left;
+}
+
+.top-results-section-artists {
+	width: 100%;
+	margin-top: 2%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.topResultsSection .artist-block:first-child > .artist-img {
+	margin-top: 1em;
+	height: 25em;
+	width: 25em;
+	border-radius: 50%;
+}
+
+.top-results-section-artists .artist-block:first-child > .artist-img {
+	margin-top: 0em;
+	height: 11em;
+	width: 11em;
+	border-radius: 50%;
+}
+
+.top-results-section-artists
+
+
+.top-result-left {
+	 display: flex;
+	 flex-direction: column;
+	 justify-content: center;
+	 align-content: center;
+	 width: 30%;
+}
+
+.top-result-right {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	width: 70%;
 }

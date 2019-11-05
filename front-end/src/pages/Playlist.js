@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import '../style/playlistpage.css'
 import Tracks from '../Components/Blocks/playlistsongs'
 
-
+import '../albumPage.css'
 
 
 let searchFilters = ['Playlist', 'Track'];
@@ -59,14 +59,14 @@ class PlaylistPage extends Component {
         var playlistId = this.props.match.params.id
         GetMyPlaylists(playlistId).then(result => {
             console.log(result, ' show me the result')
-            this.setState({ ...this.state, playlistId: result.id })
+            this.setState({ ...this.state, playlistId: result.id})
         });
         GetPlaylistCover(playlistId).then(result => {
             this.setState({ ...this.state, playlistImg: result[0].url })
             this.setColor(result[0].url);
         });
         GetPlaylistTracks(playlistId).then(result => {
-            this.setState({ ...this.state, tracks: result.items })
+            this.setState({ ...this.state, tracks: result.items, loading: false })
         });
 
 
@@ -139,7 +139,6 @@ class PlaylistPage extends Component {
         }
     };
     PlayPlaylist = (id) => {
-        alert(1)
         var playlistId = window.location.pathname.split('/')[2];
         let active = (this.props.player.playlistId === playlistId) ? true : false;
         if (!active) {
@@ -166,7 +165,6 @@ class PlaylistPage extends Component {
         let playlists = [];
         if (this.state.result) {
             this.state.playlists.forEach((playlist, idx) => {
-                alert(0)
                 console.log(playlist, 'my playlist is here');
                 debugger;
                 let active = (this.props.player.playlistId === playlist.id) ? true : false;
@@ -189,10 +187,11 @@ class PlaylistPage extends Component {
         let tracks = [];
         this.state.tracks.forEach((track, idx) => {
             let active = (this.props.player.currentSong.uri === track.id) ? true : false;
+            console.debug(track)
             tracks.push(
                 <Tracks
                     playlistName={this.state.playlistName}
-                    image={this.playlistImg}
+                    image={track.track.album.images[0].url}
                     handleClick={() => this.PlaySong(track.added_by.uri)}
                     active={active}
                     isPlaying={this.props.player.isPlaying}
@@ -212,7 +211,7 @@ class PlaylistPage extends Component {
         console.log(this.props, 'the player is here')
         // let Play = (this.props.player.currentSong === playlistId && this.props.player.isPlaying) ? 'Pause' : 'Play';
         let backStyle = {
-            background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`
+            background: `linear-gradient(160deg, ${this.props.player.colors.darkVibrant} 15%, rgba(0,0,0, 0.9) 70%)`
         };
         let vibrantStyle = {
             backgroundColor: 'rgba(0,0,0, 0.75)',
@@ -227,7 +226,7 @@ class PlaylistPage extends Component {
 
         return (
 
-            <div className='page-content' style={backStyle}>
+            <div className='page-content ppage' style={backStyle}>
                 <div className='Playlist-container'>
                     <div className='Playlist-image'>
                         <div className='img-wrapper'>

@@ -12,25 +12,24 @@ let PlaylistBlock = ({ playlist, idx, active, isPlaying, handleClick, librarySta
     let hoverClass = active ? 'playlist-hover-state active' : 'playlist-hover-state';
     let playIcon =
         active && isPlaying ? (
-            <PauseRoundedIcon style={{ fontSize: '.8em' }} />
+            <PauseRoundedIcon style={{ fontSize: '3em' }} />
         ) : (
-                <PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
+                <PlayArrowRoundedIcon style={{ fontSize: '3em',  color: 'rgba(255,255,255,0.6)' }} />
             );
 
     let image =
-        playlist.images.length > 0
+        playlist.images.length > 1
             ? playlist.images[1].url
-            : 'https://via.placeholder.com/150';
+            : '/music-placeholder.png';
     let backgroundStyle = { backgroundImage: `url(${image})` };
     return (
-        <div key={idx} className='playlist-block'>
+        <div key={idx} className='playlist-block library-block'>
             <div style={backgroundStyle} className='playlist-img'>
                 <div
                     className={hoverClass}
                     onClick={() => handleClick(playlist.id, active)}>
                     <div className='hover-state'>
                         <div className='playlist-icon-holder'>
-
                             {playIcon}
                         </div>
 

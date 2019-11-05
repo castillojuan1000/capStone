@@ -21,7 +21,6 @@ import {
 	SignInContainer as SignInSide,
 	SignUpContainer as SignUp
 } from './Components/Containers/SignInContainer';
-import Login from './Components/login';
 
 import Room from './Components/Pages/Room';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
@@ -30,14 +29,13 @@ let HomePage = () => <Home />;
 let LibraryPage = () => <LibrarySection />;
 let AlbumPage = () => <Album />;
 let ArtistPage = () => <Artist />;
-let ExtraPage = () => <Login />;
 let SignIN = () => <SignInSide />;
 function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 	const style = {
 		color: 'black',
-		width: '100vw',
-	}
+		width: '100vw'
+	};
 	const drawerToggleClickHandler = () => {
 		setSideDrawerOpen(prevState => {
 			return !sideDrawerOpen;

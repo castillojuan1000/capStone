@@ -20,9 +20,9 @@ let Song = ({ song, idx, handleClick, active, isPlaying, searchState }) => {
     console.info(song)
     let hoverClass = (active) ? 'song-hover-state active' : 'song-hover-state'
     let playIcon = (active && isPlaying) ? <PauseRoundedIcon style={{ fontSize: '.8em' }} /> : <PlayArrowRoundedIcon style={{ fontSize: '.8em' }} />
-    let dotStyle = { fontSize: '.4em', paddingBottom: '.2em', marginLeft: '2em', marginRight: '2em' }
+    let dotStyle = { fontSize: '.4em', paddingBottom: '.2em', marginLeft: '0em', marginRight: '0em' }
     let artist = song.artists.map((artist) => { return <Link className="album-link" to={{ pathname: '/artist/' + artist.id }}><h5>{artist.name}</h5></Link> });
-    let image = (song.album.images.length > 0) ? song.album.images[1].url : 'https://via.placeholder.com/150'
+    let image = (song.album.images.length > 0) ? song.album.images[1].url : '/music-placeholder.png'
     let backgroundStyle = { backgroundImage: `url(${image})`, }
     return (
         <div key={idx} className="song-block">
@@ -37,7 +37,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying, searchState }) => {
                 <h3>{song.name}</h3>
                 <div className="featured-artists">
                     {artist}
-                    <h5><LensIcon style={dotStyle} /></h5>
+                    <h5 style={{width: '1em'}}><LensIcon style={dotStyle} /></h5>
                     <Link className='album-link' to={{ pathname: '/album/' + song.album.id, state: { ...searchState } }}><h5>{song.album.name}</h5></Link>
                 </div>
             </div>
