@@ -46,7 +46,7 @@ export const StoreAPIToken = () => {
 export const setupSpotify = () => {
 	var client_id = '42c128e85c9c4eddad1930a129937c94';
 	var response_type = 'token';
-	var redirect_uri = `${window.location.origin}/login`;
+	var redirect_uri = `http://127.0.0.1:3000/login`;
 	var scope = [
 		'user-read-playback-state',
 		'streaming',

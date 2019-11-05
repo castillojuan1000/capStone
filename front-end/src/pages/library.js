@@ -29,8 +29,8 @@ import { element } from 'prop-types';
 
 let searchFilters = ['PLAYLISTS', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
 
-let FilterItem = ({ name, isActive, onClick, color}) => {
-	let borderBottom = (isActive) ? {borderBottom: `3px solid ${color}`} : {}
+let FilterItem = ({ name, isActive, onClick, color }) => {
+	let borderBottom = (isActive) ? { borderBottom: `3px solid ${color}` } : {}
 	let className =
 		isActive === name ? 'active' : '';
 	return (
@@ -38,7 +38,7 @@ let FilterItem = ({ name, isActive, onClick, color}) => {
 			onClick={() => onClick(name)}
 			className={className}
 			style={borderBottom}
-			>
+		>
 			{name}
 		</li>
 	);
@@ -79,7 +79,7 @@ class LibrarySection extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),
@@ -127,15 +127,18 @@ class LibrarySection extends React.Component {
 	};
 
 	PlaySong = (uri, active) => {
+
 		if (!active) {
-			let index = this.state.likes.items.findIndex(
-				track => track.uri === uri
+			let index = this.state.likes.findIndex(
+				like => like.track.uri === uri
 			);
+
 			let uris = JSON.stringify(
-				this.props.searchState.result.tracks.items
-					.slice(index, this.props.searchState.result.tracks.items.length)
-					.map(track => {
-						return track.uri;
+
+				this.state.likes
+					.slice(index, this.state.likes.length)
+					.map(like => {
+						return like.track.uri;
 					})
 			);
 			playSong(uris)
@@ -262,7 +265,7 @@ class LibrarySection extends React.Component {
 				<div className='search-filter'>
 					<ul >{ListItems}</ul>
 				</div>
-				<div className='search-body' id='search-body' style={{paddingLeft: '10%'}}>
+				<div className='search-body' id='search-body' style={{ paddingLeft: '10%' }}>
 					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
 					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
 					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}

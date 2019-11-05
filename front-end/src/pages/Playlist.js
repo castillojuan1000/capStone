@@ -59,7 +59,7 @@ class PlaylistPage extends Component {
         var playlistId = this.props.match.params.id
         GetMyPlaylists(playlistId).then(result => {
             console.log(result, ' show me the result')
-            this.setState({ ...this.state, playlistId: result.id})
+            this.setState({ ...this.state, playlistId: result.id })
         });
         GetPlaylistCover(playlistId).then(result => {
             this.setState({ ...this.state, playlistImg: result[0].url })
@@ -100,6 +100,7 @@ class PlaylistPage extends Component {
     };
 
     PlaySong = (uri) => {
+        console.log("PLAYING SONG ", this.state.tracks)
         const active = this.props.player.currentSong.uri === uri
         if (!active) {
             let index = this.state.tracks.findIndex(track => track.uri === uri);
@@ -121,7 +122,7 @@ class PlaylistPage extends Component {
             let previousSongs = this.state.tracks.slice(0, index).map(track => {
                 return track.track.uri;
             });
-            let uris = JSON.stringify([uri, ...currentSongs, ...previousSongs]);
+            let uris = JSON.stringify([...currentSongs, ...previousSongs]);
             console.log(uris, 'hello uris is here');
             this.props.spotifyData.player.playSong(uris).then(result =>
                 this.setState({
@@ -195,7 +196,7 @@ class PlaylistPage extends Component {
                     handleClick={() => this.PlaySong(track.added_by.uri)}
                     active={active}
                     isPlaying={this.props.player.isPlaying}
-                    track={track}
+                    track={track.track}
                     idx={idx}
                 />
 

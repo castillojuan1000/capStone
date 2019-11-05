@@ -34,7 +34,7 @@ let Tracks = ({
         marginLeft: '2em',
         marginRight: '2em'
     };
-    let list = track.track.artists.map(artist => {
+    let list = track.artists.map(artist => {
 
         return (
             <Link className='album-link' to={{ pathname: '/track/' + track.id }}>

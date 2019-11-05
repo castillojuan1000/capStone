@@ -17,18 +17,20 @@ let Song = ({
 	showLikes,
 	createLike
 }) => {
-	console.debug('song',  song)
-	if ('track' in song) {
-		song = song.track;
-	}
+	console.debug('song', song)
+
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
 			<PauseRounded style={{ fontSize: '.8em' }} />
 		) : (
-			<PlayArrowRounded style={{ fontSize: '.8em' }} />
-		);
-	let artist = <h5>{song.artists[0].name}</h5>;
+				<PlayArrowRounded style={{ fontSize: '.8em' }} />
+			);
+	if ('added_at' in song) {
+		song = song.track
+	}
+	console.debug(song, 'sss')
+	let artist = song.artist ? <h5>{song.artists[0].name}</h5> : <h5></h5>;
 	let image =
 		song.album !== undefined && song.album.images.length > 0
 			? song.album.images[1].url
