@@ -8,6 +8,7 @@ import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 import './App.css';
 import './reset.css';
+import PlaylistPage from './pages/Playlist'
 import {
 	AlbumContainer as Album,
 	ArtistContainer as Artist,
@@ -67,10 +68,11 @@ function App(props) {
 								<Route exact path='/library' component={LibraryPage} />
 								<Route exact path='/search' component={SearchPage} />
 								<Route exact path='/' component={HomePage} />
+								<Route path='/playlist/:id' component={PlaylistPage} />
 							</>
 						) : (
-							<Redirect to='/login' />
-						)}
+								<Redirect to='/login' />
+							)}
 					</Switch>
 				</main>
 				{props.spotifyData.userToken && (

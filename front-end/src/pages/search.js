@@ -305,7 +305,9 @@ PlaySong = (uri, active) => {
 
 	checkScroll = e => {
 		const wrappedElement = document.getElementById('search-body');
-		this.props.setCurrentScroll(wrappedElement.scrollTop);
+		if (wrappedElement.scrollTop - this.props.searchState.scroll > 50){
+			this.props.setCurrentScroll(wrappedElement.scrollTop);
+		}
 		if (
 			wrappedElement.scrollHeight - wrappedElement.scrollTop <
 				wrappedElement.clientHeight + 300 &&

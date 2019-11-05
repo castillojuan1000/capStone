@@ -17,6 +17,10 @@ let Song = ({
 	showLikes,
 	createLike
 }) => {
+	console.debug('song',  song)
+	if ('track' in song) {
+		song = song.track;
+	}
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
@@ -28,7 +32,7 @@ let Song = ({
 	let image =
 		song.album !== undefined && song.album.images.length > 0
 			? song.album.images[1].url
-			: 'https://via.placeholder.com/150';
+			: '/music-placeholder.png';
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>

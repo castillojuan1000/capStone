@@ -178,7 +178,7 @@ function SignInSide(props) {
 						localStorage.setItem('expiration', 0);
 						setupSpotify();
 					}
-					e.target.reset();
+					//e.target.reset();
 				}
 			});
 	};

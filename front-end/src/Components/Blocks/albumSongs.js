@@ -29,8 +29,8 @@ let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
 	let explicit = song.explicit ? (
 		<h5 className='explicit-tag'>EXPLICIT</h5>
 	) : (
-		''
-	);
+			''
+		);
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>

@@ -38,7 +38,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 	let image =
 		song.album.images.length > 0
 			? song.album.images[1].url
-			: 'https://via.placeholder.com/150';
+			: '/music-placeholder.png';
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>

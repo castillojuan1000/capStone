@@ -66,7 +66,7 @@ class AlbumPage extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),
@@ -161,7 +161,7 @@ class AlbumPage extends React.Component {
 	buildTracks = () => {
 		let tracks = [];
 		this.state.tracks.forEach((track, idx) => {
-			let active = this.props.player.currentSongId === track.id ? true : false;
+			let active = this.props.player.currentSong === track.id ? true : false;
 			tracks.push(
 				<Song
 					key={`link-song-${idx}`}
