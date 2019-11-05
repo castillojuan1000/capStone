@@ -17,17 +17,6 @@ let Song = ({
 	showLikes,
 	createLike
 }) => {
-<<<<<<< HEAD
-	console.debug('song', song)
-
-=======
-	if('added_at' in song) {
-		song = song.track
-	}
-	console.debug('song',  song)
-	console.debug('song.tracl', song.track)
-	
->>>>>>> b51fb7a69c8371b3a97abe155eae55cf5b9ab565
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
@@ -35,11 +24,12 @@ let Song = ({
 		) : (
 				<PlayArrowRounded style={{ fontSize: '.8em' }} />
 			);
-	if ('added_at' in song) {
+	if (!typeof variable === "boolean" && song['added_at']) {
 		song = song.track
 	}
 	console.debug(song, 'sss')
-	let artist = song.artist ? <h5>{song.artists[0].name}</h5> : <h5></h5>;
+	let artist = song.artist
+	//let artist = song.artist ? <h5>{song.artists[0].name}</h5> : <h5></h5>;
 	let image =
 		song.album !== undefined && song.album.images.length > 0
 			? song.album.images[1].url

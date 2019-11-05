@@ -46,14 +46,14 @@ const handleClick = (id, queue, player, ResetQueue) => {
 		return track.id === id;
 	});
 	let currentSongs = queue.slice(index, queue.length).map(track => {
-		if ('track' in track) {
+		if (track['track']) {
 			track = track.track;
 		}
 		return track.uri;
 	});
 	let newItems = [];
 	queue.slice(index, queue.length).forEach((track, idx) => {
-		if ('track' in track) {
+		if (track['track']) {
 			track = track.track;
 		}
 		track.order = idx;
