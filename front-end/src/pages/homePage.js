@@ -38,6 +38,13 @@ class Home extends React.Component {
 	handleClick = (uri, active) => {
 		let { playSong, ResumePlayer, StopPlayer } = this.props.spotifyData.player;
 		if (!active) {
+			this.props.spotifyData.player
+				.getPersonalizedTopTracks('tracks', 40, 10)
+				.then(data => {
+					this.setState({
+						...this.state,
+						tracks: [...this.state.tracks, ...data.items]
+					});
 			let index = this.state.tracks.findIndex(track => track.uri === uri);
 			let currentSongs = this.state.tracks
 				.slice(index, this.state.tracks.length)
@@ -66,6 +73,7 @@ class Home extends React.Component {
 					})
 				//hege.slice(1).concat(stale.slice(1)).forEach((item, idx) => list.push(item + idx))
 			);
+		})
 		} else if ((active, this.props.player.isPlaying === false)) {
 			ResumePlayer();
 			this.props.togglePlay();
@@ -96,7 +104,7 @@ class Home extends React.Component {
 				/>
 			);
 		});
-		this.state.tracks.forEach((item, idx) => {
+		this.state.tracks.slice(0, 10).forEach((item, idx) => {
 			let active = false;
 			if (this.props.player.currentSong.id === item.id) {
 				active = true;
