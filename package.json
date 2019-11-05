@@ -19,7 +19,4 @@
 		"url": "https://github.com/castillojuan1000/capStone/issues"
 	},
 	"homepage": "https://github.com/castillojuan1000/capStone#readme",
-	"dependencies": {
-		"bcrypt-nodejs": "0.0.3"
-	}
 }
