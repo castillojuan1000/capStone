@@ -1,5 +1,5 @@
 {
-	"name": "justMusic.live",
+	"name": "justmusic",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -18,5 +18,5 @@
 	"bugs": {
 		"url": "https://github.com/castillojuan1000/capStone/issues"
 	},
-	"homepage": "https://github.com/castillojuan1000/capStone#readme",
+	"homepage": "https://github.com/castillojuan1000/capStone#readme"
 }

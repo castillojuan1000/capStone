@@ -1,14 +1,14 @@
 const express = require('express');
 const session = require('express-session');
-//const io = require('socketio');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
-const authRouter = require('./routes/authServer');
+const authServer = require('./routes/authServer');
 const createUsers = require('./fakerData');
+const path = require('path')
 const app = express();
 const myStore = new SequelizeStore({
 	db: db.sequelize
@@ -26,6 +26,10 @@ const apolloServ = new ApolloServer({
 apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
+app.use(express.static(__dirname + './../front-end/build'));
+app.get('*', function (request, response) {
+	response.sendFile('index.html', { root: './../front-end/build' })
+})
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
@@ -38,14 +42,9 @@ app.use(
 	})
 );
 myStore.sync();
-const authServer = require('./routes/authServer.js');
 app.use(authServer(db));
-app.get('/createUsers', (req, res) => {
-	createUsers(db);
-	res.send('Created!');
-});
 if (process.env.NODE_ENV == 'development') {
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
 			req.path === '/api/login' ||
@@ -56,7 +55,7 @@ if (process.env.NODE_ENV == 'development') {
 			return next();
 		}
 		if (token === null) {
-			return res.sendStatus(401);
+			return next();
 		}
 		jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 			if (err) return res.sendStatus(403);
@@ -94,15 +93,14 @@ app.post('/api/createroom/', (req, res) => {
 // });
 
 //! CHARTROOM SERVER
-app.use(express.static('./src/Components/Pages'));
 var http = require('http').createServer(app);
-http.listen(4000, () =>
-	console.log('Server running! \n http://localhost:4000')
+http.listen(process.env.PORT || 3000, () =>
+	console.log('Server running! \n http://localhost:3000')
 );
 var io = require('socket.io')(http);
 io.origins('*:*');
 io.of('/rooms').on('connection', socket => {
-	socket.on('JOIN_ROOM', function(data) {
+	socket.on('JOIN_ROOM', function (data) {
 		const { roomId } = data;
 		socket.join(`room${roomId}`);
 	});
@@ -110,7 +108,7 @@ io.of('/rooms').on('connection', socket => {
 	//once it get then "chat" message it will call the function
 
 	//! save the messages to the data base
-	socket.on('SEND_MESSAGE', function(data) {
+	socket.on('SEND_MESSAGE', function (data) {
 		db.message.create({
 			userId: data.authorId,
 			roomId: data.roomId,
@@ -120,7 +118,7 @@ io.of('/rooms').on('connection', socket => {
 		socket.to(`room${data.roomId}`).emit('RECEIVE_MESSAGE', data);
 	});
 
-	socket.on('typing', function(data) {
+	socket.on('typing', function (data) {
 		// this is broadcasting the message once a person is typing but not to the person typing the message
 		socket.emit('typing', data);
 	});

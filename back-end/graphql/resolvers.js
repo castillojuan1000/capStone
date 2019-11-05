@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const resolvers = {
 	Query: {
 		async getUser(root, { id }, { models }) {
@@ -85,7 +85,7 @@ const resolvers = {
 };
 const hashPass = password => {
 	return new Promise((resolve, reject) => {
-		bcrypt.hash(password, 10, function(err, hash) {
+		bcrypt.hash(password, 10, function (err, hash) {
 			if (err) {
 				return reject(err);
 			} else {
