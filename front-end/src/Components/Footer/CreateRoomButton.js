@@ -26,6 +26,7 @@ function CreateRoomButton({
 				if ('track' in track) {
 					track = track.track;
 				}
+				console.debug('start station', track)
 				track.order = idx;
 				return track;
 			});

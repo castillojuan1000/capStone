@@ -17,10 +17,12 @@ let Song = ({
 	showLikes,
 	createLike
 }) => {
-	console.debug('song',  song)
-	if ('track' in song) {
-		song = song.track;
+	if('added_at' in song) {
+		song = song.track
 	}
+	console.debug('song',  song)
+	console.debug('song.tracl', song.track)
+	
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
