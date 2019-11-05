@@ -20,15 +20,37 @@ const searchReducer = (state = initialState, action) => {
 				scroll: 0
 			};
 		case 'SEARCH_RESULT_RETURNED':
-			alert(payload.type.toLowerCase());
-			return {
-				...state,
-				result: payload,
-				loading: false,
-				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
-				total: payload[state.activeFilter.toLowerCase() + 's'].total,
-				scroll: 0
-			};
+			if (payload.type===undefined || payload.type.toLowerCase() === 'topresults') {
+				return {
+					...state,
+					result: payload,
+					loading: false,
+					offset: 0,
+					total: 50,
+					scroll: 0
+				};
+			}
+			else if (payload.type!==undefined) {
+				return {
+					...state,
+					result: payload,
+					loading: false,
+					offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
+					total: payload[state.activeFilter.toLowerCase() + 's'].total,
+					scroll: 0
+				};
+			}
+			else {
+				return {
+					...state,
+					result: payload,
+					loading: false,
+					offset: 0,
+					total: 50,
+					scroll: 0
+				};
+
+			}
 		case 'EXTEND_SEARCH_RESULTS':
 			return {
 				...state,

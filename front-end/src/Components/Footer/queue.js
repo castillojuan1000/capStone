@@ -46,9 +46,7 @@ class Queue extends React.Component {
 			error: e => console.error(e)
 		});
 	}
-	componentWillUnmount() {
-		querySubcribe(this.props.client).unsubscribe();
-	}
+
 	setSearchFilter = name => {
 		this.setState({
 			...this.state,
