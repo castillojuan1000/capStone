@@ -57,8 +57,8 @@ let IsPlaying = ({ IsPlaying, color }) => {
 	return IsPlaying ? (
 		<PauseRounded style={iconStyle} />
 	) : (
-		<PlayArrowRounded style={iconStyle} />
-	);
+			<PlayArrowRounded style={iconStyle} />
+		);
 };
 
 let LikeTrack = ({ liked, onClick, color }) => {
@@ -66,8 +66,8 @@ let LikeTrack = ({ liked, onClick, color }) => {
 	return liked ? (
 		<FavoriteRounded onClick={onClick} style={iconStyle} />
 	) : (
-		<FavoriteBorderRounded onClick={onClick} style={iconStyle} />
-	);
+			<FavoriteBorderRounded onClick={onClick} style={iconStyle} />
+		);
 };
 
 class Footer extends React.Component {
@@ -96,7 +96,7 @@ class Footer extends React.Component {
 		this.startTimer = this.startTimer.bind(this);
 		this.setColor = this.setColor.bind(this);
 		// *** SOCKET CONNECTION TO SYNC WITH HOST
-		this.socket = io('http://localhost:4000');
+		this.socket = io('/');
 		this.socket.on('SYNC_PLAYER', data => {
 			const { user } = this.props;
 			const { room } = user;
@@ -293,13 +293,13 @@ class Footer extends React.Component {
 		let NewLike = this.state.liked ? false : true;
 		!this.state.liked
 			? AddSong([this.props.player.currentSongId]).then(result => {
-					setTimeout(() => {
-						this.setState({
-							...this.state,
-							NewLike: false
-						});
-					}, 2500);
-			  })
+				setTimeout(() => {
+					this.setState({
+						...this.state,
+						NewLike: false
+					});
+				}, 2500);
+			})
 			: DeleteSong([this.props.player.currentSongId]);
 		this.setState({
 			...this.state,
@@ -314,7 +314,7 @@ class Footer extends React.Component {
 		img.src = url;
 		img.addEventListener(
 			'load',
-			function() {
+			function () {
 				Vibrant.from(img).getPalette((err, palette) => {
 					//console.error(err)
 					let color = getColor(palette, 'Vibrant');
@@ -360,7 +360,7 @@ class Footer extends React.Component {
 			if (
 				action === null &&
 				this.props.player.songImg !==
-					state.track_window.current_track.album.images[2].url
+				state.track_window.current_track.album.images[2].url
 			) {
 				getTrack(state.track_window.current_track.id).then(result => {
 					document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
@@ -457,8 +457,8 @@ class Footer extends React.Component {
 				colors={this.state.colors}
 			/>
 		) : (
-			''
-		);
+				''
+			);
 		return (
 			<div className='footer'>
 				<Queue
@@ -539,10 +539,10 @@ class Footer extends React.Component {
 											: 'rgba(255,255,255, 0.4)',
 										borderBottom: this.props.player.shuffle
 											? `2px solid ${
-													this.pageOn
-														? this.props.player.secondaryColors.Vibrant
-														: this.props.player.colors.vibrant
-											  }`
+											this.pageOn
+												? this.props.player.secondaryColors.Vibrant
+												: this.props.player.colors.vibrant
+											}`
 											: '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
@@ -603,10 +603,10 @@ class Footer extends React.Component {
 											: 'rgba(255,255,255, 0.4)',
 										borderBottom: this.props.player.repeat
 											? `2px solid ${
-													this.pageOn
-														? this.props.player.secondaryColors.Vibrant
-														: this.props.player.colors.vibrant
-											  }`
+											this.pageOn
+												? this.props.player.secondaryColors.Vibrant
+												: this.props.player.colors.vibrant
+											}`
 											: '2px solid transparent',
 										borderRadius: '50px',
 										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
@@ -652,43 +652,43 @@ class Footer extends React.Component {
 										: this.props.player.colors.vibrant,
 									borderBottom: this.props.player.repeat
 										? `2px solid ${
-												this.pageOn
-													? this.props.player.secondaryColors.Vibrant
-													: this.props.player.colors.vibrant
-										  }`
+										this.pageOn
+											? this.props.player.secondaryColors.Vibrant
+											: this.props.player.colors.vibrant
+										}`
 										: '2px solid transparent',
 									borderRadius: '50px',
 									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
 								}}
 							/>
 						) : (
-							<SyncDisabledRounded
-								onClick={() => {
-									if (this.props.user.room) {
-										this.props.setRoom({
-											subscribed: !this.props.user.room.subscribed
-										});
-										this.requestPlayerState(this.socket.id);
-									}
-								}}
-								style={{
-									fontSize: '1.7em',
-									marginLeft: '1.5em',
-									color: this.pageOn
-										? this.props.player.secondaryColors.Vibrant
-										: this.props.player.colors.vibrant,
-									borderBottom: this.props.player.repeat
-										? `2px solid ${
-												this.pageOn
-													? this.props.player.secondaryColors.Vibrant
-													: this.props.player.colors.vibrant
-										  }`
-										: '2px solid transparent',
-									borderRadius: '50px',
-									boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
-								}}
-							/>
-						))}
+								<SyncDisabledRounded
+									onClick={() => {
+										if (this.props.user.room) {
+											this.props.setRoom({
+												subscribed: !this.props.user.room.subscribed
+											});
+											this.requestPlayerState(this.socket.id);
+										}
+									}}
+									style={{
+										fontSize: '1.7em',
+										marginLeft: '1.5em',
+										color: this.pageOn
+											? this.props.player.secondaryColors.Vibrant
+											: this.props.player.colors.vibrant,
+										borderBottom: this.props.player.repeat
+											? `2px solid ${
+											this.pageOn
+												? this.props.player.secondaryColors.Vibrant
+												: this.props.player.colors.vibrant
+											}`
+											: '2px solid transparent',
+										borderRadius: '50px',
+										boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
+									}}
+								/>
+							))}
 					{this.props.user.room && this.props.user.room.host.isHost && (
 						<SettingsInputComponentRounded
 							onClick={this.sendStateFromHost}
@@ -700,10 +700,10 @@ class Footer extends React.Component {
 									: this.props.player.colors.vibrant,
 								borderBottom: this.props.player.repeat
 									? `2px solid ${
-											this.pageOn
-												? this.props.player.secondaryColors.Vibrant
-												: this.props.player.colors.vibrant
-									  }`
+									this.pageOn
+										? this.props.player.secondaryColors.Vibrant
+										: this.props.player.colors.vibrant
+									}`
 									: '2px solid transparent',
 								borderRadius: '50px',
 								boxShadow: '1px 1px 10px 1px rgba(0,0,0, 0.6)'
