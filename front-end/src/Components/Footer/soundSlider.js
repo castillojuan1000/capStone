@@ -55,13 +55,17 @@ let VolumeOn = ({ Muted, onClick, color }) => {
 };
   
 
-  export default function SoundSlider( {toggleSound, muted, current, handleVolumeChange, ChangeVolume}) {
+  export default function SoundSlider( {toggleSound, muted, current, handleVolumeChange, height, ChangeVolume}) {
       let color = 'rgba(255,255,255, 0.8)';
+      let orientation ='horizontal'
       let display = 'on'
       if (muted) {
         current = 0;
         display = 'off'
       }
+      if (height < 1000) {
+        orientation = 'vertical'
+      } 
     return (
         <div className="volume-slider">
              <div className='play-holder vol-holder'>
@@ -79,6 +83,7 @@ let VolumeOn = ({ Muted, onClick, color }) => {
                 valueLabelDisplay={display} 
                 valueLabelFormat={() => {return current}}
                 aria-label="volume-slider" 
+                orientation={orientation}
                 style={{color: color}}value={current}
                 max={100}
                 min={0}

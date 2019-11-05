@@ -71,12 +71,19 @@ function SignInSide(props) {
 	const onChange = e => {
 		return setState({ ...state, [e.target.name]: e.target.value });
 	};
-
+	const {
+		spotifyToken,
+		initiatePlayer,
+		history,
+		authUser,
+		spotifyData,
+		user
+	} = props;
 	useEffect(() => {
 		const authTokens = localStorage.getItem('jwtTokens') || null;
 		const abortController = new AbortController();
 		let loginWithToken;
-		if (authTokens && !props.user.isLoggedIn) {
+		if (authTokens && !user.isLoggedIn) {
 			loginWithToken = fetch('/api/token', {
 				method: 'POST',
 				body: authTokens,
@@ -91,11 +98,11 @@ function SignInSide(props) {
 					if (tokens) {
 						localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 					}
-					setState({
-						...state,
+					setState(s => ({
+						...s,
 						isLoggedIn: true
-					});
-					return props.authUser({ ...data, isLoggedIn: true });
+					}));
+					return authUser({ ...data, isLoggedIn: true });
 				})
 				.then(() => {
 					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
@@ -104,10 +111,10 @@ function SignInSide(props) {
 					if (SpotifyToken) {
 						localStorage.setItem('token', SpotifyToken);
 						localStorage.setItem('expiration', expiration);
-						props.spotifyToken(SpotifyToken);
-						props.initiatePlayer(new Spotify(SpotifyToken));
-						props.history.push('/');
-					} else if (expirationTS < 60 || !props.spotifyData.userToken) {
+						spotifyToken(SpotifyToken);
+						initiatePlayer(new Spotify(SpotifyToken));
+						history.push('/');
+					} else if (expirationTS < 60 || !spotifyData.userToken) {
 						localStorage.setItem('token', '');
 						localStorage.setItem('expiration', 0);
 						setupSpotify();
@@ -117,7 +124,15 @@ function SignInSide(props) {
 		return () => {
 			abortController.abort(loginWithToken);
 		};
-	}, []);
+	}, [
+		SpotifyToken,
+		history,
+		authUser,
+		initiatePlayer,
+		user,
+		spotifyData,
+		spotifyToken
+	]);
 	const handleSubmit = e => {
 		e.preventDefault();
 		setError('');
@@ -142,25 +157,30 @@ function SignInSide(props) {
 				if (tokens && state.remember) {
 					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
-				props.authUser({ ...data, isLoggedIn: true });
+				if (data) {
+					authUser({ ...data, isLoggedIn: true });
+				}
+				return data;
 			})
-			.then(() => {
-				let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
-				const expirationTS =
-					(localStorage.getItem('expiration') - Date.now()) / 1000;
-				if (SpotifyToken) {
-					localStorage.setItem('token', SpotifyToken);
-					localStorage.setItem('expiration', expiration);
-					props.spotifyToken(SpotifyToken);
-					props.initiatePlayer(new Spotify(SpotifyToken));
-					props.history.push('/');
-				} else if (expirationTS < 60 || !props.spotifyData.userToken) {
-					localStorage.setItem('token', '');
-					localStorage.setItem('expiration', 0);
-					setupSpotify();
+			.then(data => {
+				if (data) {
+					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+					const expirationTS =
+						(localStorage.getItem('expiration') - Date.now()) / 1000;
+					if (SpotifyToken) {
+						localStorage.setItem('token', SpotifyToken);
+						localStorage.setItem('expiration', expiration);
+						spotifyToken(SpotifyToken);
+						initiatePlayer(new Spotify(SpotifyToken));
+						history.push('/');
+					} else if (expirationTS < 60 || !spotifyData.userToken) {
+						localStorage.setItem('token', '');
+						localStorage.setItem('expiration', 0);
+						setupSpotify();
+					}
+					e.target.reset();
 				}
 			});
-		e.target.reset();
 	};
 	return (
 		<Grid container component='main' className={classes.root}>
