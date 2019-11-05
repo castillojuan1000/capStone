@@ -44,8 +44,6 @@ class FeaturedArtist extends React.Component {
 				);
 
 				playSong(uris)
-					.catch(e => console.debug(e))
-					.then(e => console.debug(e));
 			});
 		} else if (this.props.active && this.props.isPlaying === false) {
 			ResumePlayer();
