@@ -24,7 +24,7 @@ module.exports = function(db) {
 				})
 				.then(user => {
 					if (user === null) {
-						return res.send({ error: 'User not found!' });
+						return res.status(401).send({ error: 'User not found!' });
 					}
 					bcrypt.compare(password, user.password, (err, matched) => {
 						if (err) {

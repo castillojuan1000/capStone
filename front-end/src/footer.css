@@ -402,7 +402,7 @@ h6 {
 	transition: all 0.6s;
 }
 
-.playlist-section:hover .start-station-btn {
+.playlist-section:hover {
 	cursor: pointer;
 	display: block !important;
 	transition: all 0.6s;

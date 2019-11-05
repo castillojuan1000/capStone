@@ -97,8 +97,8 @@ app.post('/api/createroom/', (req, res) => {
 //! CHARTROOM SERVER
 
 var http = require('http').createServer(app);
-http.listen(process.env.PORT || 3000, () =>
-	console.log('Server running! \n http://localhost:3000')
+http.listen(process.env.PORT || 4000, () =>
+	console.log('Server running! \n http://localhost:4000')
 );
 var io = require('socket.io')(http);
 io.origins('*:*');
@@ -132,7 +132,6 @@ io.on('connection', socket => {
 	});
 	socket.on('SEND_PLAYER_STATE', data => {
 		const { socketId, player, roomId } = data;
-		console.log(data);
 		if (roomId) {
 			io.emit('RECEIVE_PLAYER_STATE', { player, roomId });
 		}
