@@ -44,17 +44,24 @@ class Playlist extends React.Component {
 	};
 
 	setActive = () => {
+		debugger;
 		if (this.state.tracks.length === 0) {
-			this.props.getPlaylistTracks(this.props.playlist.id).then(data => {
+			this.setState({
+				active: !this.state.active,
+				tracks: []
+			});
+			this.props.player.GetPlaylistTracks(this.props.playlist.id).then(data => {
+				debugger;
 				this.setState({
-					...this.state,
 					active: !this.state.active,
 					tracks: data.items
 				});
 			});
+			// this.props.getPlaylistTracks(this.props.playlist.id).then(data => {
+
+			// });
 		} else {
 			this.setState({
-				...this.state,
 				active: !this.state.active
 			});
 		}
