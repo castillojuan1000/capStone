@@ -2,7 +2,7 @@ import React from 'react';
 import '.././style/library.css'
 import PlaylistPage from '../pages/Playlist'
 import { Link } from 'react-router-dom';
-import Playlist from '../Components/Blocks/Playlistblock'
+import PlaylistBlock from '../Components/Blocks/Playlistblock'
 
 import {
 	playSong,
@@ -120,7 +120,8 @@ class LibrarySection extends React.Component {
 		}
 	};
 
-	PlayAlbum = (id, active = false) => {
+	PlayPlaylist = (id, active = false) => {
+		alert(id)
 		if (!active) {
 			getAlbumTracks(id).then(result => {
 				let uris = JSON.stringify(
@@ -199,24 +200,20 @@ class LibrarySection extends React.Component {
 		return tracks;
 	};
 	buildPlaylist = () => {
-		let playlists = [];
-		if (this.state.result) {
-			console.log(this.state.playlists)
-			playlists = this.state.playlists.map((playlist, idx) => {
-				let active = (this.props.player.playlistId === playlist.id) ? true : false;
-
-				return (
-					<Playlist
-						handleClick={this.PlayPlaylist}
-						active={active}
-						isPlaying={this.props.player.isPlaying}
-						playlist={playlist}
-						idx={idx}
-					/>
-				)
-			})
-
-		}
+		console.log(this.state.playlists)
+		const playlists = this.state.playlists.map((playlist, idx) => {
+			let active = (this.props.player.playlistId === playlist.id) ? true : false;
+			return (
+				<PlaylistBlock
+					handleClick={() => this.PlayPlaylist(playlist.id)}
+					active={active}
+					isPlaying={this.props.player.isPlaying}
+					playlist={playlist}
+					idx={idx}
+					libraryState={this.state}
+				/>
+			)
+		})
 		return playlists;
 	}
 
@@ -252,14 +249,7 @@ class LibrarySection extends React.Component {
 					{this.state.activeFilter === 'ARTISTS' && this.buildArtists()}
 					{this.state.activeFilter === 'ALBUMS' && this.buildAlbums()}
 					{this.state.activeFilter === 'LIKED SONGS' && this.buildTracks()}
-					{/* <Link  {...this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} to={{ pathname: '/playlist/:id' }} >
-
-					</Link> */}
-
-
-
-
-
+					{this.state.activeFilter === 'PLAYLISTS' && this.buildPlaylist()} >
 					<Loader loading={this.props.searchState.loading} />
 				</div>
 			</div>

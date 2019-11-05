@@ -96,7 +96,7 @@ function SignUp(props) {
 			})
 			.then(({ data, tokens }) => {
 				if (tokens && state.remember) {
-					sessionStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
+					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
 				props.authUser({ ...data, isLoggedIn: true });
 			})
@@ -140,6 +140,7 @@ function SignUp(props) {
 							id='username'
 							label='User Name'
 							name='username'
+							autocomplete='new-password'
 							autoFocus
 							value={state.username}
 							onChange={onChange}
@@ -168,7 +169,7 @@ function SignUp(props) {
 							id='password'
 							value={state.password}
 							onChange={onChange}
-							autoComplete='current-password'
+							autoComplete='new-password'
 						/>
 						<FormControlLabel
 							control={

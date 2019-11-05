@@ -5,7 +5,9 @@ import Playlist from '../Components/Blocks/Playlistblock';
 import { withRouter } from 'react-router-dom';
 import * as Vibrant from 'node-vibrant';
 import Song from '../Components/Blocks/albumSongs';
-
+import { connect } from 'react-redux'
+import '../style/playlistpage.css'
+import Tracks from '../Components/Blocks/playlistsongs'
 
 
 
@@ -54,16 +56,17 @@ class PlaylistPage extends Component {
 
     }
     componentDidMount = () => {
-        var playlistId = window.location.split('/')[2];
+        var playlistId = this.props.match.params.id
         GetMyPlaylists(playlistId).then(result => {
-            this.setState({ ...this.state, playlistId: result.playlists.id })
+            console.log(result, ' show me the result')
+            this.setState({ ...this.state, playlistId: result.id })
         });
-        debugger
         GetPlaylistCover(playlistId).then(result => {
-            this.setState({ ...this.state, playlistImg: result.images[0].url })
+            this.setState({ ...this.state, playlistImg: result[0].url })
+            this.setColor(result[0].url);
         });
-        GetPlaylistTracks(playlistId).then(tracks => {
-            this.setState({ ...this.state, tracks: tracks.tracks.href })
+        GetPlaylistTracks(playlistId).then(result => {
+            this.setState({ ...this.state, tracks: result.items })
         });
 
 
@@ -96,22 +99,34 @@ class PlaylistPage extends Component {
         });
     };
 
-    PlaySong = (uri, active) => {
+    PlaySong = (uri) => {
+        const active = this.props.player.currentSong.uri === uri
         if (!active) {
             let index = this.state.tracks.findIndex(track => track.uri === uri);
             let currentSongs = this.state.tracks
                 .slice(index, this.state.tracks.length)
                 .map(track => {
-                    return track.uri;
+                    return track.track.uri;
                 });
+            let newItems = [];
+            this.state.tracks
+                .forEach((track, idx) => {
+                    track.track.order = idx;
+                    track.track.album = {
+                        images: track.track.album.images
+                    };
+                    newItems.push(track.track);
+                });
+            this.props.ResetQueue(newItems)
             let previousSongs = this.state.tracks.slice(0, index).map(track => {
-                return track.uri;
+                return track.track.uri;
             });
-            let uris = JSON.stringify([...currentSongs, ...previousSongs]);
-            playSong(uris).then(result =>
+            let uris = JSON.stringify([uri, ...currentSongs, ...previousSongs]);
+            console.log(uris, 'hello uris is here');
+            this.props.spotifyData.player.playSong(uris).then(result =>
                 this.setState({
                     ...this.state,
-                    currentSong: uri,
+                    currentSong: result.uri,
                     isPlaying: true
                 })
             );
@@ -124,6 +139,7 @@ class PlaylistPage extends Component {
         }
     };
     PlayPlaylist = (id) => {
+        alert(1)
         var playlistId = window.location.pathname.split('/')[2];
         let active = (this.props.player.playlistId === playlistId) ? true : false;
         if (!active) {
@@ -149,9 +165,11 @@ class PlaylistPage extends Component {
     buildPlaylist = () => {
         let playlists = [];
         if (this.state.result) {
-            this.state.result.playlist.forEach((playlist, idx) => {
+            this.state.playlists.forEach((playlist, idx) => {
+                alert(0)
+                console.log(playlist, 'my playlist is here');
+                debugger;
                 let active = (this.props.player.playlistId === playlist.id) ? true : false;
-
                 playlists.push(
                     <Playlist
                         handleClick={this.PlayPlaylist}
@@ -164,6 +182,7 @@ class PlaylistPage extends Component {
             })
 
         }
+        return playlists;
     }
 
     buildTracks = () => {
@@ -171,13 +190,13 @@ class PlaylistPage extends Component {
         this.state.tracks.forEach((track, idx) => {
             let active = (this.props.player.currentSong.uri === track.id) ? true : false;
             tracks.push(
-                <Song
+                <Tracks
                     playlistName={this.state.playlistName}
                     image={this.playlistImg}
-                    handleClick={this.PlaySong}
+                    handleClick={() => this.PlaySong(track.added_by.uri)}
                     active={active}
                     isPlaying={this.props.player.isPlaying}
-                    song={track}
+                    track={track}
                     idx={idx}
                 />
 
@@ -189,8 +208,9 @@ class PlaylistPage extends Component {
 
 
     render() {
-        var playlistId = window.location.pathname.split('/')[2];
-        let Play = (this.props.player.playlistId === playlistId && this.props.player.isPlaying) ? 'Pause' : 'Play';
+        // var playlistId = this.props.match.params.id;
+        console.log(this.props, 'the player is here')
+        // let Play = (this.props.player.currentSong === playlistId && this.props.player.isPlaying) ? 'Pause' : 'Play';
         let backStyle = {
             background: `linear-gradient(160deg, ${this.state.darkvibrant} 15%, rgba(0,0,0, 0.9) 70%)`
         };
@@ -216,13 +236,13 @@ class PlaylistPage extends Component {
                         <div className='playlist-description-holder'>
                             <h1>{this.state.playlistName}</h1>
 
-                            <button style={vibrantStyle} onClick={this.PlayPlaylist} className='btn btn-primary'>
+                            {/* <button style={vibrantStyle} onClick={this.PlayPlaylist} className='btn btn-primary'>
                                 {Play}
-                            </button>
+                            </button> */}
 
                         </div>
                     </div>
-                    <div className='album-songs' style={scrollStyle}>
+                    <div className='playlist-songs' style={scrollStyle}>
                         {tracks}
                     </div>
                     <Loader loading={this.state.loading} />
@@ -234,4 +254,21 @@ class PlaylistPage extends Component {
 
     }
 }
-export default withRouter(PlaylistPage);
+const mapState = state => {
+    return { ...state }
+
+
+}
+
+const mapDispatch = dispatch => {
+    return {
+        playSong: payload => {
+            dispatch({ type: 'PLAY_SONG', payload });
+        },
+        ResetQueue: payload => {
+            console.debug(payload);
+            dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
+        },
+    }
+}
+export default connect(mapState, mapDispatch)(withRouter(PlaylistPage));
