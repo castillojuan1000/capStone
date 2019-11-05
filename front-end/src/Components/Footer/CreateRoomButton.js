@@ -23,6 +23,9 @@ function CreateRoomButton({
 				return e.track.uri;
 			});
 			const newQueue = res.items.map((track, idx) => {
+				if ('track' in track) {
+					track = track.track;
+				}
 				track.order = idx;
 				return track;
 			});

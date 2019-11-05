@@ -1,4 +1,4 @@
-module.exports = function (db) {
+module.exports = function(db) {
 	const router = require('express').Router();
 	const { createToken, verifyToken } = require('../utils');
 	const bcrypt = require('bcryptjs');
@@ -13,7 +13,6 @@ module.exports = function (db) {
 	// !!
 	// *** POST ROUTES
 	router.post('/api/login', (req, res) => {
-		// res.send({ data: 'Hello' });
 		const { email, password } = req.body;
 		if (email && password) {
 			return db.user

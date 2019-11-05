@@ -140,7 +140,7 @@ class Queue extends React.Component {
 				(this.props.currentSong &&
 					this.props.currentSong.album.images[0].url) ||
 				'https://source.unsplash.com/random';
-			if (this.props.queue[i].track) {
+			if (this.props.queue && this.props.queue[i] && this.props.queue.track) {
 				img = this.props.queue[i].track.album.images[0].url;
 			}
 

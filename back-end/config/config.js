@@ -10,19 +10,19 @@ module.exports = {
 		logging: false
 	},
 	test: {
-		username: 'root',
-		password: null,
-		database: 'database_test',
+		username: process.env.PG_USER || 'postgres',
+		password: process.env.PG_PASSWORD || null,
+		database: 'spotcloud',
 		host: '127.0.0.1',
-		dialect: 'mysql',
-		operatorsAliases: false
+		dialect: 'postgres',
+		logging: false
 	},
 	production: {
 		dialect: 'postgres',
 		operatorsAliases: false,
-		use_env_variable: "DATABASE_URL",
+		use_env_variable: 'DATABASE_URL',
 		dialectOptions: {
-			"ssl": true
+			ssl: true
 		}
 	}
 };
