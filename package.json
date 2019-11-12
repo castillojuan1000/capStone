@@ -1,10 +1,12 @@
 {
-	"name": "capStone",
+	"name": "justmusic",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "./back-end/index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "cd back-end && node index.js",
+		"heroku-postbuild": "cd front-end && npm install && npm run build && cd ../back-end && npm install"
 	},
 	"repository": {
 		"type": "git",
@@ -17,5 +19,7 @@
 		"url": "https://github.com/castillojuan1000/capStone/issues"
 	},
 	"homepage": "https://github.com/castillojuan1000/capStone#readme",
-	"proxy": "http://localhost:4000"
+	"dependencies": {
+		"sequelize": "^5.21.2"
+	}
 }

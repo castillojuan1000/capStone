@@ -9,7 +9,7 @@
     padding-right: 1%;
     display: flex;
     flex-direction: row;
-    transition: all 4s;
+    transition: all 1s;
   }
 
 .artist-banner {
@@ -90,6 +90,8 @@
    animation-duration: 15s;
    animation-iteration-count: infinite;
 }
+
+
 
 
 .btn-secondary {
@@ -189,4 +191,131 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
+}
+
+
+@media (max-width: 1200px) {
+    .artist-page {
+        padding-top: 8%;
+        padding-left: 4%;
+        border: 1px solid white;
+        padding-right: 1%;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        }
+    .left-section {
+        padding-top: 5%;
+        height: 100%;
+    }
+    .artist-top-section{
+        flex-direction: row;
+        justify-content: space-around;
+        width: 80%;
+        height: 30%;
+    }
+    .artist-banner {
+        width: 14em;
+        height: 14em;
+    }
+    .artist-description  {
+        height: 100%;
+        justify-content: flex-start;
+    }
+
+     .artist-btn-row div  {
+        margin: 1em;
+    }
+    .artist-description h3 {
+        margin-top: 2em;
+    }
+
+    .artist-content {
+        width: 90vw;
+        margin: 0;
+        padding-top: -5%;
+        height: 45vh;
+    }
+    .song-block {
+        width: 100%;
+    }
+    .album-songs2 {
+        width: 100%;
+        padding: 0;
+    }
+    .song-action {
+        display: none;
+    }
+  }
+  
+
+  @media (max-width: 800px) {
+    .artist-page {
+        padding-top: 7%;
+        padding-left: 4%;
+        border: 1px solid white;
+        padding-right: 1%;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        }
+   
+    .left-section {
+        padding-top: 0%;
+        display: none !important;
+        height: 100%;
+    }
+    .artist-top-section{
+        flex-direction: column;
+        justify-content: center;
+        width: 80%;
+        height: 25%;
+    }
+    .artist-description  {
+        height: 100%;
+        justify-content: flex-start;
+    }
+
+    .artist-description h3 {
+        margin-top: 0em;
+    }
+
+    .artist-content {
+        width: 90vw;
+        margin: 0;
+        padding-top: -5%;
+        height: 55vh;
+    }
+    .song-block {
+        width: 100%;
+    }
+    .album-songs2 {
+        width: 100%;
+        padding: 0;
+    }
+    .song-description {
+        width: 80%;
+    }
+
+    .song-description h3 {
+        line-height: 150%;
+        font-size: 1em;
+    }
+    .featured-artists {
+        
+    }
+    .song-duration, .explicit-tag {
+        display: none;
+    }
+  }
+
+
+
+  @media (max-width: 849px) {
+    .album-image {
+        padding-top: 2%;
+        padding-bottom: 2%;
+    }
+
+      
 }

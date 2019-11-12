@@ -1,6 +1,3 @@
-import { stat } from 'fs';
-import { duration } from 'moment';
-
 const initialState = {
 	currentSong: {},
 	nextSong: {},
@@ -13,16 +10,19 @@ const initialState = {
 	artistId: '',
 	songImg: '',
 	songName: '',
+	playlistId: '',
 	colors: {
-		vibrant: 'black'
+		vibrant: 'green'
 	},
 	secondaryColors: {
 		vibrant: 'black'
 	}
 };
 
+
 const playerReducer = (state = initialState, action) => {
 	const { type, payload } = action;
+	console.log(payload, 'payload is here ')
 	switch (type) {
 		case 'PLAYER_SET_STATE':
 			let newQueue;
@@ -136,6 +136,12 @@ const playerReducer = (state = initialState, action) => {
 				...state,
 				secondaryColors: payload
 			};
+		}
+		case 'SET_PLAYLIST': {
+			return {
+				...state,
+				playlistId: payload.playlistId
+			}
 		}
 		default:
 			return state;

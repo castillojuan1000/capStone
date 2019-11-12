@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-	searchArray,
-} from '../utilityFunctions/util.js';
+import { searchArray } from '../utilityFunctions/util.js';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import {
@@ -16,17 +14,17 @@ import Artist from '../Components/Blocks/artist';
 import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs';
 
-
 import '../App.css';
-import { FooterContainer as Footer } from '../Components/Containers/MainContainer';
 
 let searchFilters = ['Top Results', 'Artist', 'Album', 'Track'];
 
-let FilterItem = ({ name, isActive, onClick, color}) => {
+let FilterItem = ({ name, isActive, onClick, color }) => {
 	let className =
 		isActive === name.replace(' ', '').toLowerCase() ? 'active' : '';
-	let border = 
-		(isActive === name.replace(' ', '').toLowerCase()) ? {borderBottom: `2px solid ${color}`} : {};
+	let border =
+		isActive === name.replace(' ', '').toLowerCase()
+			? { borderBottom: `2px solid ${color}` }
+			: {};
 	return (
 		<li
 			style={border}
@@ -47,8 +45,6 @@ let Loader = ({ loading }) => {
 	);
 };
 
-
-
 class SearchSection extends React.Component {
 	constructor(props) {
 		super(props);
@@ -63,12 +59,12 @@ class SearchSection extends React.Component {
 		this.handleSearch = this.handleSearch.bind(this);
 		this.setSearchFilter = this.setSearchFilter.bind(this);
 		this.PlaySong = this.PlaySong.bind(this);
-		this.PlayArtist = this.PlayArtist.bind(this)
+		this.PlayArtist = this.PlayArtist.bind(this);
 	}
 	componentDidMount() {
-		// document
-		// 	.getElementById('search-body')
-		// 	.addEventListener('scroll', this.checkScroll);
+		 document
+		 	.getElementById('search-body')
+		 	.addEventListener('scroll', this.checkScroll);
 		// let token = StoreAPIToken();
 		// let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
 		// if (token !== undefined) {
@@ -80,10 +76,10 @@ class SearchSection extends React.Component {
 		// 	setupSpotify();
 		// }
 		const wrappedElement = document.getElementById('search-body');
-		wrappedElement.scrollTo(0, this.props.searchState.scroll)
+		wrappedElement.scrollTo(0, this.props.searchState.scroll);
 	}
 
-	handleSearch({ target }) {
+	handleSearch = ({ target }) => {
 		this.props.setSearch(target);
 		if (this.state.typingTimeout) {
 			clearTimeout(this.state.typingTimeout);
@@ -94,11 +90,13 @@ class SearchSection extends React.Component {
 
 		this.setState({
 			typingTimeout: setTimeout(() => {
+				let count = (this.props.searchState.activeFilter !== 'topresults') ? 50 : 10
 				let type =
 					this.props.searchState.activeFilter === 'topresults'
 						? 'album,artist,playlist,track'
 						: this.props.searchState.activeFilter;
-				Search(this.props.searchState.search, type).then(result => {
+				Search(this.props.searchState.search, type, count).then(result => {
+					result['type'] = this.props.searchState.activeFilter.toLowerCase();
 					this.props.setSearchResult(result);
 				});
 			}, 500)
@@ -115,13 +113,14 @@ class SearchSection extends React.Component {
 						? 'album,artist,playlist,track'
 						: this.props.searchState.activeFilter;
 				Search(this.props.searchState.search, type).then(result => {
+					result['type'] = this.props.searchState.activeFilter.toLowerCase();
 					this.props.setSearchResult(result);
 				});
-			}, 10);
+			}, 200);
 		}
 	};
 
-	PlaySong = (uri, active) => {
+PlaySong = (uri, active) => {
 		if (!active) {
 			let index = this.props.searchState.result.tracks.items.findIndex(
 				track => track.uri === uri
@@ -135,12 +134,15 @@ class SearchSection extends React.Component {
 			);
 			playSong(uris).then(data => {
 				let newItems = [];
-				let queue = this.props.searchState.result.tracks.items.slice(index, this.props.searchState.result.tracks.items.length)
+				let queue = this.props.searchState.result.tracks.items.slice(
+					index,
+					this.props.searchState.result.tracks.items.length
+				);
 				queue.forEach((track, idx) => {
 					track.order = idx;
-					newItems.push(track)
-				})
-				this.props.ResetQueue(newItems)
+					newItems.push(track);
+				});
+				this.props.ResetQueue(newItems);
 			});
 		} else if ((active, this.state.isPlaying === false)) {
 			ResumePlayer();
@@ -152,24 +154,27 @@ class SearchSection extends React.Component {
 	PlayAlbum = (id, active = false) => {
 		if (!active) {
 			getAlbumTracks(id).then(result => {
-				let images = searchArray(id, this.props.searchState.result.albums.items);
-				console.debug(images)
-				let newItems = []
+				let images = searchArray(
+					id,
+					this.props.searchState.result.albums.items
+				);
+
+				let newItems = [];
 				result.items.forEach((track, idx) => {
 					track.order = idx;
 					track.album = {
 						images: images
-					}
-					newItems.push(track)
-				})
-				console.debug(newItems)
-				this.props.ResetQueue(newItems)
+					};
+					newItems.push(track);
+				});
+
+				this.props.ResetQueue(newItems);
 				let uris = JSON.stringify(
 					result.items.map(track => {
 						return track.uri;
 					})
 				);
-				
+
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -189,18 +194,17 @@ class SearchSection extends React.Component {
 		if (!active) {
 			this.props.spotifyData.player.getArtistTopTracks(id).then(result => {
 				let newItems = [];
-				console.debug(result)
 				result.tracks.forEach((track, idx) => {
 					track.order = idx;
-					newItems.push(track)
-				})
-				this.props.ResetQueue(newItems)
+					newItems.push(track);
+				});
+				this.props.ResetQueue(newItems);
 				let uris = JSON.stringify(
 					result.tracks.map(track => {
 						return track.uri;
 					})
 				);
-				
+
 				playSong(uris).then(success =>
 					this.setState({
 						...this.state,
@@ -220,11 +224,14 @@ class SearchSection extends React.Component {
 		let artists = [];
 		if ('artists' in this.props.searchState.result) {
 			this.props.searchState.result.artists.items.forEach((artist, idx) => {
-				artists.push(<Artist 
-					artist={artist} 
-					idx={idx} 
-					handleClick={this.PlayArtist}
-					/>);
+				artists.push(
+					<Artist
+						key={`artist-${idx}`}
+						artist={artist}
+						idx={idx}
+						handleClick={this.PlayArtist}
+					/>
+				);
 			});
 		}
 		return artists;
@@ -237,6 +244,7 @@ class SearchSection extends React.Component {
 				let active = this.props.player.albumId === album.id ? true : false;
 				albums.push(
 					<Album
+						key={`album-${idx}`}
 						handleClick={this.PlayAlbum}
 						active={active}
 						isPlaying={this.state.isPlaying}
@@ -252,27 +260,54 @@ class SearchSection extends React.Component {
 
 	buildTracks = () => {
 		let tracks = [];
-		if ('tracks' in this.props.searchState.result) {
-			this.props.searchState.result.tracks.items.forEach((track, idx) => {
-				let active =
-					this.props.player.currentSong.uri === track.uri ? true : false;
-				tracks.push(
-					<Song
-						handleClick={this.PlaySong}
-						active={active}
-						isPlaying={this.state.isPlaying}
-						song={track}
-						idx={idx}
-					/>
-				);
-			});
+		console.debug(0, this.props.searchState.result)
+		if (this.props.searchState.activeFilter !== 'topresults') {
+			if ('tracks' in this.props.searchState.result) {
+				this.props.searchState.result.tracks.items.forEach((track, idx) => {
+					let active =
+						this.props.player.currentSong.uri === track.uri ? true : false;
+					tracks.push(
+						<Song
+							key={`song-${idx}`}
+							handleClick={this.PlaySong}
+							active={active}
+							isPlaying={this.state.isPlaying}
+							song={track}
+							idx={idx}
+						/>
+					);
+				});
+			}
+		}
+		else {
+			console.debug('something wrong here')
+			if ('tracks' in this.props.searchState.result) {
+				this.props.searchState.result.tracks.items.slice(0, 5).forEach((track, idx) => {
+					let active =
+						this.props.player.currentSong.uri === track.uri ? true : false;
+					tracks.push(
+						<Song
+							key={`song-${idx}`}
+							handleClick={this.PlaySong}
+							active={active}
+							isPlaying={this.state.isPlaying}
+							song={track}
+							idx={idx}
+						/>
+					);
+				});
+			}
+			
 		}
 		return tracks;
+
 	};
 
 	checkScroll = e => {
 		const wrappedElement = document.getElementById('search-body');
-		this.props.setCurrentScroll(wrappedElement.scrollTop);
+		if (wrappedElement.scrollTop - this.props.searchState.scroll > 50){
+			this.props.setCurrentScroll(wrappedElement.scrollTop);
+		}
 		if (
 			wrappedElement.scrollHeight - wrappedElement.scrollTop <
 				wrappedElement.clientHeight + 300 &&
@@ -290,6 +325,7 @@ class SearchSection extends React.Component {
 					50,
 					this.props.searchState.offset + 1 * 50
 				).then(result => {
+					result['type'] = this.props.searchState.activeFilter.toLowerCase();
 					this.props.extendSearchResults(result);
 					this.setState({
 						...this.state,
@@ -305,26 +341,33 @@ class SearchSection extends React.Component {
 			borderLeft: `2px solid ${this.props.player.colors.vibrant}`,
 			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
 			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
-		}
+		};
 		let searchRight = {
 			borderRight: `2px solid ${this.props.player.colors.vibrant}`,
 			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
 			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
-		}
+		};
 		let searchInput = {
 			borderTop: `2px solid ${this.props.player.colors.vibrant}`,
 			borderBottom: `2px solid ${this.props.player.colors.vibrant}`
-		}
+		};
 		let artists = this.buildArtists();
 		let albums = this.buildAlbums();
 		let tracks = this.buildTracks();
+		let topResultsSection =
+		this.props.searchState.activeFilter === 'topresults'
+				? { height: 'auto' }
+				: { height: '0', display: 'none' };
+		 let otherContainers = 
+			this.props.searchState.activeFilter === 'topresults' ? { height: '0%', display: 'none' } : {};
 		let sectionStyle =
-			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
-
+		this.props.searchState.activeFilter ==='track' ? { height: '100%', display: 'flex',} : { height: '0%' , display: 'none'};
+		console.debug(this.props.searchState.activeFilter)
 		let ListItems = [];
-		searchFilters.forEach(name => {
+		searchFilters.forEach((name, idx) => {
 			ListItems.push(
 				<FilterItem
+					key={`filter-${idx}`}
 					onClick={this.setSearchFilter}
 					name={name}
 					isActive={this.props.searchState.activeFilter}
@@ -338,7 +381,7 @@ class SearchSection extends React.Component {
 					<ul>{ListItems}</ul>
 				</div>
 				<div className='input-holder'>
-					<div className='search-icon' style={searchLeft} >
+					<div className='search-icon' style={searchLeft}>
 						<SearchRoundedIcon />
 					</div>
 					<input
@@ -350,19 +393,35 @@ class SearchSection extends React.Component {
 						placeholder='Search...'
 						style={searchInput}
 					/>
-					<div onClick={this.props.clearSearchState} className='cancel-icon' style={searchRight}>
+					<div
+						onClick={this.props.clearSearchState}
+						className='cancel-icon'
+						style={searchRight}>
 						<ClearRoundedIcon />
 					</div>
 				</div>
 				<div className='search-body' id='search-body'>
+					<div className='topResultsSection' style={topResultsSection}>
+						<div className="top-result-left">{artists[0]}</div>
+						<div className="top-result-right">{tracks}</div>
+						<h1 style={topResultsSection}>Artists</h1>
+						<div className="top-results-section-artists" style={topResultsSection}>
+							{artists}
+						</div>
+						<h1 style={topResultsSection}>Albums</h1>
+						<div className="top-results-section-artists" style={topResultsSection}>
+							{albums}
+						</div>
+					</div>
+					<div className="search-body-holder" style={otherContainers}>
 					{artists}
 					{albums}
+					</div>
 					<div className='songs-container' style={sectionStyle}>
 						{tracks}
 					</div>
 					<Loader loading={this.props.searchState.loading} />
 				</div>
-				
 			</div>
 		);
 	}

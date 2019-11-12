@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -31,8 +31,9 @@ function Copyright() {
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		height: '100hv',
-		background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)'
+		paddingTop: '1%',
+		height: '100vh',
+		background: 'linear-gradient(120deg, #BA55D3 25%, #000000 85%)'
 	},
 	image: {
 		backgroundImgae: 'url(http://127.0.0.1:5501/img/card1.jpg)',
@@ -51,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.secondary.main
 	},
 	form: {
-		width: '100%', // Fix IE 11 issue.
+		width: '90%', // Fix IE 11 issue.
 		marginTop: theme.spacing(1)
 	},
 	submit: {
@@ -65,7 +66,7 @@ function SignUp(props) {
 		email: '',
 		password: '',
 		username: '',
-		remember: false,
+		remember: true,
 		isLoggedIn: false
 	});
 	const [error, setError] = useState('');
@@ -121,14 +122,14 @@ function SignUp(props) {
 	return (
 		<Grid container component='main' className={classes.root}>
 			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
+			<Grid item xs={12} sm={8} md={4} component={Paper} style={{borderRadius: '5px', top:' 17%', left: '33.333%', position: 'absolute'}} elevation={6} square>
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component='h1' variant='h5'>
-						Sign in
+						Sign Up
 					</Typography>
 					{error && <p style={{ color: 'red' }}>{error}</p>}
 					<form className={classes.form} onSubmit={handleSubmit} noValidate>
@@ -177,6 +178,7 @@ function SignUp(props) {
 									onClick={() =>
 										setState({ ...state, remember: !state.remember })
 									}
+									checked="true"
 									value='remember'
 									color='primary'
 								/>
@@ -209,6 +211,7 @@ function SignUp(props) {
 					</form>
 				</div>
 			</Grid>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
 		</Grid>
 	);
 }

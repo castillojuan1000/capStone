@@ -1,5 +1,3 @@
-import { stat } from "fs";
-
 const initialState = {
 	token: '',
 	search: '',
@@ -7,7 +5,7 @@ const initialState = {
 	activeFilter: 'artist',
 	result: {},
 	firing: false,
-	scroll: 0,
+	scroll: 0
 };
 
 const searchReducer = (state = initialState, action) => {
@@ -15,50 +13,68 @@ const searchReducer = (state = initialState, action) => {
 	switch (type) {
 		case 'SET_SEARCH':
 			return {
-				...state, 
-				search: 
-				payload.value, 
-				loading: true, 
+				...state,
+				search: payload.value,
+				loading: true,
 				result: {},
-				scroll: 0};
-		case 'SEARCH_RESULT_RETURNED':
-			return {
-				...state, 
-				result: payload, 
-				loading: false, 
-				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
-				total: payload[state.activeFilter.toLowerCase() + 's'].total,
-				scroll: 0,
+				scroll: 0
 			};
-		case 'EXTEND_SEARCH_RESULTS':
+		case 'SEARCH_RESULT_RETURNED':
+			if (payload.type===undefined || payload.type.toLowerCase() === 'topresults') {
 				return {
-					...state, 
-					result: payload, 
-					loading: false, 
+					...state,
+					result: payload,
+					loading: false,
+					offset: 0,
+					total: 50,
+					scroll: 0
+				};
+			}
+			else if (payload.type!==undefined) {
+				return {
+					...state,
+					result: payload,
+					loading: false,
 					offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
 					total: payload[state.activeFilter.toLowerCase() + 's'].total,
-					result: {
-						...state.result,
-						[state.activeFilter.toLowerCase() + 's']: {
-							...state.result[
-								state.activeFilter.toLowerCase() + 's'
-							],
-							items: [
-								...state.result[
-									state.activeFilter.toLowerCase() + 's'
-								].items,
-								...payload[state.activeFilter.toLowerCase() + 's'].items
-							]
-						}
-					}
+					scroll: 0
 				};
+			}
+			else {
+				return {
+					...state,
+					result: payload,
+					loading: false,
+					offset: 0,
+					total: 50,
+					scroll: 0
+				};
+
+			}
+		case 'EXTEND_SEARCH_RESULTS':
+			return {
+				...state,
+				loading: false,
+				offset: payload[state.activeFilter.toLowerCase() + 's'].offset,
+				total: payload[state.activeFilter.toLowerCase() + 's'].total,
+				result: {
+					...state.result,
+					[state.activeFilter.toLowerCase() + 's']: {
+						...state.result[state.activeFilter.toLowerCase() + 's'],
+						items: [
+							...state.result[state.activeFilter.toLowerCase() + 's'].items,
+							...payload[state.activeFilter.toLowerCase() + 's'].items
+						]
+					}
+				}
+			};
 		case 'CLEAR_SEARCH_STATE':
 			return {
 				...state,
 				search: '',
 				result: {},
 				loading: false,
-				scroll: 0,
+				scroll: 0
 			};
 		case 'SET_SEARCH_FILTER':
 			return {
@@ -66,14 +82,14 @@ const searchReducer = (state = initialState, action) => {
 				result: {},
 				activeFilter: payload,
 				loading: false,
-				scroll: 0,
+				scroll: 0
 			};
 		case 'SET_CURRENT_SCROLL':
 			return {
 				...state,
-				scroll: payload,
-			}
-		
+				scroll: payload
+			};
+
 		default:
 			return state;
 	}

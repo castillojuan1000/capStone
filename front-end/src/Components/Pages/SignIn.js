@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { setupSpotify, StoreAPIToken } from '../../utilityFunctions/util';
 import { Spotify } from '../../utilityFunctions/util2';
 import { withRouter } from 'react-router-dom';
+import '../../App.css'
 
 function Copyright() {
 	return (
@@ -31,8 +32,10 @@ function Copyright() {
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		height: '100hv',
-		background: 'linear-gradient(45deg, #BA55D3 10%, #000000 60%)'
+		paddingTop: '1%',
+		position: "absolute",
+		height: '100vh',
+		background: 'linear-gradient(120deg, #BA55D3 25%, #000000 85%)'
 	},
 	image: {
 		backgroundImgae: 'url(http://127.0.0.1:5501/img/card1.jpg)',
@@ -41,6 +44,7 @@ const useStyles = makeStyles(theme => ({
 		backgroundPosition: 'center'
 	},
 	paper: {
+		height: '40vh',
 		margin: theme.spacing(8, 4),
 		display: 'flex',
 		flexDirection: 'column',
@@ -51,8 +55,9 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: theme.palette.secondary.main
 	},
 	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing(1)
+		width: '90%', // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
+		color: 'white'
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2)
@@ -64,19 +69,26 @@ function SignInSide(props) {
 	const [state, setState] = useState({
 		email: '',
 		password: '',
-		remember: false,
+		remember: true,
 		isLoggedIn: false
 	});
 	const [error, setError] = useState('');
 	const onChange = e => {
 		return setState({ ...state, [e.target.name]: e.target.value });
 	};
-
+	const {
+		spotifyToken,
+		initiatePlayer,
+		history,
+		authUser,
+		spotifyData,
+		user
+	} = props;
 	useEffect(() => {
 		const authTokens = localStorage.getItem('jwtTokens') || null;
 		const abortController = new AbortController();
 		let loginWithToken;
-		if (authTokens && !props.user.isLoggedIn) {
+		if (authTokens && !user.isLoggedIn) {
 			loginWithToken = fetch('/api/token', {
 				method: 'POST',
 				body: authTokens,
@@ -91,11 +103,11 @@ function SignInSide(props) {
 					if (tokens) {
 						localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 					}
-					setState({
-						...state,
+					setState(s => ({
+						...s,
 						isLoggedIn: true
-					});
-					return props.authUser({ ...data, isLoggedIn: true });
+					}));
+					return authUser({ ...data, isLoggedIn: true });
 				})
 				.then(() => {
 					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
@@ -104,10 +116,10 @@ function SignInSide(props) {
 					if (SpotifyToken) {
 						localStorage.setItem('token', SpotifyToken);
 						localStorage.setItem('expiration', expiration);
-						props.spotifyToken(SpotifyToken);
-						props.initiatePlayer(new Spotify(SpotifyToken));
-						props.history.push('/');
-					} else if (expirationTS < 60 || !props.spotifyData.userToken) {
+						spotifyToken(SpotifyToken);
+						initiatePlayer(new Spotify(SpotifyToken));
+						history.push('/');
+					} else if (expirationTS < 60 || !spotifyData.userToken) {
 						localStorage.setItem('token', '');
 						localStorage.setItem('expiration', 0);
 						setupSpotify();
@@ -117,7 +129,15 @@ function SignInSide(props) {
 		return () => {
 			abortController.abort(loginWithToken);
 		};
-	}, []);
+	}, [
+		SpotifyToken,
+		history,
+		authUser,
+		initiatePlayer,
+		user,
+		spotifyData,
+		spotifyToken
+	]);
 	const handleSubmit = e => {
 		e.preventDefault();
 		setError('');
@@ -142,31 +162,37 @@ function SignInSide(props) {
 				if (tokens && state.remember) {
 					localStorage.setItem('jwtTokens', JSON.stringify({ ...tokens }));
 				}
-				props.authUser({ ...data, isLoggedIn: true });
+				if (data) {
+					authUser({ ...data, isLoggedIn: true });
+				}
+				return data;
 			})
-			.then(() => {
-				let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
-				const expirationTS =
-					(localStorage.getItem('expiration') - Date.now()) / 1000;
-				if (SpotifyToken) {
-					localStorage.setItem('token', SpotifyToken);
-					localStorage.setItem('expiration', expiration);
-					props.spotifyToken(SpotifyToken);
-					props.initiatePlayer(new Spotify(SpotifyToken));
-					props.history.push('/');
-				} else if (expirationTS < 60 || !props.spotifyData.userToken) {
-					localStorage.setItem('token', '');
-					localStorage.setItem('expiration', 0);
-					setupSpotify();
+			.then(data => {
+				if (data) {
+					let expiration = Date.now() + 3600 * 1000; // add one hour in millaseconds
+					const expirationTS =
+						(localStorage.getItem('expiration') - Date.now()) / 1000;
+					if (SpotifyToken) {
+						localStorage.setItem('token', SpotifyToken);
+						localStorage.setItem('expiration', expiration);
+						spotifyToken(SpotifyToken);
+						initiatePlayer(new Spotify(SpotifyToken));
+						history.push('/');
+					} else if (expirationTS < 60 || !spotifyData.userToken) {
+						localStorage.setItem('token', '');
+						localStorage.setItem('expiration', 0);
+						setupSpotify();
+					}
+
 				}
 			});
-		e.target.reset();
 	};
 	return (
 		<Grid container component='main' className={classes.root}>
-			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+
+			<CssBaseline className="base"/>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
+			<Grid item xs={12} sm={8} md={4} component={Paper} style={{borderRadius: '5px', top:' 10%', left: '33.333%', position: 'absolute'}} elevation={6} square>
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>
 						<LockOutlinedIcon />
@@ -208,6 +234,7 @@ function SignInSide(props) {
 									onClick={() =>
 										setState({ ...state, remember: !state.remember })
 									}
+									checked="true"
 									value='remember'
 									color='primary'
 								/>
@@ -229,7 +256,7 @@ function SignInSide(props) {
 								</Link>
 							</Grid>
 							<Grid item>
-								<Link href='#' variant='body2'>
+								<Link href='signup/' variant='body2'>
 									{"Don't have an account? Sign Up"}
 								</Link>
 							</Grid>
@@ -240,8 +267,8 @@ function SignInSide(props) {
 					</form>
 				</div>
 			</Grid>
+			<Grid item xs={false} sm={2} md={4} className={classes.image} />
 		</Grid>
 	);
 }
-
 export default withRouter(SignInSide);

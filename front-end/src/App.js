@@ -8,6 +8,7 @@ import SideDrawer from './Components/Navbar/SideDrawer/SideDrawer';
 import Backdrop from './Components/Navbar/Backdrop/Backdrop';
 import './App.css';
 import './reset.css';
+import PlaylistPage from './pages/Playlist'
 import {
 	AlbumContainer as Album,
 	ArtistContainer as Artist,
@@ -20,7 +21,6 @@ import {
 	SignInContainer as SignInSide,
 	SignUpContainer as SignUp
 } from './Components/Containers/SignInContainer';
-import Login from './Components/login';
 
 import Room from './Components/Pages/Room';
 //!!! You can do this inline withing the Route component using render={()=> <Main page="home"/>}
@@ -29,14 +29,13 @@ let HomePage = () => <Home />;
 let LibraryPage = () => <LibrarySection />;
 let AlbumPage = () => <Album />;
 let ArtistPage = () => <Artist />;
-let ExtraPage = () => <Login />;
 let SignIN = () => <SignInSide />;
 function App(props) {
 	const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
 	const style = {
 		color: 'black',
-		width: '100vw',
-	}
+		width: '100vw'
+	};
 	const drawerToggleClickHandler = () => {
 		setSideDrawerOpen(prevState => {
 			return !sideDrawerOpen;
@@ -69,10 +68,11 @@ function App(props) {
 								<Route exact path='/library' component={LibraryPage} />
 								<Route exact path='/search' component={SearchPage} />
 								<Route exact path='/' component={HomePage} />
+								<Route path='/playlist/:id' component={PlaylistPage} />
 							</>
 						) : (
-							<Redirect to='/login' />
-						)}
+								<Redirect to='/login' />
+							)}
 					</Switch>
 				</main>
 				{props.spotifyData.userToken && (

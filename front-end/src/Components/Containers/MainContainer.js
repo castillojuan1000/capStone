@@ -44,11 +44,9 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'PLAYER_TOGGLE_PLAY', payload });
 	},
 	initializeSpotify: payload => {
-		alert(2);
 		dispatch({ type: 'INITIALIZE_SPOTIFY_KEYS', payload });
 	},
 	PlayNext: payload => {
-		alert(2);
 		dispatch({ type: 'PLAYER_PLAY_NEXT', payload });
 	},
 	SyncFromHost: () => {
@@ -58,15 +56,15 @@ const mapDispatchToProps = dispatch => ({
 		dispatch({ type: 'SET_PLAYER_COLORS', payload });
 	},
 	ResetQueue: payload => {
-		console.debug(payload);
 		dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
 	},
 	SetSecondaryColors: payload => {
-		console.debug(payload);
 		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
 	},
-	setPlayer: payload =>
+	setPlayer: payload => {
 		dispatch({ type: 'PLAYER_SET_STATE_FROM_HOST', payload })
+	},
+	setRoom: payload => dispatch({ type: 'SET_ROOM', payload })
 });
 
 export const FooterContainer = connect(

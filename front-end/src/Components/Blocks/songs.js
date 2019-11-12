@@ -1,9 +1,7 @@
 import React from 'react';
 import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
-import { fontSize } from '@material-ui/system';
 import '../../App.css';
 
-import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import LensIcon from '@material-ui/icons/Lens';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
@@ -27,9 +25,12 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 		marginLeft: '2em',
 		marginRight: '2em'
 	};
-	let artist = song.artists.map(artist => {
+	let artist = song.artists.map((artist, ind) => {
 		return (
-			<Link className='album-link' to={{ pathname: '/artist/' + artist.id }}>
+			<Link
+				className='album-link'
+				key={`artist-link-${ind}`}
+				to={{ pathname: '/artist/' + artist.id }}>
 				<h5>{artist.name}</h5>
 			</Link>
 		);
@@ -37,7 +38,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 	let image =
 		song.album.images.length > 0
 			? song.album.images[1].url
-			: 'https://via.placeholder.com/150';
+			: '/music-placeholder.png';
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>
@@ -56,6 +57,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
 						<LensIcon style={dotStyle} />
 					</h5>
 					<Link
+						key={`album-link2-${idx}`}
 						className='album-link'
 						to={{ pathname: '/album/' + song.album.id }}>
 						<h5>{song.album.name}</h5>

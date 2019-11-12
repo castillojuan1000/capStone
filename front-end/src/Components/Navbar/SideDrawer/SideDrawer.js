@@ -7,7 +7,7 @@ function SideDrawer(props) {
 	const style = {};
 	const handleSignOut = () => {
 		props.logOut();
-		fetch('/api/signout');
+		fetch('/api/signout', { method: 'DELETE' });
 	};
 	return (
 		<SideDrawerStyled onClick={props.click} style={style} show={props.show}>

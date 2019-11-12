@@ -1,5 +1,4 @@
 import axios from 'axios';
-import moment, { min } from 'moment';
 
 export const getSongSeconds = seconds => {
 	let minutes = `${Math.floor(seconds / 60)}`;
@@ -39,7 +38,7 @@ export const StoreAPIToken = () => {
 		});
 	}
 	if (hashMap.access_token) {
-		console.log('token retreived from url');
+		//console.log('token retreived from url');
 		return hashMap.access_token;
 	}
 };
@@ -47,7 +46,7 @@ export const StoreAPIToken = () => {
 export const setupSpotify = () => {
 	var client_id = '42c128e85c9c4eddad1930a129937c94';
 	var response_type = 'token';
-	var redirect_uri = 'http://127.0.0.1:3000/login';
+	var redirect_uri = `http://127.0.0.1:3000/login`;
 	var scope = [
 		'user-read-playback-state',
 		'streaming',
@@ -198,7 +197,7 @@ export const getRecommendations = (spotify = null, offset = 0, limit = 100) => {
 	return spotify.GET(url, 'got recommendations');
 };
 
-export const getFollowedArtists = (spotify = null, limit = 100) => {
+export const getFollowedArtists = (spotify = null, limit = 50) => {
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/following?type=artist&limit=${limit}`;
@@ -400,7 +399,6 @@ export const RestartSong = (spotify = null) => {
 };
 
 export const TransferPlayback = (device_id, play = true, spotify) => {
-	console.log(device_id);
 	spotify =
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	let url = `https://api.spotify.com/v1/me/player`;
@@ -434,7 +432,6 @@ export const Search = (query, type, limit = 50, offset = 0, spotify = null) => {
 		spotify == null ? new Spotify(localStorage.getItem('token')) : spotify;
 	query = query.replace(' ', '%20') + '*';
 	let url = `https://api.spotify.com/v1/search?q=${query}&type=${type}&q=${query}&limit=${limit}&offset=${offset}`;
-	console.log(url);
 	return spotify.GET(url, 'Search Spotify');
 };
 
