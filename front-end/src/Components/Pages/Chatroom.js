@@ -13,7 +13,7 @@ class Chatroom extends Component {
 			messages: this.props.messages || [],
 			currentTyper: ''
 		};
-		this.socket = io(`/rooms`);
+		this.socket = io('http://127.0.0.1:4000/rooms')
 		this.socket.on('connect', function(data) {
 			joinRoom();
 		});

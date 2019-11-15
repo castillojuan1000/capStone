@@ -4,7 +4,6 @@ import { playSong, StopPlayer, ResumePlayer } from '../utilityFunctions/util';
 import Playlist from '../Components/Blocks/Playlistblock';
 import { withRouter } from 'react-router-dom';
 import * as Vibrant from 'node-vibrant';
-import Song from '../Components/Blocks/albumSongs';
 import { connect } from 'react-redux'
 import '../style/playlistpage.css'
 import Tracks from '../Components/Blocks/playlistsongs'
@@ -13,17 +12,6 @@ import '../albumPage.css'
 
 
 let searchFilters = ['Playlist', 'Track'];
-let FilterItem = ({ name, isActive, onClick }) => {
-    let className =
-        isActive === name.replace(' ', '').toLowerCase() ? 'active' : '';
-    return (
-        <li
-            onClick={() => onClick(name.replace(' ', '').toLowerCase())}
-            className={className}>
-            {name}
-        </li>
-    );
-};
 
 let Loader = ({ loading }) => {
     let display = loading ? 'block' : 'none';
@@ -132,7 +120,7 @@ class PlaylistPage extends Component {
                     isPlaying: true
                 })
             );
-        } else if (active, this.props.player.isPlaying === false) {
+        } else if (active && this.props.player.isPlaying === false) {
             ResumePlayer();
             this.props.togglePlay();
         } else {
@@ -215,11 +203,6 @@ class PlaylistPage extends Component {
         let backStyle = {
             background: `linear-gradient(160deg, ${this.props.player.colors.darkVibrant} 15%, rgba(0,0,0, 0.9) 70%)`
         };
-        let vibrantStyle = {
-            backgroundColor: 'rgba(0,0,0, 0.75)',
-            color: this.state.vibrant,
-            border: `2px solid ${this.state.vibrant}`
-        };
         let scrollStyle = {
             scrollbarColor: `${this.state.vibrant} rgba(0,0,0, 0.2)`
         };
@@ -232,7 +215,7 @@ class PlaylistPage extends Component {
                 <div className='Playlist-container'>
                     <div className='Playlist-image'>
                         <div className='img-wrapper'>
-                            <img src={this.state.playlistImg}></img>
+                            <img src={this.state.playlistImg} alt="playlist current"></img>
                         </div>
                         <div className='playlist-description-holder'>
                             <h1>{this.state.playlistName}</h1>

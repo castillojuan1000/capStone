@@ -25,7 +25,7 @@ const apolloServ = new ApolloServer({
 apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
-if (process.env.NODE_ENV !== 'development') {
+if (process.env.NODE_ENV !== 'production') {
 	app.use(express.static(__dirname + './../front-end/build'));
 	app.get('*', function(request, response) {
 		response.sendFile('index.html', { root: './../front-end/build' });
@@ -107,6 +107,7 @@ io.of('/rooms').on('connection', socket => {
 
 	//! save the messages to the data base
 	socket.on('SEND_MESSAGE', function(data) {
+		console.log(data)
 		db.message.create({
 			userId: data.authorId,
 			roomId: data.roomId,

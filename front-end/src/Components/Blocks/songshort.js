@@ -2,8 +2,7 @@ import React from 'react';
 import '../../App.css';
 import {
 	PlayArrowRounded,
-	PauseRounded,
-	ThumbUpRounded
+	PauseRounded
 } from '@material-ui/icons';
 
 let Song = ({
@@ -13,9 +12,6 @@ let Song = ({
 	active,
 	isPlaying,
 	searchState,
-	likes,
-	showLikes,
-	createLike
 }) => {
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
@@ -48,36 +44,6 @@ let Song = ({
 				<h3>{song.name}</h3>
 				<div className='featured-artists'>{artist}</div>
 			</div>
-			{showLikes && (
-				<div
-					style={{
-						alignSelf: 'center',
-						display: 'flex',
-						justifyContent: 'flex-end',
-						flexGrow: 1,
-						padding: 5
-					}}>
-					{likes > 0 && (
-						<div
-							style={{
-								fontWeight: 'bold',
-								fontSize: '1.5rem',
-								color: 'white'
-							}}>
-							{likes}
-						</div>
-					)}
-					<ThumbUpRounded
-						style={{
-							color: '#28a745',
-							fontSize: '1.8em',
-							marginLeft: '2px',
-							cursor: 'pointer'
-						}}
-						onClick={createLike}
-					/>
-				</div>
-			)}
 		</div>
 	);
 };

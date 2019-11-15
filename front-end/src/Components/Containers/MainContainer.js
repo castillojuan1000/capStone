@@ -1,101 +1,104 @@
-import { connect } from 'react-redux';
-import Footer from '../Footer/footer';
-import AlbumPage from '../../pages/albumPage.js';
-import ArtistPage from '../../pages/artistPage.js';
-import SearchSection from '../../pages/search';
-import LibrarySection from '../../pages/library';
-import Home from '../../pages/homePage';
-import Navbar from '../Navbar/Navbar';
+import { connect } from "react-redux";
+import Footer from "../Footer/footer";
+import AlbumPage from "../../pages/albumPage.js";
+import ArtistPage from "../../pages/artistPage.js";
+import SearchSection from "../../pages/search";
+import LibrarySection from "../../pages/library";
+import Home from "../../pages/homePage";
+import Navbar from "../Navbar/Navbar";
 
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-	setSearch: payload => {
-		dispatch({ type: 'SET_SEARCH', payload });
-	},
-	clearSearchState: () => {
-		dispatch({ type: 'CLEAR_SEARCH_STATE' });
-	},
-	setSearchResult: payload => {
-		dispatch({ type: 'SEARCH_RESULT_RETURNED', payload });
-	},
-	setSearchFilter: payload => {
-		dispatch({ type: 'SET_SEARCH_FILTER', payload });
-	},
-	setCurrentScroll: payload => {
-		dispatch({ type: 'SET_CURRENT_SCROLL', payload });
-	},
-	extendSearchResults: payload => {
-		dispatch({ type: 'EXTEND_SEARCH_RESULTS', payload });
-	},
-	playSong: payload => {
-		dispatch({ type: 'PLAY_SONG', payload });
-	},
-	playerStateChange: payload => {
-		dispatch({ type: 'PLAYER_SET_STATE', payload });
-	},
-	playerSetArtistID: payload => {
-		dispatch({ type: 'PLAYER_SET_ARTIST_ID', payload });
-	},
-	setCurrentTime: payload => {
-		dispatch({ type: 'PLAYER_SET_CURRENT_TIME', payload });
-	},
-	togglePlay: payload => {
-		dispatch({ type: 'PLAYER_TOGGLE_PLAY', payload });
-	},
-	initializeSpotify: payload => {
-		dispatch({ type: 'INITIALIZE_SPOTIFY_KEYS', payload });
-	},
-	PlayNext: payload => {
-		dispatch({ type: 'PLAYER_PLAY_NEXT', payload });
-	},
-	SyncFromHost: () => {
-		dispatch({ type: 'SYNC_FROM_HOST' });
-	},
-	SetColors: payload => {
-		dispatch({ type: 'SET_PLAYER_COLORS', payload });
-	},
-	ResetQueue: payload => {
-		dispatch({ type: 'RESET_PLAYER_QUEUE', payload });
-	},
-	SetSecondaryColors: payload => {
-		dispatch({ type: 'SET_SECONDARY_COLORS', payload });
-	},
-	setPlayer: payload => {
-		dispatch({ type: 'PLAYER_SET_STATE_FROM_HOST', payload })
-	},
-	setRoom: payload => dispatch({ type: 'SET_ROOM', payload })
+  setSearch: payload => {
+    dispatch({ type: "SET_SEARCH", payload });
+  },
+  authUser: payload => {
+    dispatch({ type: "LOGIN", payload });
+  },
+  clearSearchState: () => {
+    dispatch({ type: "CLEAR_SEARCH_STATE" });
+  },
+  setSearchResult: payload => {
+    dispatch({ type: "SEARCH_RESULT_RETURNED", payload });
+  },
+  setSearchFilter: payload => {
+    dispatch({ type: "SET_SEARCH_FILTER", payload });
+  },
+  setCurrentScroll: payload => {
+    dispatch({ type: "SET_CURRENT_SCROLL", payload });
+  },
+  extendSearchResults: payload => {
+    dispatch({ type: "EXTEND_SEARCH_RESULTS", payload });
+  },
+  playSong: payload => {
+    dispatch({ type: "PLAY_SONG", payload });
+  },
+  playerStateChange: payload => {
+    dispatch({ type: "PLAYER_SET_STATE", payload });
+  },
+  playerSetArtistID: payload => {
+    dispatch({ type: "PLAYER_SET_ARTIST_ID", payload });
+  },
+  setCurrentTime: payload => {
+    dispatch({ type: "PLAYER_SET_CURRENT_TIME", payload });
+  },
+  togglePlay: payload => {
+    dispatch({ type: "PLAYER_TOGGLE_PLAY", payload });
+  },
+  initializeSpotify: payload => {
+    dispatch({ type: "INITIALIZE_SPOTIFY_KEYS", payload });
+  },
+  PlayNext: payload => {
+    dispatch({ type: "PLAYER_PLAY_NEXT", payload });
+  },
+  SyncFromHost: () => {
+    dispatch({ type: "SYNC_FROM_HOST" });
+  },
+  SetColors: payload => {
+    dispatch({ type: "SET_PLAYER_COLORS", payload });
+  },
+  ResetQueue: payload => {
+    dispatch({ type: "RESET_PLAYER_QUEUE", payload });
+  },
+  SetSecondaryColors: payload => {
+    dispatch({ type: "SET_SECONDARY_COLORS", payload });
+  },
+  setPlayer: payload => {
+    dispatch({ type: "PLAYER_SET_STATE_FROM_HOST", payload });
+  },
+  setRoom: payload => dispatch({ type: "SET_ROOM", payload })
 });
 
 export const FooterContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Footer);
 
 export const AlbumContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(AlbumPage);
 export const ArtistContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ArtistPage);
 export const SearchSectionContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(SearchSection);
 
 export const LibrarySectionContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(LibrarySection);
 
 export const NavBarSection = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Navbar);
 
 export const HomePageContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Home);

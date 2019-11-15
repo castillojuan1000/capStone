@@ -1,7 +1,5 @@
 import React from 'react';
 import '.././style/library.css'
-import PlaylistPage from '../pages/Playlist'
-import { Link } from 'react-router-dom';
 import PlaylistBlock from '../Components/Blocks/Playlistblock'
 
 
@@ -25,8 +23,6 @@ import Album from '../Components/Blocks/album';
 import Song from '../Components/Blocks/songs2';
 
 import '../App.css';
-import { element } from 'prop-types';
-
 let searchFilters = ['PLAYLISTS', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
 
 let FilterItem = ({ name, isActive, onClick, color }) => {
@@ -241,9 +237,6 @@ class LibrarySection extends React.Component {
 
 
 	render() {
-		let tracks = this.buildTracks();
-		let sectionStyle =
-			tracks.length > 0 ? { height: '100%' } : { height: '0%' };
 
 		let ListItems = [];
 		searchFilters.forEach(name => {

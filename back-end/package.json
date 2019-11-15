@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "npx nodemon index.js || echo -e \n Hot reload enabled"
+		"dev": "NODE_ENV=development && nodemon index.js || echo -e \n Hot reload enabled"
 	},
 	"author": "",
 	"license": "ISC",

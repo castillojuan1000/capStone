@@ -28,3 +28,6 @@ yarn-error.log*
 /front-end/.env
 /front-end/build/
 ../back-end/.env
+back-end/.env
+front-end/src/.env
+back-end/.env

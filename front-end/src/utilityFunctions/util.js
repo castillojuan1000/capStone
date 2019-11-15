@@ -38,26 +38,22 @@ export const StoreAPIToken = () => {
 		});
 	}
 	if (hashMap.access_token) {
-		//console.log('token retreived from url');
 		return hashMap.access_token;
 	}
 };
 
-export const setupSpotify = () => {
-	var client_id = '42c128e85c9c4eddad1930a129937c94';
+export const setupSpotify = (client_id) => {
 	var response_type = 'token';
-	var redirect_uri = `http://127.0.0.1:3000/login`;
+	var redirect_uri = window.location.origin + '/login';
 	var scope = [
 		'user-read-playback-state',
 		'streaming',
 		'user-read-private',
 		'user-read-currently-playing',
 		'user-modify-playback-state',
-		'user-top-read'
-		// 'user-read-birthdate'
-		// 'user-read-email',
-		// 'user-library-read,
-		// 'user-library-modify'
+		'user-top-read',
+		'user-library-read',
+		'user-library-modify'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;

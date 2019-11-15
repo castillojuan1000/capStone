@@ -4,7 +4,6 @@ import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
 
 import { withRouter } from 'react-router-dom';
 // import '../albumPage.css';
-import { fontSize } from '@material-ui/system';
 import { Link } from 'react-router-dom';
 
 let PlaylistBlock = ({ playlist, idx, active, isPlaying, handleClick, libraryState }) => {
