@@ -4,7 +4,7 @@ import * as Vibrant from "node-vibrant";
 import CreateRoombutton from "./CreateRoomButton";
 import { getColor } from "../../utilityFunctions/util.js";
 import Song from "../../Components/Blocks/songshort";
-
+import { animated } from "react-spring";
 class Playlist extends React.Component {
   constructor(props) {
     super(props);
@@ -34,7 +34,6 @@ class Playlist extends React.Component {
           LightVibrant: getColor(palette, "LightVibrant"),
           Muted: getColor(palette, "Muted")
         };
-
         this.setState({
           ...this.state,
           colors: colors
@@ -46,18 +45,13 @@ class Playlist extends React.Component {
   setActive = () => {
     if (this.state.tracks.length === 0) {
       this.setState({
-        active: !this.state.active,
-        tracks: []
+        active: !this.state.active
       });
       this.props.player.GetPlaylistTracks(this.props.playlist.id).then(data => {
         this.setState({
-          //   active: !this.state.active,
           tracks: data.items
         });
       });
-      // this.props.getPlaylistTracks(this.props.playlist.id).then(data => {
-
-      // });
     } else {
       this.setState({
         active: !this.state.active
@@ -68,7 +62,6 @@ class Playlist extends React.Component {
   componentDidMount = () => {
     this.setColor(this.props.playlist.images[0].url);
   };
-
   handleClick = (id, active) => {
     if (!active) {
       let index = this.state.tracks.findIndex(track => track.track.id === id);
@@ -120,6 +113,7 @@ class Playlist extends React.Component {
   };
 
   render = () => {
+    const { playlist } = this.props;
     let bodyStyle = { height: "0em", background: "rgba(0,0,0, 0)" };
     if (this.state.active) {
       bodyStyle = { height: "", background: "rgba(0,0,0, 0.7)" };
@@ -128,12 +122,44 @@ class Playlist extends React.Component {
     let containerStyle = {
       backgroundSize: "800vw 800vw",
       animation: "rotate 20s ease infinite",
-      background: `linear-gradient(160deg, 
-                ${this.state.colors.Vibrant}, 
-                ${this.state.colors.DarkMuted})`
+      // background: `linear-gradient(160deg,
+      //           ${this.state.colors.LightVibrant},
+      // 	${this.state.colors.Muted})`,
+      border: this.props.isHost && "1px solid red"
     };
+    let image = "/music-placeholder.png";
+    if (playlist.images.length === 1) {
+      image = playlist.images[0].url;
+    } else if (playlist.images.length > 1) {
+      image = playlist.images[2].url;
+    }
+    // let backgroundStyle = {
+    //   backgroundImage: `url(${image})`,
+    //   height: "60px",
+    //   width: "60px"
+    // };
     return (
       <div className="playlist-section" style={containerStyle}>
+        <div className="queue-block" onClick={() => this.setActive()}>
+          <div className="cover">
+            <div className="playlist-image">
+              <img
+                src={image}
+                alt={`artwork for the playlist ${playlist.name}`}
+              />
+            </div>
+            <div className="playlist-name">
+              {playlist.name.split("").length > 10 ? (
+                <marquee direction="left" scrollamount="10" behavior="scroll">
+                  <h1 id="playlist-name">{playlist.name}</h1>
+                </marquee>
+              ) : (
+                <h1 id="playlist-name">{playlist.name}</h1>
+              )}
+              <h6>Songs {playlist.tracks.total}</h6>
+            </div>
+          </div>
+        </div>
         <CreateRoombutton
           className="playlist-body"
           userId={this.props.userId}
@@ -142,11 +168,6 @@ class Playlist extends React.Component {
           rooms={this.props.rooms}
           toggleQ={this.props.toggleQ}
         />
-        <div className="queue-block" onClick={() => this.setActive()}>
-          <div className="cover">
-            <h1>{this.props.playlist.name}</h1>
-          </div>
-        </div>
         <div className="playlist-body" style={bodyStyle}>
           {tracks}
         </div>

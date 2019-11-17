@@ -22,7 +22,9 @@ function CreateRoomButton({
     const roomsArray = rooms.map(e => ({
       id: Number(e.id),
       hostId: e.host.id,
-      roomName: e.roomName
+      roomName: e.roomName,
+      spotifyId: e.spotifyId,
+      room: { ...e }
     }));
     const newRoom = { hostId: userId, roomName: playlist.name };
     const idx = roomsArray.findIndex(
@@ -31,7 +33,14 @@ function CreateRoomButton({
     );
     toggleQ();
     if (idx > -1) {
-      const roomId = roomsArray[idx].id;
+      const { id: roomId, spotifyId, host } = roomsArray[idx].room;
+      debugger;
+      setRoom({
+        roomId,
+        host,
+        spotifyId
+      });
+      history.push(`/room/${roomId}`);
     } else {
       return createRoom({
         variables: {
@@ -56,12 +65,13 @@ function CreateRoomButton({
       style={{
         display: active ? "flex" : "none",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
+        color: "white"
       }}
       onClick={handleClick}
     >
       <LiveTvRounded style={{ fontSize: "1.5em" }} />
-      Start Station
+      Start Station from Playlist
     </div>
   );
 }

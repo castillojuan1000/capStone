@@ -11,7 +11,7 @@ const querySubcribe = client => {
   return client.watchQuery({
     query: GET_ALL_ROOMS,
     fetchPolicy: "cache-and-network",
-    pollInterval: 5000
+    pollingInterval: "30000"
   });
 };
 let QueueFilter = ({ name, isActive, onClick, color }) => {
@@ -40,8 +40,28 @@ class Queue extends React.Component {
     querySubcribe(this.props.client).subscribe({
       next: ({ data }) => {
         if (data !== undefined) {
-          const { getAllRooms: rooms } = data;
-          this.setState({ rooms });
+          let { getAllRooms: rooms } = data;
+          const { spotifyData } = this.props;
+          const roomPlaylistsIds = rooms.map(e => e.spotifyId);
+          const hostSpotifyIds = rooms.map(e => e.host.spotifyId);
+          Promise.all(
+            roomPlaylistsIds
+              .map(e => spotifyData.player.GetPlaylist(e))
+              .concat(
+                hostSpotifyIds.map(e => spotifyData.player.getUserProfile(e))
+              )
+          )
+            .then(results => {
+              const roomPlaylists = results.filter(e => e.type === "playlist");
+              const hosts = results.filter(e => e.type === "user");
+              rooms = rooms.map((e, i) => {
+                e.playlist = roomPlaylists[i];
+                e.host = hosts[i];
+                return e;
+              });
+              return rooms;
+            })
+            .then(rooms => this.setState({ rooms }));
         }
       },
       error: e => console.error(e)
@@ -139,10 +159,7 @@ class Queue extends React.Component {
       const isHost = this.props.user.id === Number(room.host.id);
       return (
         <Station
-          spotifyId={room.spotifyId}
-          host={room.host}
-          roomId={room.id}
-          roomName={room.roomName}
+          {...room}
           key={i}
           isHost={isHost ? 1 : 0}
           setRoom={this.props.setRoom}
@@ -188,7 +205,7 @@ class Queue extends React.Component {
       playlists = this.renderPlaylists();
     } else if (this.state.activeFilter === "Queue") {
       tracks = this.buildTracks();
-    } else if (this.state.activeFilter === "Stations") {
+    } else if (this.state.activeFilter === "Stations" && this.state.rooms) {
       stations = this.buildStations();
     }
     let ListItems = this.getFilterItems();

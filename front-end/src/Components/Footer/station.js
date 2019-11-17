@@ -41,26 +41,34 @@ class Station extends React.Component {
   };
 
   setActive = () => {
-    this.setState({
-      active: !this.state.active
-    });
-    const { isHost, host, roomId, roomName, spotifyId, setRoom } = this.props;
+    const {
+      isHost,
+      host,
+      id: roomId,
+      roomName,
+      spotifyId,
+      setRoom
+    } = this.props;
     setRoom({ roomId, roomName, spotifyId, host: { isHost, ...host } });
-    this.props.history.push("/room/" + this.props.roomId);
-  };
-  componentDidMount = () => {
-    this.setColor(this.props.image);
+    this.props.history.push("/room/" + roomId);
   };
 
   render = () => {
+    const { playlist } = this.props;
+    let image = "/music-placeholder.png";
+    if (playlist.images.length === 1) {
+      image = playlist.images[0].url;
+    } else if (playlist.images.length > 1) {
+      image = playlist.images[2].url;
+    }
     let bodyStyle = { height: "0em", background: "rgba(0,0,0, 0)" };
     let containerStyle = {
       backgroundSize: "800vw 800vw",
-      animation: "rotate 20s ease infinite",
-      background: `linear-gradient(160deg, 
-                ${this.state.colors.Vibrant}, 
-				${this.state.colors.DarkMuted})`,
-      border: this.props.isHost && "1px solid red"
+      animation: "rotate 20s ease infinite"
+      // background: `linear-gradient(160deg,
+      //           ${this.state.colors.Vibrant},
+      // 	${this.state.colors.DarkMuted})`,
+      // border: this.props.isHost && "1px solid red"
     };
     return (
       <div
@@ -70,7 +78,21 @@ class Station extends React.Component {
       >
         <div className="queue-block" onClick={() => this.setActive()}>
           <div className="cover">
-            <h1>{this.props.roomName}</h1>
+            <div className="playlist-image">
+              <img
+                src={image}
+                alt={`artwork for the playlist ${this.props.roomName}`}
+              />
+            </div>
+            <div className="playlist-name">
+              {this.props.roomName.split("").length > 10 ? (
+                <marquee direction="left" scrollamount="10" behavior="scroll">
+                  <h1 id="playlist-name">{this.props.roomName}</h1>
+                </marquee>
+              ) : (
+                <h1 id="playlist-name">{this.props.roomName}</h1>
+              )}
+            </div>
           </div>
         </div>
         <div className="playlist-body" style={bodyStyle}></div>

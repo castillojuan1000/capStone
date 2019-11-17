@@ -5,11 +5,19 @@ import { ThumbUpRounded } from "@material-ui/icons";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_ROOM, CREATE_LIKE } from "../../Apollo";
 import SongsCarousel from "../Blocks/songs/SongsCarousel";
+import SongFeatures from "../Blocks/songs/SongFeatures";
 
 function Room(props) {
   const { player, user, spotifyData } = props;
   const [roomState, setRoomState] = useState({
-    currentSong: { image: "", id: "", uri: "", name: "", artists: [] },
+    currentSong: {
+      image: "",
+      id: "",
+      uri: "",
+      name: "",
+      artists: [],
+      features: null
+    },
     songs: []
   });
   useEffect(() => {
@@ -19,8 +27,14 @@ function Room(props) {
       .then(results => {
         const songs = results.items.map(e => {
           const res = e.track;
-          const image = res.album["images"] ? res.album.images[1].url : "";
+          let image = "/music-placeholder.png";
+          if (res.album && res.album.images.length > 1) {
+            image = res.album.images[1].url;
+          } else if (res.album.images.length === 1) {
+            image = res.album.image[0].url;
+          }
           return {
+            duration: res.duration_ms,
             artists: res.artists,
             name: res.name,
             image,
@@ -28,7 +42,22 @@ function Room(props) {
             uri: res.uri
           };
         });
-        setRoomState(s => ({ ...s, songs: songs }));
+        return songs;
+      })
+      .then(songs => {
+        spotifyData.player
+          .getTrackFeatures(`?ids=${songs.map(e => e.id)}`)
+          .then(res => {
+            const newSongs = songs.map((e, i) => {
+              e.features = res["audio_features"][i];
+              return e;
+            });
+            setRoomState(s => ({
+              ...s,
+              currentSong: { ...songs[0] },
+              songs: newSongs
+            }));
+          });
       });
     return () => aborter.abort(songsFetcher);
   }, [setRoomState, user, spotifyData]);
@@ -80,6 +109,7 @@ function Room(props) {
   const buildHostInfo = () => {
     console.log(host);
   };
+  const { currentSong } = roomState;
   const currentSongLikes = likes.filter(e => e.spotifyId === roomState.id)
     .length;
   return (
@@ -91,34 +121,20 @@ function Room(props) {
         <HostInfo spotifyData={spotifyData} host={host} />
       </div>
       <div className="room-stats">
-        <SongsCarousel
-          {...{
-            spotifyData,
-            likes,
-            id,
-            user,
-            handleCreateLikeClick,
-            roomState,
-            setRoomState
-          }}
-        />
-        {/* <div className="likes-container">
-        </div> */}
-        <div className="currentSong-stats"></div>
-        <div className="room-buttons">
-          {currentSongLikes > 0 && (
-            <div className="room-buttons-likes">{currentSongLikes}</div>
-          )}
-          <ThumbUpRounded
-            style={{
-              color: "#28a745",
-              fontSize: "1.8em",
-              marginLeft: "2px",
-              cursor: "pointer"
+        <div className="room-songs" style={{ overflowY: "scroll" }}>
+          <SongsCarousel
+            {...{
+              spotifyData,
+              likes,
+              id,
+              user,
+              handleCreateLikeClick,
+              roomState,
+              setRoomState
             }}
-            onClick={() => handleCreateLikeClick(id, user.id, roomState.id)}
           />
         </div>
+        <SongFeatures song={currentSong} color={player.colors.darkVibrant} />
       </div>
     </MainRoom>
   );
@@ -166,7 +182,6 @@ const MainRoom = styled.div`
   padding: 30px;
   background: ${props =>
     `linear-gradient(160deg, ${props.color} 15%, rgba(0,0,0, 0.9) 70%)`};
-
   h1,
   h3,
   h5 {
@@ -192,26 +207,14 @@ const MainRoom = styled.div`
   }
   .roomInfo {
     display: flex;
-    height: 25%;
   }
-  .room-player {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem -2rem;
-    .room-art-image {
+  .song-image {
+    max-width: 60px;
+    max-height: 60px;
+    img {
       border-radius: 5px;
-    }
-  }
-  .room-buttons {
-    align-self: center;
-    display: flex;
-    align-items: center;
-    .room-buttons-likes {
-      font-weight: bold;
-      font-size: 1rem;
-      color: grey;
+      height: 100%;
+      width: 100%;
     }
   }
   .room-host {
@@ -235,10 +238,53 @@ const MainRoom = styled.div`
       font-weight: bold;
     }
   }
+
   .room-stats {
-    flex-grow: 1;
-    min-width: 40%;
+    display: flex;
+    height: 40vh;
+    border-radius: 5px;
+    .room-songs {
+      flex-grow: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      align-self: flex-start;
+      margin: 2em 1em;
+      background-color: rgba(0, 0, 0, 0.5);
+      .room-song {
+        background-color: rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        display: flex;
+        margin: 1px 1rem;
+        width: 100%;
+        justify-content: space-evenly;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        &.active {
+          background-color: ${({ color }) => (color ? color : "red")};
+        }
+        .song-name {
+          flex-grow: 2;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          h3 {
+            font-size: 1rem;
+            font-weight: 200;
+            width: 100px;
+            &.name {
+              width: fit-content;
+              font-size: 1.5rem;
+              font-weight: 300;
+            }
+          }
+        }
+      }
+    }
   }
+
   .likes-container {
     height: 40%;
     width: 40%;

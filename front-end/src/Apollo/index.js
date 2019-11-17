@@ -43,6 +43,7 @@ export const GET_ALL_ROOMS = gql`
       spotifyId
       host {
         id
+        spotifyId
       }
     }
   }
