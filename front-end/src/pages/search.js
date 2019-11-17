@@ -215,7 +215,7 @@ class SearchSection extends React.Component {
           })
         );
       });
-    } else if ((active, this.state.isPlaying === false)) {
+    } else if (active && this.state.isPlaying === false) {
       ResumePlayer();
     } else {
       StopPlayer();
@@ -286,8 +286,7 @@ class SearchSection extends React.Component {
         this.props.searchState.result.tracks.items
           .slice(0, 5)
           .forEach((track, idx) => {
-            let active =
-              this.props.player.currentSong.uri === track.uri ? true : false;
+            let active = this.props.player.currentSong.uri === track.uri;
             tracks.push(
               <Song
                 key={`song-${idx}`}

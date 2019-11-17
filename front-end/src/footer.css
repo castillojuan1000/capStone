@@ -431,6 +431,7 @@ h6 {
   align-content: center;
   align-items: center;
   justify-content: flex-start;
+  text-align: center;
 }
 
 .cover h1 {
@@ -484,13 +485,32 @@ h6 {
 }
 
 .playlist-name {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   height: 100%;
-  flex-grow: 2;
+  width: 75%;
+}
+
+#marquee {
+  z-index: 1;
+  animation: marquee 8s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 .playlist-image {
   height: 100%;
   min-width: 60px;
   min-height: 60px;
+  z-index: 2;
 }
 .playlist-image img {
   max-width: 60px;

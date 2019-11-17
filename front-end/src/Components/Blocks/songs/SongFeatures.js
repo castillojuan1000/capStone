@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useSpring, useTrail } from "react-spring";
-import { Spring } from "react-spring/renderprops";
-import { LinearProgress } from "@material-ui/core";
 export default function SongFeatures(props) {
   const { song } = props;
-  const [state, setState] = useState({
-    energy: 0,
-    danceability: 0
-  });
   return (
     <SongFeaturesDiv>
       {song.features && (

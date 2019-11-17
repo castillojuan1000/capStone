@@ -17,7 +17,6 @@ function CreateRoomButton({
   setRoom
 }) {
   const [createRoom] = useMutation(CREATE_ROOM);
-  const { player } = spotifyData;
   const handleClick = () => {
     const roomsArray = rooms.map(e => ({
       id: Number(e.id),

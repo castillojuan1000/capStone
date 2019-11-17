@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { ThumbUpRounded } from "@material-ui/icons";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { GET_ROOM, CREATE_LIKE } from "../../Apollo";
 import SongsCarousel from "../Blocks/songs/SongsCarousel";
@@ -18,7 +17,8 @@ function Room(props) {
       artists: [],
       features: null
     },
-    songs: []
+    songs: [],
+    playlistTracks: []
   });
   useEffect(() => {
     const aborter = new AbortController();
@@ -27,6 +27,10 @@ function Room(props) {
       .then(results => {
         const songs = results.items.map(e => {
           const res = e.track;
+          setRoomState(s => ({
+            ...s,
+            playlistTracks: [...s.playlistTracks, e]
+          }));
           let image = "/music-placeholder.png";
           if (res.album && res.album.images.length > 1) {
             image = res.album.images[1].url;
@@ -62,7 +66,7 @@ function Room(props) {
     return () => aborter.abort(songsFetcher);
   }, [setRoomState, user, spotifyData]);
   const id = Number(props.match.params.id);
-  const [createLike, { data: likesData }] = useMutation(CREATE_LIKE);
+  const [createLike] = useMutation(CREATE_LIKE);
   const { loading, error, data } = useQuery(GET_ROOM, {
     variables: { id },
     pollInterval: 0,
@@ -79,13 +83,13 @@ function Room(props) {
     );
   }
   const { getRoom } = data;
-  const { host, spotifyId } = getRoom;
-  let messages = getRoom.messages.map(m => {
-    return {
-      author: m.user.username,
-      message: m.message
-    };
-  });
+  const { host } = getRoom;
+  // let messages = getRoom.messages.map(m => {
+  //   return {
+  //     author: m.user.username,
+  //     message: m.message
+  //   };
+  // });
   const likes = getRoom.likes.map(like => {
     return {
       spotifyId: like.spotifyId,
@@ -93,7 +97,19 @@ function Room(props) {
       roomId: like.room.id
     };
   });
-
+  const playSongRoom = uri => {
+    const idx = roomState.playlistTracks.findIndex(e => e.track.uri === uri);
+    const selectedSong = roomState.playlistTracks[idx];
+    setRoomState(s => ({ ...s, currentSong: { ...s.songs[idx] } }));
+    const newQueue = [
+      selectedSong,
+      ...roomState.playlistTracks.slice(0, idx),
+      ...roomState.playlistTracks.slice(idx + 1)
+    ];
+    const newQueueURI = JSON.stringify(newQueue.map(e => e.track.uri));
+    props.spotifyData.player.playSong(newQueueURI);
+    props.ResetQueue(newQueue);
+  };
   const handleCreateLikeClick = (roomId, userId, spotifyId) => {
     const like = {
       roomId,
@@ -106,31 +122,29 @@ function Room(props) {
     if (idx > -1) return;
     return createLike({ variables: { ...like } });
   };
-  const buildHostInfo = () => {
-    console.log(host);
-  };
+
   const { currentSong } = roomState;
-  const currentSongLikes = likes.filter(e => e.spotifyId === roomState.id)
-    .length;
   return (
     <MainRoom color={player.colors.darkVibrant}>
-      <div className="main_room_header">
+      {/* <div className="main_room_header">
         <h1>{user.room.roomName}</h1>
-      </div>
-      <div className="roomInfo">
+      </div> */}
+      <div className="room-host">
         <HostInfo spotifyData={spotifyData} host={host} />
       </div>
       <div className="room-stats">
         <div className="room-songs" style={{ overflowY: "scroll" }}>
           <SongsCarousel
             {...{
+              playSongRoom,
               spotifyData,
               likes,
               id,
               user,
               handleCreateLikeClick,
               roomState,
-              setRoomState
+              setRoomState,
+              player
             }}
           />
         </div>
@@ -161,25 +175,35 @@ const HostInfo = ({ spotifyData, host }) => {
       setState(hostObject);
     });
   }, [spotifyData, setState, host]);
+  let bannerStyle = { backgroundImage: `url('${state.image}')` };
   return (
     <>
-      <div className="room-host">
-        <h1>{state.displayName}</h1>
-        <a className="host-avatar" href={state.externalUrl}>
-          <img src={state.image} alt="" />
-        </a>
-        <h5>Followers {state.followers}</h5>
-        <button className="host-follow-button">Follow</button>
+      <div className="host-top-section">
+        <div className="host-left-section">
+          <div className="host-banner" style={bannerStyle}></div>
+        </div>
+        <div className="host-description">
+          <h1>{state.displayName}</h1>
+          <div className="host-button">
+            <div>
+              <button className="btn btn-secondary">Follow</button>
+            </div>
+          </div>
+          <h3>Followers {state.followers}</h3>
+        </div>
       </div>
     </>
   );
 };
 
 const MainRoom = styled.div`
-  width: 100vw;
   height: 90vh;
-  margin: auto;
-  padding: 30px;
+  width: 100%;
+  padding-left: 4%;
+  padding-right: 1%;
+  display: flex;
+  flex-direction: row;
+  transition: all 1s;
   background: ${props =>
     `linear-gradient(160deg, ${props.color} 15%, rgba(0,0,0, 0.9) 70%)`};
   h1,
@@ -207,35 +231,66 @@ const MainRoom = styled.div`
   }
   .roomInfo {
     display: flex;
+    align-items: flex-start;
   }
   .song-image {
-    max-width: 60px;
-    max-height: 60px;
+    width: 60px;
+    height: 60px;
+    z-index: 2;
     img {
       border-radius: 5px;
-      height: 100%;
-      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
     }
   }
   .room-host {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    img {
-      border-radius: 50%;
-      width: 100px;
+    .host-left-section {
+      padding-top: 5%;
+      height: 100%;
+      .host-banner {
+        height: 18em;
+        width: 18em;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 50%;
+      }
     }
-    .host-follow-button {
-      width: 200px;
-      border: none;
-      border-radius: 25px;
-      padding: 10px 16px;
-      background-color: #1db954;
-      color: #191414;
-      font-size: 1.5rem;
-      line-height: 1rem;
-      font-family: Helvetica;
-      font-weight: bold;
+    .host-top-section {
+      width: 30vw;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: rgba(0, 0, 0, 0);
+    }
+    .host-left-section {
+      width: 100%;
+      width: 30vw;
+      height: 50%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+    .host-description {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .host-buttons {
+      width: 70%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      padding-right: 10%;
+      padding-top: 5%;
+      padding-left: 10%;
+      align-items: center;
+      flex-wrap: nowrap;
     }
   }
 
@@ -246,20 +301,21 @@ const MainRoom = styled.div`
     .room-songs {
       flex-grow: 2;
       height: 100%;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       align-self: flex-start;
-      margin: 2em 1em;
+      margin: 2em 0;
       background-color: rgba(0, 0, 0, 0.5);
       .room-song {
         background-color: rgba(0, 0, 0, 0.5);
         cursor: pointer;
         display: flex;
-        margin: 1px 1rem;
+        margin: 1px 0;
         width: 100%;
-        justify-content: space-evenly;
+        justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #333;
         &.active {
@@ -273,12 +329,14 @@ const MainRoom = styled.div`
           h3 {
             font-size: 1rem;
             font-weight: 200;
-            width: 100px;
             &.name {
               width: fit-content;
               font-size: 1.5rem;
               font-weight: 300;
             }
+          }
+          a {
+            color: inherit;
           }
         }
       }
@@ -306,7 +364,10 @@ const mapState = state => {
 };
 const mapDispatch = dispatch => {
   return {
-    setRoom: payload => dispatch({ type: "SET_ROOM", payload })
+    setRoom: payload => dispatch({ type: "SET_ROOM", payload }),
+    ResetQueue: payload => {
+      dispatch({ type: "RESET_PLAYER_QUEUE", payload });
+    }
   };
 };
 export default connect(mapState, mapDispatch)(Room);

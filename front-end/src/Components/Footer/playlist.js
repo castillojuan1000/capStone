@@ -4,7 +4,6 @@ import * as Vibrant from "node-vibrant";
 import CreateRoombutton from "./CreateRoomButton";
 import { getColor } from "../../utilityFunctions/util.js";
 import Song from "../../Components/Blocks/songshort";
-import { animated } from "react-spring";
 class Playlist extends React.Component {
   constructor(props) {
     super(props);
@@ -150,11 +149,9 @@ class Playlist extends React.Component {
             </div>
             <div className="playlist-name">
               {playlist.name.split("").length > 10 ? (
-                <marquee direction="left" scrollamount="10" behavior="scroll">
-                  <h1 id="playlist-name">{playlist.name}</h1>
-                </marquee>
+                <h1 id="marquee">{playlist.name}</h1>
               ) : (
-                <h1 id="playlist-name">{playlist.name}</h1>
+                <h1>{playlist.name}</h1>
               )}
               <h6>Songs {playlist.tracks.total}</h6>
             </div>
