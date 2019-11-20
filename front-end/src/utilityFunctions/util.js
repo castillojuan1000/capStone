@@ -42,7 +42,7 @@ export const StoreAPIToken = () => {
 	}
 };
 
-export const setupSpotify = (client_id) => {
+export const setupSpotify = client_id => {
 	var response_type = 'token';
 	var redirect_uri = window.location.origin + '/login';
 	var scope = [
@@ -53,7 +53,9 @@ export const setupSpotify = (client_id) => {
 		'user-modify-playback-state',
 		'user-top-read',
 		'user-library-read',
-		'user-library-modify'
+		'user-library-modify',
+		'playlist-modify-public',
+		'playlist-modify-private'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;

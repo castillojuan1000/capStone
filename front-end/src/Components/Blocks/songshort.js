@@ -1,30 +1,20 @@
 import React from 'react';
 import '../../App.css';
-import {
-	PlayArrowRounded,
-	PauseRounded
-} from '@material-ui/icons';
-
-let Song = ({
-	song,
-	idx,
-	handleClick,
-	active,
-	isPlaying,
-	searchState,
-}) => {
+import { PlayArrowRounded, PauseRounded } from '@material-ui/icons';
+import { connect } from 'react-redux';
+let Song = ({ song, idx, handleClick, active, isPlaying, searchState }) => {
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
 			<PauseRounded style={{ fontSize: '.8em' }} />
 		) : (
-				<PlayArrowRounded style={{ fontSize: '.8em' }} />
-			);
-	if (!typeof variable === "boolean" && song['added_at']) {
-		song = song.track
+			<PlayArrowRounded style={{ fontSize: '.8em' }} />
+		);
+	if (!typeof variable === 'boolean' && song['added_at']) {
+		song = song.track;
 	}
-	console.debug(song, 'sss')
-	let artist = song.artist
+	console.debug(song, 'sss');
+	let artist = song.artist;
 	//let artist = song.artist ? <h5>{song.artists[0].name}</h5> : <h5></h5>;
 	let image =
 		song.album !== undefined && song.album.images.length > 0
@@ -47,5 +37,7 @@ let Song = ({
 		</div>
 	);
 };
-
-export default Song;
+const mapState = state => {
+	return { ...state };
+};
+export default connect(mapState, null)(Song);

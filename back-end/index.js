@@ -27,7 +27,7 @@ apolloServ.applyMiddleware({ app });
 // *** Attaching middleware for Express
 if (process.env.NODE_ENV !== 'production') {
 	app.use(express.static(__dirname + './../front-end/build'));
-	app.get('*', function(request, response) {
+	app.get('*', function (request, response) {
 		response.sendFile('index.html', { root: './../front-end/build' });
 	});
 }
@@ -45,7 +45,7 @@ app.use(
 myStore.sync();
 app.use(authServer(db));
 if (process.env.NODE_ENV === 'development') {
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
 			req.path === '/api/login' ||
@@ -93,12 +93,12 @@ app.post('/api/createroom/', (req, res) => {
 //! CHARTROOM SERVER
 var http = require('http').createServer(app);
 http.listen(process.env.PORT || 3000, () =>
-	console.log('Server running! \n http://localhost:3000')
+	console.log('Server running! \n http://localhost:' + process.env.PORT)
 );
 var io = require('socket.io')(http);
 io.origins('*:*');
 io.of('/rooms').on('connection', socket => {
-	socket.on('JOIN_ROOM', function(data) {
+	socket.on('JOIN_ROOM', function (data) {
 		const { roomId } = data;
 		socket.join(`room${roomId}`);
 	});
@@ -106,7 +106,7 @@ io.of('/rooms').on('connection', socket => {
 	//once it get then "chat" message it will call the function
 
 	//! save the messages to the data base
-	socket.on('SEND_MESSAGE', function(data) {
+	socket.on('SEND_MESSAGE', function (data) {
 		console.log(data)
 		db.message.create({
 			userId: data.authorId,
@@ -117,7 +117,7 @@ io.of('/rooms').on('connection', socket => {
 		socket.to(`room${data.roomId}`).emit('RECEIVE_MESSAGE', data);
 	});
 
-	socket.on('typing', function(data) {
+	socket.on('typing', function (data) {
 		// this is broadcasting the message once a person is typing but not to the person typing the message
 		socket.emit('typing', data);
 	});

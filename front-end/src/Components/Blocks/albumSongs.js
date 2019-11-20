@@ -3,11 +3,22 @@ import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded';
 import PauseRoundedIcon from '@material-ui/icons/PauseRounded';
+import { IconButton } from '@material-ui/core';
+import { AddCircleOutline } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import { getSongSeconds } from '../../utilityFunctions/util.js';
 
-let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
+let Song = ({
+	song,
+	idx,
+	handleClick,
+	active,
+	isPlaying,
+	image,
+	user,
+	spotifyData
+}) => {
 	let hoverClass = active ? 'song-hover-state active' : 'song-hover-state';
 	let playIcon =
 		active && isPlaying ? (
@@ -29,8 +40,13 @@ let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
 	let explicit = song.explicit ? (
 		<h5 className='explicit-tag'>EXPLICIT</h5>
 	) : (
-			''
-		);
+		''
+	);
+	const addSongToPlaylist = (uri, playlistId) => {
+		spotifyData.player.AddSongToPlaylist(playlistId, uri).then(res => {
+			debugger;
+		});
+	};
 	let backgroundStyle = { backgroundImage: `url(${image})` };
 	return (
 		<div key={idx} className='song-block'>
@@ -51,6 +67,15 @@ let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
 			<div className='song-action'>
 				<FavoriteRoundedIcon />
 				<MoreHorizRoundedIcon />
+				{user.room && user.room.host['isHost'] && (
+					<IconButton
+						color='inherit'
+						onClick={() => {
+							addSongToPlaylist(song.uri, user.room.spotifyId);
+						}}>
+						<AddCircleOutline />
+					</IconButton>
+				)}
 			</div>
 			<div className='song-duration'>
 				<div>
@@ -60,5 +85,7 @@ let Song = ({ song, idx, handleClick, active, isPlaying, image }) => {
 		</div>
 	);
 };
-
-export default Song;
+const mapState = state => {
+	return { ...state };
+};
+export default connect(mapState, null)(Song);
