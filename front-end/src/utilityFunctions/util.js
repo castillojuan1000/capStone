@@ -55,7 +55,9 @@ export const setupSpotify = client_id => {
 		'user-library-read',
 		'user-library-modify',
 		'playlist-modify-public',
-		'playlist-modify-private'
+		'playlist-modify-private',
+		'user-follow-read',
+		'user-follow-modify'
 	].join(' ');
 	var url = `https://accounts.spotify.com/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=${response_type}`;
 	window.location = url;

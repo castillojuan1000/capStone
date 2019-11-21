@@ -174,7 +174,6 @@ class Footer extends React.Component {
     console.log(socketId);
     const { user } = this.props;
     const { room } = user;
-    debugger;
     this.socket.emit("REQUEST_PLAYER_STATE", {
       socketId,
       roomId: room.roomId,
@@ -380,11 +379,11 @@ class Footer extends React.Component {
       }
     });
     player.addListener("ready", ({ device_id }) => {
-      if (this.props.user && !this.props.user.spotifyId) {
+      if (this.props.user && this.props.user.spotifyId === null) {
         this.props.spotifyData.player.getMyProfile().then(data => {
           const { id } = data;
           fetch("/api/update", {
-            method: "POST",
+            method: "PATCH",
             body: JSON.stringify({ spotifyId: id }),
             headers: {
               "content-type": "application/json"

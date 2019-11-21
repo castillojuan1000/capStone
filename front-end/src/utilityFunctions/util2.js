@@ -174,7 +174,7 @@ export class Spotify {
 		return this.GET(url, 'got Followed Artists');
 	};
 
-	isFollowingUser = (type, ids) => {
+	isFollowing = (type, ids) => {
 		let url = `https://api.spotify.com/v1/me/following/contains?type=${type}&ids=${ids}`;
 		return this.GET(url, 'got if you are following user');
 	};

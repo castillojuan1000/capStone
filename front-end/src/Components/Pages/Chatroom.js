@@ -11,9 +11,10 @@ class Chatroom extends Component {
 			username: this.props.username || '',
 			message: '',
 			messages: this.props.messages || [],
-			currentTyper: ''
+			currentTyper: '',
+			avatar: ''
 		};
-		this.socket = io('http://127.0.0.1:4000/rooms')
+		this.socket = io('http://127.0.0.1:4000/rooms');
 		this.socket.on('connect', function(data) {
 			joinRoom();
 		});
@@ -36,11 +37,23 @@ class Chatroom extends Component {
 		// when a user sends a message in the chatroom it will display the author and message
 		this.sendMessage = ev => {
 			ev.preventDefault();
+			const prevMessages = this.state.messages.filter(
+				e => Number(e.authorId) === Number(this.props.user.id)
+			);
+			let image = `https://avatars.dicebear.com/v2/initials/${this.props.user
+				.username[0] +
+				this.props.user
+					.username[1]}.svg?options[backgroundColors][]=grey&options[backgroundColorLevel]=500&options[fontSize]=29&options[bold]=1`;
+			if (prevMessages.length > 1) {
+				image = prevMessages[0].image;
+			}
 			const message = {
 				author: this.props.user.username,
 				authorId: this.props.user.id,
 				message: this.state.message,
-				roomId: this.props.roomId
+				roomId: this.props.roomId,
+				spotifyId: this.props.user.spotifyId,
+				image
 			};
 			this.socket.emit('SEND_MESSAGE', message);
 			this.setState({
@@ -65,6 +78,25 @@ class Chatroom extends Component {
 	};
 	componentDidMount() {
 		this.scrollToBottom();
+		if (this.state.messages.length > 1) {
+			const userIds = this.state.messages.map(e => e.spotifyId);
+			Promise.all(
+				userIds.map(e => this.props.spotifyData.player.getUserProfile(e))
+			).then(results => {
+				const messages = this.state.messages.map((e, i) => {
+					const targetResult = results[i];
+					e.image = `https://avatars.dicebear.com/v2/initials/${targetResult
+						.display_name[0] +
+						targetResult
+							.display_name[1]}.svg?options[backgroundColors][]=grey&options[backgroundColorLevel]=500&options[fontSize]=29&options[bold]=1`;
+					if (targetResult.images.length >= 1) {
+						e.image = targetResult.images[0];
+					}
+					return e;
+				});
+				this.setState({ messages: [...messages] });
+			});
+		}
 	}
 	componentDidUpdate() {
 		this.scrollToBottom();
@@ -72,7 +104,7 @@ class Chatroom extends Component {
 
 	render() {
 		return (
-			<div className='main-chatroom'>
+			<div className={'main-chatroom' + this.props.className}>
 				<div className='chat'>
 					<div className='chat-title'>
 						<h1>Chat room</h1>
@@ -97,10 +129,7 @@ class Chatroom extends Component {
 							return (
 								<div className='message new' key={i}>
 									<figure className='avatar'>
-										<img
-											src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg'
-											alt=''
-										/>
+										<img src={message['image'] && message.image} alt='' />
 									</figure>
 									{message.author}:
 									<br />
@@ -140,7 +169,4 @@ class Chatroom extends Component {
 const mapState = state => {
 	return { ...state };
 };
-export default connect(
-	mapState,
-	null
-)(Chatroom);
+export default connect(mapState, null)(Chatroom);

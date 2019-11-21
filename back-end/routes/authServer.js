@@ -94,7 +94,6 @@ module.exports = function(db) {
 
 	router.post('/api/token', (req, res) => {
 		const refreshToken = req.body.refreshToken || req.query.refreshToken;
-		const accessToken = req.body.accessToken || req.query.accessToken;
 		if (refreshToken === null) {
 			return res.sendStatus(401).json({ message: 'Must pass a token' });
 		}
@@ -110,12 +109,15 @@ module.exports = function(db) {
 				if (user === null) {
 					return res.sendStatus(401);
 				}
+				const accessUser = {
+					username: user.username,
+					email: user.email,
+					id: user.id,
+					spotifyId: user.spotifyId
+				};
 				const accessToken = createToken({
 					data: {
-						email: user.email,
-						id: user.id,
-						username: user.username,
-						spotifyId: user.spotifyId
+						...accessUser
 					},
 					secret: 'ACCESS'
 				});
@@ -124,13 +126,13 @@ module.exports = function(db) {
 						accessToken,
 						refreshToken
 					},
-					data: { email: user.email, id: user.id, username: user.username }
+					data: { ...accessUser }
 				});
 			});
 		});
 	});
 
-	router.post('/api/update', (req, res) => {
+	router.patch('/api/update', (req, res) => {
 		verifyToken(
 			req.session.jwtToken.accessToken,
 			'ACCESS_TOKEN',
