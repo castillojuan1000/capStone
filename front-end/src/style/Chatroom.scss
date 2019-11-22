@@ -122,7 +122,6 @@ Messages
 	overflow: hidden;
 	position: relative;
 	width: 100%;
-
 	& .messages-content {
 		position: absolute;
 		top: 0;
@@ -143,7 +142,6 @@ Messages
 		margin-left: 35px;
 		position: relative;
 		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-
 		.timestamp {
 			position: absolute;
 			bottom: -15px;
@@ -185,7 +183,6 @@ Messages
 			text-align: right;
 			background: linear-gradient(120deg, #248a52, #257287);
 			border-radius: 10px 10px 0 10px;
-
 			&::before {
 				left: auto;
 				right: 0;

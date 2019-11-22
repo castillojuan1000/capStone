@@ -126,8 +126,12 @@ class Chatroom extends Component {
 						className='messages'
 						style={{ overflowY: 'scroll', scrollbarColor: 'yellow blue' }}>
 						{this.state.messages.map((message, i) => {
+							const className =
+								Number(message.authorId) === Number(this.props.user.id)
+									? ' message-personal'
+									: '';
 							return (
-								<div className='message new' key={i}>
+								<div className={'message new' + className} key={i}>
 									<figure className='avatar'>
 										<img src={message['image'] && message.image} alt='' />
 									</figure>

@@ -37,11 +37,12 @@ export default function SongCarousel({
 	};
 	return <ArtworkJSX />;
 }
-function millisToMinutesAndSeconds(millis) {
-	var minutes = Math.floor(millis / 60000);
-	var seconds = ((millis % 60000) / 1000).toFixed(0);
-	return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-}
+
+// function millisToMinutesAndSeconds(millis) {
+// 	var minutes = Math.floor(millis / 60000);
+// 	var seconds = ((millis % 60000) / 1000).toFixed(0);
+// 	return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+// }
 
 // <div className="song-image" onClick={() => playSongRoom(i)}>
 //   <img src={currentSong.image} alt={`${currentSong.name} artwork`} />

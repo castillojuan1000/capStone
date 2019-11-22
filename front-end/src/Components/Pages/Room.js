@@ -93,7 +93,7 @@ function Room(props) {
 			author: m.user.username,
 			spotifyId: m.user.spotifyId,
 			message: m.message,
-			authorId : m.user.id
+			authorId: m.user.id
 		};
 	});
 	const likes = getRoom.likes.map(like => {
@@ -190,6 +190,7 @@ const HostInfo = ({ spotifyData, host, user }) => {
 		image: '',
 		isFollowed: false
 	});
+	const { isHost } = user.room.host;
 	useEffect(() => {
 		Promise.all([
 			spotifyData.player.getUserProfile(host.spotifyId),
@@ -197,7 +198,7 @@ const HostInfo = ({ spotifyData, host, user }) => {
 		]).then(results => {
 			const [userData, isFollowingHost] = results;
 			let isFollowing = isFollowingHost[0];
-			if (user.room.host.isHost) {
+			if (isHost) {
 				isFollowing = true;
 			}
 			const image = userData.images.length
@@ -214,7 +215,7 @@ const HostInfo = ({ spotifyData, host, user }) => {
 			};
 			setState(hostObject);
 		});
-	}, [spotifyData, setState, host]);
+	}, [spotifyData, setState, host, isHost]);
 	const followHost = () => {
 		if (!state.isFollowed) {
 			spotifyData.player.followArtist('user', host.spotifyId).then(results => {
