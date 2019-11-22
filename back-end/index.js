@@ -44,7 +44,7 @@ app.use(
 );
 myStore.sync();
 app.use(authServer(db));
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'development') {
 	app.use(function(req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
