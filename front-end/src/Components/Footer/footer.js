@@ -96,8 +96,7 @@ class Footer extends React.Component {
     this.startTimer = this.startTimer.bind(this);
     this.setColor = this.setColor.bind(this);
     // *** SOCKET CONNECTION TO SYNC WITH HOST
-    this.socket =
-      process.env.NODE_ENV === "development" ? io("localhost:4000") : io("/");
+    this.socket =io("/");
     this.socket.on("SYNC_PLAYER", data => {
       const { user } = this.props;
       const { room } = user;
