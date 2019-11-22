@@ -49,6 +49,7 @@ export const setupSpotify = client_id => {
 		'user-read-playback-state',
 		'streaming',
 		'user-read-private',
+		'user-read-email',
 		'user-read-currently-playing',
 		'user-modify-playback-state',
 		'user-top-read',
