@@ -1,13 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-back-end/node_modules
-front-end/node_modules
-back-end/.env
+node_modules/
+client/node_modules
+
 front-end/.env
+client/.env
 /.pnp
 .pnp.js
 front-end/build/
+client/build/
 # testing
 /coverage
 
@@ -24,10 +26,7 @@ front-end/build/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/back-end/.env
-/front-end/.env
-/front-end/build/
-../back-end/.env
-back-end/.env
-front-end/src/.env
-back-end/.env
+client/.env
+client/build/
+client/src/.env
+.env

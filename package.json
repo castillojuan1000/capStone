@@ -1,26 +1,39 @@
 {
-	"name": "justmusic",
+	"name": "justmusic.live",
 	"version": "1.0.0",
 	"description": "",
-	"main": "./back-end/index.js",
+	"main": "index.js",
 	"scripts": {
+		"client": "cd client && npm start",
+		"server": "nodemon index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "cd back-end && node index.js",
-		"heroku-postbuild": "cd front-end && npm install && npm run build && cd ../back-end && npm install"
+		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"build": "cd client && npm run build"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/castillojuan1000/capStone.git"
-	},
-	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/castillojuan1000/capStone/issues"
-	},
-	"homepage": "https://github.com/castillojuan1000/capStone#readme",
 	"dependencies": {
-		"sequelize": "^5.21.2"
+		"apollo-server-express": "^2.9.7",
+		"bcryptjs": "^2.4.3",
+		"body-parser": "^1.19.0",
+		"connect-session-sequelize": "^6.0.0",
+		"cookie-parser": "^1.4.4",
+		"crypto": "^1.0.1",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"express-session": "^1.17.0",
+		"faker": "^4.1.0",
+		"jsonwebtoken": "^8.5.1",
+		"lodash": "^4.17.15",
+		"path": "^0.12.7",
+		"pg": "^7.12.1",
+		"sequelize": "^5.21.1",
+		"sequelize-cli": "^5.5.1",
+		"socketio": "^1.0.0"
 	},
-	"proxy": "http://127.0.0.1:4000"
+	"devDependencies": {
+		"concurrently": "^5.0.0",
+		"sequelize": "^5.21.1",
+		"sequelize-auto-migration": "0.0.7"
+	}
 }
