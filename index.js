@@ -9,6 +9,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
 const authServer = require('./routes/authServer');
 const createUsers = require('./fakerData');
+const path = require('path');
 const app = express();
 const myStore = new SequelizeStore({
 	db: db.sequelize
@@ -27,9 +28,10 @@ apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static(__dirname + './client/build'));
+	app.use(express.static(__dirname + '/client/build'));
+	console.log(__dirname);
 	app.get('*', function(request, response) {
-		response.sendFile('index.html', { root: './client/build' });
+		response.sendFile(path.join(__dirname, '/client/build/', 'index.html'));
 	});
 }
 app.use(bodyParser.urlencoded({ extended: false }));
