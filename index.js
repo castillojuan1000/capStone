@@ -54,7 +54,8 @@ if (process.env.NODE_ENV !== 'development') {
 			req.path === '/api/login' ||
 			req.path === '/api/signup' ||
 			req.path === '/api/token' ||
-			req.path === '/auth/spotify'
+			req.path === '/auth/spotify' ||
+			req.path === '/webhook/github'
 		) {
 			return next();
 		}
