@@ -27,9 +27,9 @@ apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static(__dirname + './front-end/build'));
+	app.use(express.static(__dirname + './client/build'));
 	app.get('*', function(request, response) {
-		response.sendFile('index.html', { root: './front-end/build' });
+		response.sendFile('index.html', { root: './client/build' });
 	});
 }
 app.use(bodyParser.urlencoded({ extended: false }));
