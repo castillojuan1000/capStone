@@ -3,7 +3,8 @@ const initialState = {
 	id: '',
 	username: '',
 	isLoggedIn: false,
-	room: null
+	room: null,
+	spotifyId: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -11,6 +12,7 @@ const authReducer = (state = initialState, action) => {
 	switch (type) {
 		case 'LOGIN':
 			return {
+				...initialState,
 				...payload,
 				room: null
 			};

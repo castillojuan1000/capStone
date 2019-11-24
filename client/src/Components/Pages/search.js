@@ -1,5 +1,5 @@
 import React from "react";
-import { searchArray } from "../utilityFunctions/util.js";
+import { searchArray } from "../../utilityFunctions/util.js";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import ClearRoundedIcon from "@material-ui/icons/ClearRounded";
 import {
@@ -8,13 +8,13 @@ import {
   StopPlayer,
   ResumePlayer,
   getAlbumTracks
-} from "../utilityFunctions/util.js";
+} from "../../utilityFunctions/util.js";
 import { withRouter } from "react-router-dom";
-import Artist from "../Components/Blocks/artist";
-import Album from "../Components/Blocks/album";
-import Song from "../Components/Blocks/songs/songs";
+import Artist from "../Blocks/artist";
+import Album from "../Blocks/album";
+import Song from "../Blocks/songs/songs";
 
-import "../App.css";
+import "../../App.css";
 
 let searchFilters = ["Top Results", "Artist", "Album", "Track"];
 
@@ -310,7 +310,7 @@ class SearchSection extends React.Component {
     }
     if (
       wrappedElement.scrollHeight - wrappedElement.scrollTop <
-        wrappedElement.clientHeight + 300 &&
+      wrappedElement.clientHeight + 300 &&
       this.props.searchState.offset * 50 < this.props.searchState.total &&
       this.state.firing !== true
     ) {

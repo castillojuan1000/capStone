@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
-import SignInSide from '../Pages/SignIn';
-import SignUp from '../Pages/SignUp';
+import { SignIn, SignUp } from '../Pages'
 const mapStateToProps = (state, ownProps) => {
 	return {
 		...state
@@ -27,4 +26,4 @@ export const SignUpContainer = connect(
 export const SignInContainer = connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(SignInSide);
+)(SignIn);

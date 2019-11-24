@@ -1,11 +1,8 @@
 import React from 'react';
-import '.././style/library.css'
-import PlaylistBlock from '../Components/Blocks/Playlistblock'
-
-
+import '../../style/library.css'
+import PlaylistBlock from '../Blocks/Playlistblock'
 import * as Vibrant from 'node-vibrant';
-import { getColor } from '../utilityFunctions/util.js';
-
+import { getColor } from '../../utilityFunctions/util.js';
 import {
 	playSong,
 	StopPlayer,
@@ -16,13 +13,13 @@ import {
 	getFollowedArtists,
 	GetMyPlaylists,
 	getPersonalizedTopTracks
-} from '../utilityFunctions/util.js';
+} from '../../utilityFunctions/util.js';
 import { withRouter } from 'react-router-dom';
-import Artist from '../Components/Blocks/artist';
-import Album from '../Components/Blocks/album';
-import Song from '../Components/Blocks/songs2';
+import Artist from '../Blocks/artist';
+import Album from '../Blocks/album';
+import Song from '../Blocks/songs2';
 
-import '../App.css';
+import '../../App.css';
 let searchFilters = ['PLAYLISTS', 'LIKED SONGS', 'ALBUMS', 'ARTISTS'];
 
 let FilterItem = ({ name, isActive, onClick, color }) => {

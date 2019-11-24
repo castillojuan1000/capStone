@@ -174,7 +174,6 @@ class Queue extends React.Component {
 					className='playlist-body'
 					userId={this.props.user.spotifyId}
 					active={true}
-					playlist={this.props.playlist}
 					rooms={this.props.rooms}
 					toggleQ={this.props.toggleQ}
 				/>

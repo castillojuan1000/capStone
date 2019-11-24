@@ -2,11 +2,11 @@ import React from "react";
 
 import { withRouter } from "react-router-dom";
 
-import "../App.css";
-import "../homepage.css";
+import "../../App.css";
+import "../../style/homepage.css";
 
-import FeaturedArtist from "../Components/Blocks/featuredArtist";
-import FeaturedPlaylist from "../Components/Blocks/featuredPlaylist";
+import FeaturedArtist from "../Blocks/featuredArtist";
+import FeaturedPlaylist from "../Blocks/featuredPlaylist";
 
 class Home extends React.Component {
   constructor(props) {

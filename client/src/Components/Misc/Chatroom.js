@@ -15,11 +15,11 @@ class Chatroom extends Component {
 			avatar: ''
 		};
 		this.socket = io('/rooms');
-		this.socket.on('connect', function(data) {
+		this.socket.on('connect', function (data) {
 			joinRoom();
 		});
 		// once the client recieve a message send it to the server
-		this.socket.on('RECEIVE_MESSAGE', function(data) {
+		this.socket.on('RECEIVE_MESSAGE', function (data) {
 			addMessage(data);
 		});
 		const joinRoom = () => {
@@ -52,7 +52,6 @@ class Chatroom extends Component {
 				authorId: this.props.user.id,
 				message: this.state.message,
 				roomId: this.props.roomId,
-				spotifyId: this.props.user.spotifyId,
 				image
 			};
 			this.socket.emit('SEND_MESSAGE', message);
@@ -63,7 +62,7 @@ class Chatroom extends Component {
 		};
 
 		// whenever someone is typing a messgae, everyone in the chatroom will be able to see it
-		this.socket.on('typing', function(data) {
+		this.socket.on('typing', function (data) {
 			addFeedback();
 		});
 
@@ -78,25 +77,6 @@ class Chatroom extends Component {
 	};
 	componentDidMount() {
 		this.scrollToBottom();
-		if (this.state.messages.length > 1) {
-			const userIds = this.state.messages.map(e => e.spotifyId);
-			Promise.all(
-				userIds.map(e => this.props.spotifyData.player.getUserProfile(e))
-			).then(results => {
-				const messages = this.state.messages.map((e, i) => {
-					const targetResult = results[i];
-					e.image = `https://avatars.dicebear.com/v2/initials/${targetResult
-						.display_name[0] +
-						targetResult
-							.display_name[1]}.svg?options[backgroundColors][]=grey&options[backgroundColorLevel]=500&options[fontSize]=29&options[bold]=1`;
-					if (targetResult.images.length >= 1) {
-						e.image = targetResult.images[0];
-					}
-					return e;
-				});
-				this.setState({ messages: [...messages] });
-			});
-		}
 	}
 	componentDidUpdate() {
 		this.scrollToBottom();

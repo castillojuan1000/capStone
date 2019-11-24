@@ -189,7 +189,7 @@ function SignInSide(props) {
   };
   return (
     <Grid container component="main" className={classes.root}>
-      <CssBaseline className="base" />
+      <CssBaseline />
       <Grid item xs={false} sm={2} md={4} className={classes.image} />
       <Grid
         item
@@ -247,7 +247,7 @@ function SignInSide(props) {
                   onClick={() =>
                     setState({ ...state, remember: !state.remember })
                   }
-                  checked="true"
+                  checked={true}
                   value="remember"
                   color="primary"
                 />

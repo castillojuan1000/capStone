@@ -39,8 +39,8 @@ export default function SongFeatures(props) {
 const SongFeaturesDiv = styled.div`
 	margin: 2em;
 	flex-grow: 1;
-	width: 40%;
-	height: 40%;
+	max-width: 40%;
+	max-height: 40%;
 	display: ${({ view }) => (view ? 'block' : 'none')};
 	.feature {
 		display: flex;

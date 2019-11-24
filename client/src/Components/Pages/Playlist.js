@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { GetMyPlaylists, GetPlaylistTracks, GetPlaylistCover } from '../utilityFunctions/util'
-import { playSong, StopPlayer, ResumePlayer } from '../utilityFunctions/util';
-import Playlist from '../Components/Blocks/Playlistblock';
+import { GetMyPlaylists, GetPlaylistTracks, GetPlaylistCover } from '../../utilityFunctions/util'
+import { playSong, StopPlayer, ResumePlayer } from '../../utilityFunctions/util';
+import Playlist from '../Blocks/Playlistblock';
 import { withRouter } from 'react-router-dom';
 import * as Vibrant from 'node-vibrant';
 import { connect } from 'react-redux'
-import '../style/playlistpage.css'
-import Tracks from '../Components/Blocks/playlistsongs'
-
-import '../albumPage.css'
+import '../../style/playlistpage.css'
+import Tracks from '../Blocks/songs/playlistsongs'
+import '../../style/albumPage.css'
 
 
 let searchFilters = ['Playlist', 'Track'];
