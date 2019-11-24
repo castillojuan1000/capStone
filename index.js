@@ -93,9 +93,8 @@ app.post('/api/createroom/', (req, res) => {
 
 app.post('/webhook/github', (req, res) => {
 	var sender = req.body.sender;
-	var branch = req.body.ref.split('/');
-
-	if (branch.indexOf('master') > -1 && sender.login === 'asantoss') {
+	var branch = req.body.ref;
+	if (branch.split('/').indexOf('master') > -1 && sender.login === 'asantoss') {
 		deploy(res);
 	}
 });
