@@ -91,7 +91,7 @@ app.post('/api/createroom/', (req, res) => {
 	}
 });
 
-app.post('/webhooks/github', (req, res) => {
+app.post('/webhook/github', (req, res) => {
 	var sender = req.body.sender;
 	var branch = req.body.ref;
 
