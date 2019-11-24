@@ -157,7 +157,7 @@ class Queue extends React.Component {
 	};
 	buildStations = () => {
 		const rooms = this.state.rooms.map((room, i) => {
-			const isHost = Number(this.props.user.spotifyId) === Number(room.host.id);
+			const isHost = Number(this.props.user.id) === Number(room.host.id);
 			return (
 				<Station
 					{...room}

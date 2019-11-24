@@ -3,11 +3,11 @@ import { useQuery } from '@apollo/react-hooks';
 import { GET_ROOM } from '../../Apollo';
 import SongsCarousel from '../Blocks/songs/SongsCarousel';
 import SongFeatures from '../Blocks/songs/SongFeatures';
-import Chatroom from '../Pages/Chatroom';
+import Chatroom from '../Misc/Chatroom';
 import { IconButton } from '@material-ui/core';
 import { ChatBubble, LibraryMusicRounded } from '@material-ui/icons';
-import { MainRoom } from '../../style/MainRoom'
-import { HostInfo } from '../Misc'
+import { MainRoom } from '../../style/MainRoom';
+import { HostInfo } from '../Misc';
 
 function Room(props) {
 	const { player, user, spotifyData } = props;
@@ -160,7 +160,6 @@ function Room(props) {
 	);
 }
 
-
 let Loader = ({ loading }) => {
 	let display = loading ? 'block' : 'none';
 	let loaderStyle = { display: display };
@@ -170,4 +169,4 @@ let Loader = ({ loading }) => {
 		</div>
 	);
 };
-export default Room
+export default Room;
