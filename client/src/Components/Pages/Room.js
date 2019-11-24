@@ -11,6 +11,7 @@ import { HostInfo } from '../Misc';
 
 function Room(props) {
 	const { player, user, spotifyData } = props;
+	const { host } = user.room;
 	const [roomState, setRoomState] = useState({
 		currentSong: {
 			image: '',
@@ -86,7 +87,6 @@ function Room(props) {
 		);
 	}
 	const { getRoom } = data;
-	const { host } = getRoom;
 	let messages = getRoom.messages.map(m => {
 		return {
 			author: m.user.username,
