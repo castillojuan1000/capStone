@@ -101,6 +101,7 @@ app.post('/webhooks/github', (req, res) => {
 });
 
 function deploy(res) {
+	//! Spins up a child proccess which will gotot the home directory and run the deploy bash script
 	childProcess.exec('cd /home && ./deploy.sh', function(err, stdout, stderr) {
 		if (err) {
 			console.error(err);
