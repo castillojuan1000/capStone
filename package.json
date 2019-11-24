@@ -5,9 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"client": "cd client && npm start",
-		"server": "nodemon index.js",
+		"start": "node index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"dev": "concurrently \"npm run start\" \"npm run client\"",
 		"build": "cd client && npm run build"
 	},
 	"author": "",
@@ -25,15 +25,14 @@
 		"faker": "^4.1.0",
 		"jsonwebtoken": "^8.5.1",
 		"lodash": "^4.17.15",
+		"npm": "^6.13.1",
 		"path": "^0.12.7",
 		"pg": "^7.12.1",
-		"sequelize": "^5.21.1",
-		"sequelize-cli": "^5.5.1",
+		"sequelize": "^5.21.2",
 		"socketio": "^1.0.0"
 	},
 	"devDependencies": {
 		"concurrently": "^5.0.0",
-		"sequelize": "^5.21.1",
 		"sequelize-auto-migration": "0.0.7"
 	}
 }
