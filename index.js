@@ -101,12 +101,16 @@ app.post('/webhook/github', (req, res) => {
 
 function deploy(res) {
 	//! Spins up a child proccess which will gotot the home directory and run the deploy bash script
-	childProcess.exec('cd /home && ./deploy.sh', function(err, stdout, stderr) {
+	childProcess.exec('cd /home/music && ./deploy.sh', function(
+		err,
+		stdout,
+		stderr
+	) {
 		if (err) {
 			console.error(err);
-			return res.send(500);
+			return res.sendSatus(500);
 		}
-		res.send(200);
+		res.sendStatus(200);
 	});
 }
 
