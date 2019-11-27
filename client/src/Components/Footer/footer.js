@@ -118,8 +118,14 @@ class Footer extends React.Component {
       const { player: hostPlayer, roomId, socketId } = data;
       if (this.props.user.room && this.props.user.room.subscribed && roomId) {
         this.props.setPlayer(hostPlayer);
+        const getUris = (queue) =>{
+          if(queue['track']){
+            return queue.map(s => s.track.uri)
+          }
+          return queue.map(s => s.uri)
+        }
         this.props.spotifyData.player
-          .playSong(JSON.stringify([hostPlayer.currentSong.uri, ...hostPlayer.queue.map(s => s.track.uri)]))
+          .playSong(JSON.stringify([hostPlayer.currentSong.uri, ...getUris(hostPlayer.queue)]))
           .then(() => {
             this.props.spotifyData.player
               .SeekSong(hostPlayer.currentTime * 1000)
