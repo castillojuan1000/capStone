@@ -14,7 +14,6 @@ export default function HostInfo({ spotifyData, host, user }) {
 			spotifyData.player.getUserProfile(host.id),
 			spotifyData.player.isFollowing('user', host.id)
 		]).then(results => {
-			debugger;
 			const [userData, isFollowingHost] = results;
 			let isFollowing = isFollowingHost[0];
 			if (isHost) {

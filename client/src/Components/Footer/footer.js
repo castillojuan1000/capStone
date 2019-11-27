@@ -96,7 +96,7 @@ class Footer extends React.Component {
     this.startTimer = this.startTimer.bind(this);
     this.setColor = this.setColor.bind(this);
     // *** SOCKET CONNECTION TO SYNC WITH HOST
-    this.socket = io("/");
+    this.socket = io();
     this.socket.on("SYNC_PLAYER", data => {
       const { user } = this.props;
       const { room } = user;
@@ -118,7 +118,7 @@ class Footer extends React.Component {
       if (this.props.user.room && this.props.user.room.subscribed && roomId) {
         this.props.setPlayer(hostPlayer);
         this.props.spotifyData.player
-          .playSong(JSON.stringify(hostPlayer.queue.map(s => s.uri)))
+          .playSong(JSON.stringify([hostPlayer.currentSong.uri, ...hostPlayer.queue.map(s => s.track.uri)]))
           .then(() => {
             this.props.spotifyData.player
               .SeekSong(hostPlayer.currentTime * 1000)

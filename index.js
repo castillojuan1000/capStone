@@ -123,7 +123,8 @@ http.listen(process.env.PORT || 3000, () =>
 	console.log('Server running! \n http://localhost:' + process.env.PORT)
 );
 var io = require('socket.io')(http);
-io.origins('*:*');
+// io.origins('*:*');
+
 io.of('/rooms').on('connection', socket => {
 	socket.on('JOIN_ROOM', function(data) {
 		const { roomId } = data;
@@ -134,7 +135,6 @@ io.of('/rooms').on('connection', socket => {
 
 	//! save the messages to the data base
 	socket.on('SEND_MESSAGE', function(data) {
-		console.log(data);
 		db.message.create({
 			userId: data.authorId,
 			roomId: data.roomId,
@@ -149,6 +149,7 @@ io.of('/rooms').on('connection', socket => {
 		socket.emit('typing', data);
 	});
 });
+
 io.on('connection', socket => {
 	socket.on('REQUEST_PLAYER_STATE', data => {
 		io.emit('SYNC_PLAYER', data);
