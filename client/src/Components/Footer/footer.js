@@ -114,6 +114,7 @@ class Footer extends React.Component {
       }
     });
     this.socket.on("RECEIVE_PLAYER_STATE", data => {
+      console.log(data)
       const { player: hostPlayer, roomId, socketId } = data;
       if (this.props.user.room && this.props.user.room.subscribed && roomId) {
         this.props.setPlayer(hostPlayer);
