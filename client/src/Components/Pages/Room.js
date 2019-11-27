@@ -73,7 +73,7 @@ function Room(props) {
 	const id = Number(props.match.params.id);
 	const { loading, error, data } = useQuery(GET_ROOM, {
 		variables: { id },
-		pollInterval: 60000,
+		pollInterval: 0,
 		fetchPolicy: 'cache-and-network'
 	});
 	if (error) {
