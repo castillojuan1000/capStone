@@ -1,11 +1,7 @@
 import { connect } from "react-redux";
-import Footer from "../Footer/footer";
-import AlbumPage from "../../pages/albumPage.js";
-import ArtistPage from "../../pages/artistPage.js";
-import SearchSection from "../../pages/search";
-import LibrarySection from "../../pages/library";
-import Home from "../../pages/homePage";
-import Navbar from "../Navbar/Navbar";
+import { Footer } from "../Footer";
+import { Navbar } from "../Navbar";
+import { Library, Home, Album, Artist, Search } from '../Pages'
 
 const mapStateToProps = state => ({ ...state });
 
@@ -78,20 +74,20 @@ export const FooterContainer = connect(
 export const AlbumContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AlbumPage);
+)(Album);
 export const ArtistContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(ArtistPage);
+)(Artist);
 export const SearchSectionContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchSection);
+)(Search);
 
 export const LibrarySectionContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(LibrarySection);
+)(Library);
 
 export const NavBarSection = connect(
   mapStateToProps,
@@ -102,3 +98,7 @@ export const HomePageContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Home);
+
+export default {
+  LibrarySectionContainer, HomePageContainer, NavBarSection, SearchSectionContainer, ArtistContainer, AlbumContainer, FooterContainer
+}

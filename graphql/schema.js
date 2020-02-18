@@ -4,7 +4,6 @@ const typDefs = gql`
     id: ID!
     email: String!
     username: String
-    spotifyId: String
     likes: [Like]
     messages: [Message]
   }

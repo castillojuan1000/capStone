@@ -15,24 +15,13 @@ export const GET_ROOM = gql`
 			host {
 				username
 				id
-				spotifyId
 			}
 			messages {
 				user {
 					id
 					username
-					spotifyId
 				}
 				message
-			}
-			likes {
-				room {
-					id
-				}
-				user {
-					id
-				}
-				spotifyId
 			}
 		}
 	}
@@ -45,7 +34,7 @@ export const GET_ALL_ROOMS = gql`
 			spotifyId
 			host {
 				id
-				spotifyId
+				username
 			}
 		}
 	}
@@ -61,7 +50,6 @@ export const CREATE_LIKE = gql`
 					host {
 						id
 						username
-						spotifyId
 					}
 				}
 			}
@@ -77,7 +65,6 @@ export const CREATE_ROOM = gql`
 			host {
 				id
 				username
-				spotifyId
 			}
 		}
 	}

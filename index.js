@@ -2,12 +2,14 @@ const express = require('express');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const childProcess = require('child_process');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models');
 const authServer = require('./routes/authServer');
 const createUsers = require('./fakerData');
+const path = require('path');
 const app = express();
 const myStore = new SequelizeStore({
 	db: db.sequelize
@@ -26,9 +28,10 @@ apolloServ.applyMiddleware({ app });
 
 // *** Attaching middleware for Express
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static(__dirname + './front-end/build'));
-	app.get('*', function (request, response) {
-		response.sendFile('index.html', { root: './front-end/build' });
+	app.use(express.static(__dirname + '/client/build'));
+	console.log(__dirname);
+	app.get('*', function(request, response) {
+		response.sendFile(path.join(__dirname, '/client/build/', 'index.html'));
 	});
 }
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -45,13 +48,14 @@ app.use(
 myStore.sync();
 app.use(authServer(db));
 if (process.env.NODE_ENV !== 'development') {
-	app.use(function (req, res, next) {
+	app.use(function(req, res, next) {
 		const token = req.session.jwtToken && req.session.jwtToken.accessToken;
 		if (
 			req.path === '/api/login' ||
 			req.path === '/api/signup' ||
 			req.path === '/api/token' ||
-			req.path === '/auth/spotify'
+			req.path === '/auth/spotify' ||
+			req.path === '/webhook/github'
 		) {
 			return next();
 		}
@@ -90,15 +94,39 @@ app.post('/api/createroom/', (req, res) => {
 	}
 });
 
+app.post('/webhook/github', (req, res) => {
+	var sender = req.body.sender;
+	var branch = req.body.ref;
+	if (branch.split('/').indexOf('master') > -1 && sender.login === 'asantoss') {
+		deploy(res);
+	}
+});
+
+function deploy(res) {
+	//! Spins up a child proccess which will gotot the home directory and run the deploy bash script
+	res.sendStatus(200);
+	childProcess.exec('cd /home/music && ./deploy.sh', function(
+		err,
+		stdout,
+		stderr
+	) {
+		if (err) {
+			console.error(err);
+			return res.sendSatus(500);
+		}
+	});
+}
+
 //! CHARTROOM SERVER
 var http = require('http').createServer(app);
 http.listen(process.env.PORT || 3000, () =>
 	console.log('Server running! \n http://localhost:' + process.env.PORT)
 );
 var io = require('socket.io')(http);
-io.origins('*:*');
+// io.origins('*:*');
+
 io.of('/rooms').on('connection', socket => {
-	socket.on('JOIN_ROOM', function (data) {
+	socket.on('JOIN_ROOM', function(data) {
 		const { roomId } = data;
 		socket.join(`room${roomId}`);
 	});
@@ -106,8 +134,7 @@ io.of('/rooms').on('connection', socket => {
 	//once it get then "chat" message it will call the function
 
 	//! save the messages to the data base
-	socket.on('SEND_MESSAGE', function (data) {
-		console.log(data);
+	socket.on('SEND_MESSAGE', function(data) {
 		db.message.create({
 			userId: data.authorId,
 			roomId: data.roomId,
@@ -117,11 +144,12 @@ io.of('/rooms').on('connection', socket => {
 		socket.to(`room${data.roomId}`).emit('RECEIVE_MESSAGE', data);
 	});
 
-	socket.on('typing', function (data) {
+	socket.on('typing', function(data) {
 		// this is broadcasting the message once a person is typing but not to the person typing the message
 		socket.emit('typing', data);
 	});
 });
+
 io.on('connection', socket => {
 	socket.on('REQUEST_PLAYER_STATE', data => {
 		io.emit('SYNC_PLAYER', data);

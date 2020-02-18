@@ -19,14 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       username: {
         type: DataTypes.STRING
-      },
-      spotifyId: {
-        type: DataTypes.STRING
       }
     },
     {}
   );
-  user.associate = function(models) {
+  user.associate = function (models) {
     // associations can be defined here
     user.hasMany(models.like);
     user.hasMany(models.message);

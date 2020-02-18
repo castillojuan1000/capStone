@@ -5,7 +5,7 @@ import FavoriteRoundedIcon from "@material-ui/icons/FavoriteRounded";
 import MoreHorizRoundedIcon from "@material-ui/icons/MoreHorizRounded";
 import PauseRoundedIcon from "@material-ui/icons/PauseRounded";
 import { Link } from "react-router-dom";
-import { getSongSeconds } from "../../../utilityFunctions/util.js";
+import { getSongSeconds } from "../../../utilityFunctions/util";
 
 let Song = ({ song, idx, handleClick, active, isPlaying }) => {
   let hoverClass = active ? "song-hover-state active" : "song-hover-state";
@@ -13,8 +13,8 @@ let Song = ({ song, idx, handleClick, active, isPlaying }) => {
     active && isPlaying ? (
       <PauseRoundedIcon style={{ fontSize: ".8em" }} />
     ) : (
-      <PlayArrowRoundedIcon style={{ fontSize: ".8em" }} />
-    );
+        <PlayArrowRoundedIcon style={{ fontSize: ".8em" }} />
+      );
   let dotStyle = {
     fontSize: ".4em",
     paddingBottom: ".2em",

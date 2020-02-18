@@ -6,12 +6,12 @@ import {
 	ResumePlayer,
 	getColor,
 	getAlbum
-} from '../utilityFunctions/util.js';
+} from '../../utilityFunctions/util.js';
 import { withRouter } from 'react-router-dom';
-import Song from '../Components/Blocks/albumSongs';
+import Song from '../Blocks/songs/albumSongs';
 
-import '../App.css';
-import '../albumPage.css';
+import '../../App.css';
+import '../../style/albumPage.css';
 
 import * as Vibrant from 'node-vibrant';
 
@@ -25,7 +25,7 @@ let Loader = ({ loading }) => {
 	);
 };
 
-class AlbumPage extends React.Component {
+class Album extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -223,4 +223,4 @@ class AlbumPage extends React.Component {
 	}
 }
 
-export default withRouter(AlbumPage);
+export default withRouter(Album);

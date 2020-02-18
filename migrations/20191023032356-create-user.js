@@ -21,9 +21,6 @@ module.exports = {
       username: {
         type: Sequelize.STRING
       },
-      spotifyId: {
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

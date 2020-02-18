@@ -22,7 +22,6 @@ function CreateRoomButton(props) {
 		spotifyData.player
 			.CreatePlaylist(userId, newRoom.roomName)
 			.then(results => {
-				debugger;
 				const playlist = results.data;
 				createRoom({
 					variables: {

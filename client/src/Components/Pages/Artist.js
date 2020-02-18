@@ -3,15 +3,13 @@ import {
 	getArtist,
 	getArtistTopTracks,
 	getArtistAlbums
-} from '../utilityFunctions/util.js';
-import { getColor } from '../utilityFunctions/util.js';
-
-import Album from '../Components/Blocks/album';
-import Song from '../Components/Blocks/albumSongs';
+} from '../../utilityFunctions/util.js';
+import { getColor } from '../../utilityFunctions/util.js';
+import Album from '../Blocks/album';
+import Song from '../Blocks/songs/albumSongs';
 import { withRouter } from 'react-router-dom';
-
-import '../App.css';
-import '../artistPage.css';
+import '../../App.css';
+import '../../style/artistPage.css';
 
 import * as Vibrant from 'node-vibrant';
 
@@ -25,7 +23,7 @@ let Loader = ({ loading }) => {
 	);
 };
 
-class artistPage extends React.Component {
+class Artist extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -96,7 +94,7 @@ class artistPage extends React.Component {
 		let img = new Image();
 		img.crossOrigin = 'Anonymous';
 		img.src = url;
-		img.addEventListener('load', function() {
+		img.addEventListener('load', function () {
 			Vibrant.from(img, 5).getPalette((err, palette) => {
 				let colors = {
 					Vibrant: getColor(palette, 'Vibrant'),
@@ -346,4 +344,4 @@ class artistPage extends React.Component {
 		);
 	}
 }
-export default withRouter(artistPage);
+export default withRouter(Artist);

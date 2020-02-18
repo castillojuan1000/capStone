@@ -1,5 +1,5 @@
 import React from "react";
-import "../../footer.css";
+import "../../style/footer.css";
 import { ChangeVolume } from "../../utilityFunctions/util.js";
 import { getColor } from "../../utilityFunctions/util.js";
 import { Link } from "react-router-dom";
@@ -57,8 +57,8 @@ let IsPlaying = ({ IsPlaying, color }) => {
   return IsPlaying ? (
     <PauseRounded style={iconStyle} />
   ) : (
-    <PlayArrowRounded style={iconStyle} />
-  );
+      <PlayArrowRounded style={iconStyle} />
+    );
 };
 
 let LikeTrack = ({ liked, onClick, color }) => {
@@ -66,8 +66,8 @@ let LikeTrack = ({ liked, onClick, color }) => {
   return liked ? (
     <FavoriteRounded onClick={onClick} style={iconStyle} />
   ) : (
-    <FavoriteBorderRounded onClick={onClick} style={iconStyle} />
-  );
+      <FavoriteBorderRounded onClick={onClick} style={iconStyle} />
+    );
 };
 
 class Footer extends React.Component {
@@ -96,7 +96,7 @@ class Footer extends React.Component {
     this.startTimer = this.startTimer.bind(this);
     this.setColor = this.setColor.bind(this);
     // *** SOCKET CONNECTION TO SYNC WITH HOST
-    this.socket =io("/");
+    this.socket = io();
     this.socket.on("SYNC_PLAYER", data => {
       const { user } = this.props;
       const { room } = user;
@@ -114,11 +114,18 @@ class Footer extends React.Component {
       }
     });
     this.socket.on("RECEIVE_PLAYER_STATE", data => {
+      console.log(data)
       const { player: hostPlayer, roomId, socketId } = data;
       if (this.props.user.room && this.props.user.room.subscribed && roomId) {
         this.props.setPlayer(hostPlayer);
+        const getUris = (queue) =>{
+          if(queue['track']){
+            return queue.map(s => s.track.uri)
+          }
+          return queue.map(s => s.uri)
+        }
         this.props.spotifyData.player
-          .playSong(JSON.stringify(hostPlayer.queue.map(s => s.uri)))
+          .playSong(JSON.stringify([hostPlayer.currentSong.uri, ...getUris(hostPlayer.queue)]))
           .then(() => {
             this.props.spotifyData.player
               .SeekSong(hostPlayer.currentTime * 1000)
@@ -292,13 +299,13 @@ class Footer extends React.Component {
     let NewLike = this.state.liked ? false : true;
     !this.state.liked
       ? AddSong([this.props.player.currentSongId]).then(result => {
-          setTimeout(() => {
-            this.setState({
-              ...this.state,
-              NewLike: false
-            });
-          }, 2500);
-        })
+        setTimeout(() => {
+          this.setState({
+            ...this.state,
+            NewLike: false
+          });
+        }, 2500);
+      })
       : DeleteSong([this.props.player.currentSongId]);
     this.setState({
       ...this.state,
@@ -313,7 +320,7 @@ class Footer extends React.Component {
     img.src = url;
     img.addEventListener(
       "load",
-      function() {
+      function () {
         Vibrant.from(img).getPalette((err, palette) => {
           //console.error(err)
           let color = getColor(palette, "Vibrant");
@@ -359,7 +366,7 @@ class Footer extends React.Component {
       if (
         action === null &&
         this.props.player.songImg !==
-          state.track_window.current_track.album.images[2].url
+        state.track_window.current_track.album.images[2].url
       ) {
         getTrack(state.track_window.current_track.id).then(result => {
           document.title = `${state.track_window.current_track.name} · ${result.artists[0].name}`;
@@ -381,17 +388,7 @@ class Footer extends React.Component {
       if (this.props.user && this.props.user.spotifyId === null) {
         this.props.spotifyData.player.getMyProfile().then(data => {
           const { id } = data;
-          fetch("/api/update", {
-            method: "PATCH",
-            body: JSON.stringify({ spotifyId: id }),
-            headers: {
-              "content-type": "application/json"
-            }
-          })
-            .then(res => res.json())
-            .then(userData => {
-              this.props.authUser({ ...userData.data, isLoggedIn: true });
-            });
+          this.props.authUser({ ...this.props.user, spotifyId: id, isLoggedIn: true })
         });
       }
       console.debug("Ready with Device ID", device_id);
@@ -472,8 +469,8 @@ class Footer extends React.Component {
         colors={this.state.colors}
       />
     ) : (
-      ""
-    );
+        ""
+      );
     return (
       <div className="footer">
         <Queue
@@ -555,10 +552,10 @@ class Footer extends React.Component {
                       : "rgba(255,255,255, 0.4)",
                     borderBottom: this.props.player.shuffle
                       ? `2px solid ${
-                          this.pageOn
-                            ? this.props.player.secondaryColors.Vibrant
-                            : this.props.player.colors.vibrant
-                        }`
+                      this.pageOn
+                        ? this.props.player.secondaryColors.Vibrant
+                        : this.props.player.colors.vibrant
+                      }`
                       : "2px solid transparent",
                     borderRadius: "50px",
                     boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"
@@ -620,10 +617,10 @@ class Footer extends React.Component {
                       : "rgba(255,255,255, 0.4)",
                     borderBottom: this.props.player.repeat
                       ? `2px solid ${
-                          this.pageOn
-                            ? this.props.player.secondaryColors.Vibrant
-                            : this.props.player.colors.vibrant
-                        }`
+                      this.pageOn
+                        ? this.props.player.secondaryColors.Vibrant
+                        : this.props.player.colors.vibrant
+                      }`
                       : "2px solid transparent",
                     borderRadius: "50px",
                     boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"
@@ -669,43 +666,43 @@ class Footer extends React.Component {
                     : this.props.player.colors.vibrant,
                   borderBottom: this.props.player.repeat
                     ? `2px solid ${
-                        this.pageOn
-                          ? this.props.player.secondaryColors.Vibrant
-                          : this.props.player.colors.vibrant
-                      }`
+                    this.pageOn
+                      ? this.props.player.secondaryColors.Vibrant
+                      : this.props.player.colors.vibrant
+                    }`
                     : "2px solid transparent",
                   borderRadius: "50px",
                   boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"
                 }}
               />
             ) : (
-              <SyncDisabledRounded
-                onClick={() => {
-                  if (this.props.user.room) {
-                    this.props.setRoom({
-                      subscribed: !this.props.user.room.subscribed
-                    });
-                    this.requestPlayerState(this.socket.id);
-                  }
-                }}
-                style={{
-                  fontSize: "1.7em",
-                  marginLeft: "1.5em",
-                  color: this.pageOn
-                    ? this.props.player.secondaryColors.Vibrant
-                    : this.props.player.colors.vibrant,
-                  borderBottom: this.props.player.repeat
-                    ? `2px solid ${
-                        this.pageOn
-                          ? this.props.player.secondaryColors.Vibrant
-                          : this.props.player.colors.vibrant
+                <SyncDisabledRounded
+                  onClick={() => {
+                    if (this.props.user.room) {
+                      this.props.setRoom({
+                        subscribed: !this.props.user.room.subscribed
+                      });
+                      this.requestPlayerState(this.socket.id);
+                    }
+                  }}
+                  style={{
+                    fontSize: "1.7em",
+                    marginLeft: "1.5em",
+                    color: this.pageOn
+                      ? this.props.player.secondaryColors.Vibrant
+                      : this.props.player.colors.vibrant,
+                    borderBottom: this.props.player.repeat
+                      ? `2px solid ${
+                      this.pageOn
+                        ? this.props.player.secondaryColors.Vibrant
+                        : this.props.player.colors.vibrant
                       }`
-                    : "2px solid transparent",
-                  borderRadius: "50px",
-                  boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"
-                }}
-              />
-            ))}
+                      : "2px solid transparent",
+                    borderRadius: "50px",
+                    boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"
+                  }}
+                />
+              ))}
           {this.props.user.room && this.props.user.room.host.isHost && (
             <SettingsInputComponentRounded
               onClick={this.sendStateFromHost}
@@ -717,10 +714,10 @@ class Footer extends React.Component {
                   : this.props.player.colors.vibrant,
                 borderBottom: this.props.player.repeat
                   ? `2px solid ${
-                      this.pageOn
-                        ? this.props.player.secondaryColors.Vibrant
-                        : this.props.player.colors.vibrant
-                    }`
+                  this.pageOn
+                    ? this.props.player.secondaryColors.Vibrant
+                    : this.props.player.colors.vibrant
+                  }`
                   : "2px solid transparent",
                 borderRadius: "50px",
                 boxShadow: "1px 1px 10px 1px rgba(0,0,0, 0.6)"

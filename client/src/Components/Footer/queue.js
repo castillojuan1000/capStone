@@ -12,7 +12,7 @@ const querySubcribe = client => {
 	return client.watchQuery({
 		query: GET_ALL_ROOMS,
 		fetchPolicy: 'cache-and-network',
-		pollingInterval: '30000'
+		pollingInterval: '3000'
 	});
 };
 let QueueFilter = ({ name, isActive, onClick, color }) => {
@@ -44,20 +44,17 @@ class Queue extends React.Component {
 					let { getAllRooms: rooms } = data;
 					const { spotifyData } = this.props;
 					const roomPlaylistsIds = rooms.map(e => e.spotifyId);
-					const hostSpotifyIds = rooms.map(e => e.host.spotifyId);
 					Promise.all(
-						roomPlaylistsIds
-							.map(e => spotifyData.player.GetPlaylist(e))
-							.concat(
-								hostSpotifyIds.map(e => spotifyData.player.getUserProfile(e))
-							)
+						roomPlaylistsIds.map(e => spotifyData.player.GetPlaylist(e))
 					)
 						.then(results => {
 							const roomPlaylists = results.filter(e => e.type === 'playlist');
-							const hosts = results.filter(e => e.type === 'user');
 							rooms = rooms.map((e, i) => {
+								const roomOwnerSpotify = {
+									...roomPlaylists[i].owner
+								};
 								e.playlist = roomPlaylists[i];
-								e.host = hosts[i];
+								e.host = roomOwnerSpotify;
 								return e;
 							});
 							return rooms;
@@ -157,7 +154,7 @@ class Queue extends React.Component {
 	};
 	buildStations = () => {
 		const rooms = this.state.rooms.map((room, i) => {
-			const isHost = Number(this.props.user.spotifyId) === Number(room.host.id);
+			const isHost = this.props.user.spotifyId === room.host.id;
 			return (
 				<Station
 					{...room}
@@ -174,7 +171,6 @@ class Queue extends React.Component {
 					className='playlist-body'
 					userId={this.props.user.spotifyId}
 					active={true}
-					playlist={this.props.playlist}
 					rooms={this.props.rooms}
 					toggleQ={this.props.toggleQ}
 				/>
