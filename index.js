@@ -94,28 +94,28 @@ app.post('/api/createroom/', (req, res) => {
 	}
 });
 
-app.post('/webhook/github', (req, res) => {
-	var sender = req.body.sender;
-	var branch = req.body.ref;
-	if (branch.split('/').indexOf('master') > -1 && sender.login === 'asantoss') {
-		deploy(res);
-	}
-});
+// app.post('/webhook/github', (req, res) => {
+// 	var sender = req.body.sender;
+// 	var branch = req.body.ref;
+// 	if (branch.split('/').indexOf('master') > -1 && sender.login === 'asantoss') {
+// 		deploy(res);
+// 	}
+// });
 
-function deploy(res) {
-	//! Spins up a child proccess which will gotot the home directory and run the deploy bash script
-	res.sendStatus(200);
-	childProcess.exec('cd /home/music && ./deploy.sh', function(
-		err,
-		stdout,
-		stderr
-	) {
-		if (err) {
-			console.error(err);
-			return res.sendSatus(500);
-		}
-	});
-}
+// function deploy(res) {
+// 	//! Spins up a child proccess which will goto the home directory and run the deploy bash script
+// 	res.sendStatus(200);
+// 	childProcess.exec('cd /home/music && ./deploy.sh', function(
+// 		err,
+// 		stdout,
+// 		stderr
+// 	) {
+// 		if (err) {
+// 			console.error(err);
+// 			return res.sendSatus(500);
+// 		}
+// 	});
+// }
 
 //! CHARTROOM SERVER
 var http = require('http').createServer(app);

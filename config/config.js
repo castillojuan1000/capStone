@@ -18,11 +18,11 @@ module.exports = {
 		logging: false
 	},
 	production: {
-		username: process.env.PG_USER || 'postgres',
-		password: process.env.PG_PASSWORD || null,
-		database: 'spotcloud',
-		host: '127.0.0.1',
+		use_env_variable: 'DATABASE_URL',
 		dialect: 'postgres',
-		logging: false
+		logging: false,
+		dialectOptions: {
+			ssl: true
+		}
 	}
 };
