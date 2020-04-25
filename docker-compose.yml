@@ -1,0 +1,36 @@
+version: '3'
+services:
+  server:
+    depends_on:
+      - db
+    env_file: .env
+    volumes:
+      - .:/app
+    build:
+      context: .
+    ports:
+      - '5000:5000'
+    command: npm start
+    links:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - '5561:5432'
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  client:
+    env_file: ./client/.env
+    volumes:
+      - ./client/src:/app/src
+    build:
+      context: ./client
+    ports:
+      - '80:3000'
+    command: npm start
+    links:
+      - server
+    stdin_open: true
